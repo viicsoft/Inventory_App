@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:viicsoft_inventory_app/models/events.dart';
-import 'package:viicsoft_inventory_app/services/apis/event_api.dart';
+
+import '../services/apis/event_api.dart';
 
 class EventsPage extends StatefulWidget {
   const EventsPage({Key? key}) : super(key: key);
