@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:viicsoft_inventory_app/models/users.dart';
-import 'package:viicsoft_inventory_app/ui/authentication/signupScreen.dart';
-import 'package:viicsoft_inventory_app/ui/homeview.dart';
-
+//import 'package:viicsoft_inventory_app/models/users.dart';
+//import 'package:viicsoft_inventory_app/ui/authentication/signupScreen.dart';
+//import 'package:viicsoft_inventory_app/ui/homeview.dart';
 import '../../services/apis/user_api.dart';
+
+import 'package:viicsoft_inventory_app/models/users.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -12,11 +13,17 @@ class Login extends StatefulWidget {
   State<Login> createState() => _LoginState();
 }
 
+TextEditingController userEmail = TextEditingController();
+TextEditingController userPassword = TextEditingController();
+
 class _LoginState extends State<Login> {
+
+  Data requestModel = Data(email: '', pass: '');
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+  GlobalKey<FormState> globalKey = GlobalKey<FormState>();
+
   final AuthAPI _authAPI = AuthAPI();
   final _key = GlobalKey<FormState>();
-  late String email;
-  late String password;
   TextEditingController _emailField = TextEditingController();
   TextEditingController _passwordField = TextEditingController();
 
