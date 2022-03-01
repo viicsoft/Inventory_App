@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:viicsoft_inventory_app/ui/eventspage.dart';
 import 'package:viicsoft_inventory_app/ui/homeview.dart';
 import 'package:viicsoft_inventory_app/ui/signup.dart';
 
@@ -12,8 +13,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      title: 'Crypto Wallet',
-      home: HomeView(),
+      title: 'Inventory App',
+      home: EventsPage(),
     );
   }
 }

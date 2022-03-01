@@ -1,19 +1,24 @@
 //list all api endpoints
 import 'package:viicsoft_inventory_app/services/api_keys.dart';
 
+class BaseAPI {
 
-class API {
-  API({required this.apiKey});
-  final String apiKey;
+  static String apiKey = "632F2EC9771B6C4C0BDF30BE21D9009B";
+  static String base = 'http://34.79.101.196';
+  static var api = base + '/crisp_inventory/api';
 
-  factory API.inventory() => API(apiKey: APIKeys.apiKey);
 
-  static const String host = '34.79.101.196';
+  Map<String, String> headers = {
+    "Content-Type": "application/json; charset=UTF-8",
+    "X-Api-Key": "632F2EC9771B6C4C0BDF30BE21D9009B"
+  };
 
-  Uri tokenUri() =>  Uri(
-    scheme: "http",
-    host: host,
-    path: 'token',
-    queryParameters: {'grant_type': 'client_credentials'},
-  );
+  // more routes
+  var registerPath = api + "/user/signup";
+  var loginPath = api + "/user/login";
+  var logoutPath = api + "/events/all";
+  var allUsersPath = api + "/users/all";
+  var allEventsPath = api + "/events/all";
+
+
 }
