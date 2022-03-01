@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:viicsoft_inventory_app/models/users.dart';
 import 'package:viicsoft_inventory_app/ui/authentication/signupScreen.dart';
+import 'package:viicsoft_inventory_app/ui/homeview.dart';
+
+import '../../services/apis/user_api.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -9,6 +13,13 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  final AuthAPI _authAPI = AuthAPI();
+  final _key = GlobalKey<FormState>();
+  late String email;
+  late String password;
+  TextEditingController _emailField = TextEditingController();
+  TextEditingController _passwordField = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,8 +61,9 @@ class _LoginState extends State<Login> {
                           top: 50, left: 20.0, right: 20.0),
                       child: Column(
                         children: <Widget>[
-                          const TextField(
-                            decoration: InputDecoration(
+                          TextFormField(
+                            controller: _emailField,
+                            decoration: const InputDecoration(
                               labelText: 'Email',
                               labelStyle: TextStyle(
                                   fontWeight: FontWeight.bold,
@@ -59,8 +71,9 @@ class _LoginState extends State<Login> {
                             ),
                           ),
                           const SizedBox(height: 20.0),
-                          const TextField(
-                            decoration: InputDecoration(
+                          TextFormField(
+                            controller: _passwordField,
+                            decoration: const InputDecoration(
                               labelText: 'Password',
                               labelStyle: TextStyle(
                                   fontWeight: FontWeight.bold,
@@ -110,39 +123,6 @@ class _LoginState extends State<Login> {
                             ),
                           ),
                           const SizedBox(height: 20.0),
-                          // Container(
-                          //   height: 60.0,
-                          //   color: Colors.transparent,
-                          //   child: Container(
-                          //     decoration: BoxDecoration(
-                          //       border: Border.all(
-                          //           color: Colors.black,
-                          //           style: BorderStyle.solid,
-                          //           width: 1.0
-                          //       ),
-                          //       color: Colors.transparent,
-                          //       borderRadius: BorderRadius.circular(40.0),
-                          //     ),
-                          //     child: Row(
-                          //       mainAxisAlignment: MainAxisAlignment.center,
-                          //       children: const <Widget>[
-                          //         Center(
-                          //           child: Icon(Icons.login_sharp,),
-                          //         ),
-                          //         SizedBox(width: 20.0),
-                          //         Center(
-                          //           child: Text(
-                          //             'Log in with Gmail',
-                          //             style: TextStyle(
-                          //               color: Colors.black,
-                          //               fontWeight: FontWeight.bold,
-                          //             ),
-                          //           ),
-                          //         ),
-                          //       ],
-                          //     ),
-                          //   ),
-                          // ),
                         ],
                       ),
                     )
@@ -164,13 +144,18 @@ class _LoginState extends State<Login> {
                   ),
                   const SizedBox(width: 5.0),
                   InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (BuildContext context) => const SignupPage(),
-                        ),
-                      );
+                    onTap: () async {
+                      try {
+                        var req = await _authAPI.login(
+                            _emailField.text, _passwordField.text);
+                        if (req.statusCode == 200) {
+                          print(req.body);
+                        } else {
+                          print("error");
+                        }
+                      } on Exception catch (e) {
+                        print(e.toString());
+                      }
                     },
                     child: const Text(
                       'Register',

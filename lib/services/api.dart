@@ -15,7 +15,7 @@ class BaseAPI {
   // more routes
   var registerPath = api + "/user/signup";
   var loginPath = api + "/user/login";
-  var logoutPath = api + "/events/all";
+  var logoutPath = api + "";
   var allUsersPath = api + "/users/all";
   var allEventsPath = api + "/events/all";
 
