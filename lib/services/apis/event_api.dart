@@ -6,16 +6,29 @@ import '../api.dart';
 
 class EventAPI extends BaseAPI {
 
-  Future<List<Event>> fetchAllEvents() async {
+  static List<Event> parse(String responseBody) {
+    final Map<String, dynamic> parsed = json.decode(responseBody);
+
+    return List<Event>.from(
+        parsed["data"]["events"].map((x) => Event.fromJson(x)));
+  }
+
+  Future<Events> fetchAllEvents() async {
+
     final response = await http
         .get(Uri.parse(super.allEventsPath), headers: super.headers);
-
     if (response.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
-      List<dynamic> body = jsonDecode(response.body);
-      List<Event> events = body.map((dynamic item) => Event.fromJson(item)).toList();
+      final body = jsonDecode(response.body);
+      Events events = (Events.fromJson(body));
+      print(events);
       return events;
+
+      print(body);
+      return body;
+      // final parsed = parse(body);
+      // final result = parsed as List<EventAPI>;
+
+
     } else {
       // If the server did not return a 200 OK response,
       // then throw an exception.
