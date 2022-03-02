@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:viicsoft_inventory_app/models/events.dart';
 import '../api.dart';
@@ -19,9 +20,9 @@ class EventAPI extends BaseAPI {
         .get(Uri.parse(super.allEventsPath), headers: super.headers);
     if (response.statusCode == 200) {
       final body = jsonDecode(response.body);
-      Events events = (Events.fromJson(body));
-      print(events);
-      return events;
+      //print total events
+      print(Events.fromJson(body).data.events.length);
+      return Events.fromJson(body);
 
       print(body);
       return body;
