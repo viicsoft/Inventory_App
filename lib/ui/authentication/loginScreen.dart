@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 //import 'package:viicsoft_inventory_app/models/users.dart';
 //import 'package:viicsoft_inventory_app/ui/authentication/signupScreen.dart';
 //import 'package:viicsoft_inventory_app/ui/homeview.dart';
-import '../../services/apis/user_api.dart';
+//import '../../services/apis/user_api.dart';
 
 import 'package:viicsoft_inventory_app/models/users.dart';
 
@@ -10,22 +10,30 @@ class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
 
   @override
-  State<Login> createState() => _LoginState();
+  _LoginState createState() => _LoginState();
 }
 
-TextEditingController userEmail = TextEditingController();
-TextEditingController userPassword = TextEditingController();
+TextEditingController _emailField = TextEditingController();
+TextEditingController _passwordField = TextEditingController();
 
 class _LoginState extends State<Login> {
 
-  Data requestModel = Data(email: '', pass: '');
+  Data requestModel = Data(email: 'input', pass: 'input');
   final scaffoldKey = GlobalKey<ScaffoldState>();
-  GlobalKey<FormState> globalKey = GlobalKey<FormState>();
+  GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
 
-  final AuthAPI _authAPI = AuthAPI();
-  final _key = GlobalKey<FormState>();
-  TextEditingController _emailField = TextEditingController();
-  TextEditingController _passwordField = TextEditingController();
+  //final AuthAPI _authAPI = AuthAPI();
+  //final _key = GlobalKey<FormState>();
+
+  @override
+  void initState(){
+    super.initState();
+    requestModel = Data(email: 'input', pass: 'input');
+    setState(() {
+      _emailField = TextEditingController();
+      _passwordField = TextEditingController();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +45,8 @@ class _LoginState extends State<Login> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Container(
+                child: Form(
+                  key: globalFormKey,
                 child: Column(
                   children: <Widget>[
                     Row(
@@ -69,22 +79,50 @@ class _LoginState extends State<Login> {
                       child: Column(
                         children: <Widget>[
                           TextFormField(
+                            keyboardType: TextInputType.emailAddress,
                             controller: _emailField,
+                            onSaved: (input) => requestModel.email = input!,
+                            validator: (input) => !(input?.contains('@') ?? false)
+                            ? "Email id should be valid"
+                            : null,
                             decoration: const InputDecoration(
-                              labelText: 'Email',
-                              labelStyle: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.grey),
+                              hintText: 'Email',
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: const BorderSide(
+                                  color: Colors.redAccent,
+                                ),
+                              ),
+                              prefixIcon: Icon(
+                                Icons.email_outlined,
+                              ),
+                              // labelStyle: TextStyle(
+                              //     fontWeight: FontWeight.bold,
+                              //     color: Colors.grey),
                             ),
                           ),
+
+
                           const SizedBox(height: 20.0),
                           TextFormField(
+                            keyboardType: TextInputType.text,
                             controller: _passwordField,
+                            onSaved: (input) => requestModel.pass = input!,
+                            validator: (input) => (input != null && input.length < 5)
+                            ? "Password should be more than 4 characters"
+                            : null,
                             decoration: const InputDecoration(
-                              labelText: 'Password',
-                              labelStyle: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.grey),
+                              hintText: 'Password',
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.redAccent,
+                                ),
+                              ),
+                              prefixIcon: Icon(
+                                  Icons.lock_outline_rounded,
+                              ),
+                              // labelStyle: TextStyle(
+                              //     fontWeight: FontWeight.bold,
+                              //     color: Colors.grey),
                             ),
                           ),
                           const SizedBox(height: 6.0),
@@ -106,6 +144,11 @@ class _LoginState extends State<Login> {
                             height: 50.0,
                             child: GestureDetector(
                               onTap: () {
+                                if(globalFormKey.currentState!.validate()) {
+                                  globalFormKey.currentState!.save();
+                                  print(requestModel.toJson());
+                                }
+
                                 // Navigator.push(
                                 //     context,
                                 //     MaterialPageRoute(
@@ -135,6 +178,7 @@ class _LoginState extends State<Login> {
                     )
                   ],
                 ),
+                ),
               ),
               //Expanded(flex: 2,
               // child: Container()),
@@ -152,17 +196,17 @@ class _LoginState extends State<Login> {
                   const SizedBox(width: 5.0),
                   InkWell(
                     onTap: () async {
-                      try {
-                        var req = await _authAPI.login(
-                            _emailField.text, _passwordField.text);
-                        if (req.statusCode == 200) {
-                          print(req.body);
-                        } else {
-                          print("error");
-                        }
-                      } on Exception catch (e) {
-                        print(e.toString());
-                      }
+                      // try {
+                      //   var req = await _authAPI.login(
+                      //       _emailField.text, _passwordField.text);
+                      //   if (req.statusCode == 200) {
+                      //     print(req.body);
+                      //   } else {
+                      //     print("error");
+                      //   }
+                      // } on Exception catch (e) {
+                      //   print(e.toString());
+                      // }
                     },
                     child: const Text(
                       'Register',
@@ -179,5 +223,13 @@ class _LoginState extends State<Login> {
         ],
       ),
     );
+    }
+
+  bool validateAndSave(){
+    final form = globalFormKey.currentState;
+    //if(form?.validate()){
+      return true;
+   // }
+    //return false;
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../models/events.dart';
 import '../services/apis/event_api.dart';
 
 class EventsPage extends StatefulWidget {
