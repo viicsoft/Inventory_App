@@ -13,9 +13,9 @@ class EventAPI extends BaseAPI {
     if (response.statusCode == 200) {
       // If the server did return a 200 OK response,
       // then parse the JSON.
-      final parsed = json.decode(response.body);
-
-      return parsed.map<Event>((json) => Event.fromJson(json)).toList();
+      List<dynamic> body = jsonDecode(response.body);
+      List<Event> events = body.map((dynamic item) => Event.fromJson(item)).toList();
+      return events;
     } else {
       // If the server did not return a 200 OK response,
       // then throw an exception.

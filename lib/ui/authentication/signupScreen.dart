@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:viicsoft_inventory_app/ui/authentication/loginScreen.dart';
 
+import '../../services/apis/user_api.dart';
+
 class SignupPage extends StatefulWidget {
   const SignupPage({Key? key}) : super(key: key);
 
@@ -9,6 +11,12 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupPageState extends State<SignupPage> {
+  final AuthAPI _authAPI = AuthAPI();
+  final _key = GlobalKey<FormState>();
+  final TextEditingController _fullNameField = TextEditingController();
+  final TextEditingController _emailField = TextEditingController();
+  final TextEditingController _passwordField = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,8 +43,9 @@ class _SignupPageState extends State<SignupPage> {
                           padding: const EdgeInsets.only(top: 50.0, left: 20.0, right: 20.0),
                           child: Column(
                             children: <Widget>[
-                              const TextField(
-                                decoration: InputDecoration(
+                             TextFormField(
+                               controller: _fullNameField,
+                                decoration: const InputDecoration(
                                   labelText: 'Full Name',
                                   labelStyle: TextStyle(
                                       fontWeight: FontWeight.bold,
@@ -45,8 +54,9 @@ class _SignupPageState extends State<SignupPage> {
                                 ),
                               ),
                               const SizedBox(height: 10.0),
-                              const TextField(
-                                decoration: InputDecoration(
+                              TextFormField(
+                                controller: _emailField,
+                                decoration: const InputDecoration(
                                   labelText: 'Email',
                                   labelStyle: TextStyle(
                                       fontWeight: FontWeight.bold,
@@ -55,9 +65,10 @@ class _SignupPageState extends State<SignupPage> {
                                 ),
                               ),
                               const SizedBox(height: 10.0),
-                              const TextField(
-                                decoration: InputDecoration(
-                                  labelText: 'Pasword',
+                              TextFormField(
+                                controller: _passwordField,
+                                decoration: const InputDecoration(
+                                  labelText: 'Password',
                                   labelStyle: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       color: Colors.grey
