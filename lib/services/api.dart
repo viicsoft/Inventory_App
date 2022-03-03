@@ -9,7 +9,7 @@ class BaseAPI {
 
   Map<String, String> headers = {
     "X-Api-Key": "632F2EC9771B6C4C0BDF30BE21D9009B",
-    "Content-Type": "application/json; charset=UTF-8"
+    "Content-Type": "application/json"
   };
 
   // more routes
