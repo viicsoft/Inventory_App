@@ -15,6 +15,7 @@ class AuthAPI extends BaseAPI {
                                     
     http.Response response =
     await http.post(Uri.parse(super.registerPath), headers: super.headers, body: body);
+    
     return response;
   }
 
@@ -23,8 +24,10 @@ class AuthAPI extends BaseAPI {
     http.Response response =
     await http.post(Uri.parse(super.loginPath), headers: super.headers, body: body);
     var data = jsonDecode(response.body);
+
     print('this is $data');
     print(response.statusCode);
+
     return response;
   }
 
