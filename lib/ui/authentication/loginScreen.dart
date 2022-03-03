@@ -1,15 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-//import 'package:viicsoft_inventory_app/models/users.dart';
-//import 'package:viicsoft_inventory_app/ui/authentication/signupScreen.dart';
-//import 'package:viicsoft_inventory_app/ui/homeview.dart';
-//import '../../services/apis/user_api.dart';
-
 import 'package:viicsoft_inventory_app/models/users.dart';
 import 'package:viicsoft_inventory_app/services/apis/user_api.dart';
-import 'package:viicsoft_inventory_app/ui/authentication/loginsignupScreen.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
