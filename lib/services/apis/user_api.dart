@@ -5,27 +5,31 @@ import '../api.dart';
 
 class AuthAPI extends BaseAPI {
 
-  Future<http.Response> signUp(String full_name, String email,
+  Future<http.Response> signUp(String fullname, String email,
       String password) async {
     var body = jsonEncode({
-      'user': {
-        'full_name': full_name,
+        'full_name': fullname,
         'email': email,
         'password': password
-      }
     });
-
+                                    
     http.Response response =
-    await http.post(Uri.parse(super.registerPath), headers: super.headers, body: body);
+    await http.post(Uri.parse(super.registerPath), headers: super.headers, encoding: Encoding.getByName("utf-8"), body: body);
     return response;
   }
 
   Future<http.Response> login(String email, String password) async {
-    var body = jsonEncode({'email': email, 'password': password});
-
+    // var map = <String, dynamic>{
+    //   'email': email,
+    //   'password': password,
+    // };
+    var body = jsonEncode({'email':'okwuchukwuprince@gmail.com', 'password':'okwuy09'});
     http.Response response =
-    await http.post(Uri.parse(super.loginPath), headers: super.headers, body: body);
-
+    await http.post(Uri.parse(super.loginPath), headers: super.key, body: body,);
+    var data = jsonDecode(response.body);
+    
+    print('this is $data');
+    print(response.statusCode);
     return response;
   }
 
