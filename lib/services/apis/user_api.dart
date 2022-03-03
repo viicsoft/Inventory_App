@@ -14,22 +14,20 @@ class AuthAPI extends BaseAPI {
     });
                                     
     http.Response response =
-    await http.post(Uri.parse(super.registerPath), headers: super.headers, encoding: Encoding.getByName("utf-8"), body: body);
+    await http.post(Uri.parse(super.registerPath), headers: super.headers, body: body);
+    
     return response;
   }
 
   Future<http.Response> login(String email, String password) async {
-    // var map = <String, dynamic>{
-    //   'email': email,
-    //   'password': password,
-    // };
-    var body = jsonEncode({'email':'okwuchukwuprince@gmail.com', 'password':'okwuy09'});
+    var body = jsonEncode({'email': email, 'password': password});
     http.Response response =
-    await http.post(Uri.parse(super.loginPath), headers: super.key, body: body,);
+    await http.post(Uri.parse(super.loginPath), headers: super.headers, body: body);
     var data = jsonDecode(response.body);
-    
+
     print('this is $data');
     print(response.statusCode);
+
     return response;
   }
 

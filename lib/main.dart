@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:viicsoft_inventory_app/models/events.dart';
+import 'package:viicsoft_inventory_app/ui/authentication/loginsignupScreen.dart';
 import 'package:viicsoft_inventory_app/ui/eventspage.dart';
-
 void main() async {
   runApp( const MyApp());
 }
