@@ -7,13 +7,6 @@ import '../api.dart';
 
 class EventAPI extends BaseAPI {
 
-  static List<Event> parse(String responseBody) {
-    final Map<String, dynamic> parsed = json.decode(responseBody);
-
-    return List<Event>.from(
-        parsed["data"]["events"].map((x) => Event.fromJson(x)));
-  }
-
   Future<List<Event>> fetchAllEvents() async {
 
     final response = await http
