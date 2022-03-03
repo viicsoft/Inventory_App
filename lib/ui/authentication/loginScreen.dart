@@ -1,10 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 //import 'package:viicsoft_inventory_app/models/users.dart';
 //import 'package:viicsoft_inventory_app/ui/authentication/signupScreen.dart';
 //import 'package:viicsoft_inventory_app/ui/homeview.dart';
 //import '../../services/apis/user_api.dart';
 
 import 'package:viicsoft_inventory_app/models/users.dart';
+import 'package:viicsoft_inventory_app/services/apis/user_api.dart';
+import 'package:viicsoft_inventory_app/ui/authentication/loginsignupScreen.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -19,21 +24,24 @@ TextEditingController _passwordField = TextEditingController();
 class _LoginState extends State<Login> {
 
   Data requestModel = Data(email: 'input', pass: 'input');
-  final scaffoldKey = GlobalKey<ScaffoldState>();
   GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
+  bool isLoading = false;
+  final AuthAPI _authAPI = AuthAPI();
+  final _key = GlobalKey<FormState>();
+  bool _isObscure = true;
 
-  //final AuthAPI _authAPI = AuthAPI();
-  //final _key = GlobalKey<FormState>();
+  
 
-  @override
-  void initState(){
-    super.initState();
-    requestModel = Data(email: 'input', pass: 'input');
-    setState(() {
-      _emailField = TextEditingController();
-      _passwordField = TextEditingController();
-    });
-  }
+  // @override
+  // void initState(){
+  //   super.initState();
+  //   requestModel = Data(email: 'input', pass: 'input');
+  //   // setState(() {
+  //   //   _emailField = TextEditingController();
+  //   //   _passwordField = TextEditingController();
+  //   // });
+  // }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +96,7 @@ class _LoginState extends State<Login> {
                             decoration: const InputDecoration(
                               hintText: 'Email',
                               enabledBorder: UnderlineInputBorder(
-                                borderSide: const BorderSide(
+                                borderSide: BorderSide(
                                   color: Colors.redAccent,
                                 ),
                               ),
@@ -104,20 +112,30 @@ class _LoginState extends State<Login> {
 
                           const SizedBox(height: 20.0),
                           TextFormField(
+                            obscureText: _isObscure,
                             keyboardType: TextInputType.text,
                             controller: _passwordField,
                             onSaved: (input) => requestModel.pass = input!,
-                            validator: (input) => (input != null && input.length < 5)
-                            ? "Password should be more than 4 characters"
+                            validator: (input) => (input != null && input.length < 6)
+                            ? "Password should be more than 5 characters"
                             : null,
-                            decoration: const InputDecoration(
+                            decoration: InputDecoration(
+                              suffixIcon: IconButton(
+                                  icon: Icon(_isObscure
+                                      ? Icons.visibility
+                                      : Icons.visibility_off),
+                                  onPressed: () {
+                                    setState(() {
+                                      _isObscure = !_isObscure;
+                                    });
+                                  }),
                               hintText: 'Password',
-                              enabledBorder: UnderlineInputBorder(
+                              enabledBorder: const UnderlineInputBorder(
                                 borderSide: BorderSide(
                                   color: Colors.redAccent,
                                 ),
                               ),
-                              prefixIcon: Icon(
+                              prefixIcon: const Icon(
                                   Icons.lock_outline_rounded,
                               ),
                               // labelStyle: TextStyle(
@@ -142,12 +160,41 @@ class _LoginState extends State<Login> {
                           const SizedBox(height: 100.0),
                           Container(
                             height: 50.0,
-                            child: GestureDetector(
-                              onTap: () {
-                                if(globalFormKey.currentState!.validate()) {
-                                  globalFormKey.currentState!.save();
-                                  print(requestModel.toJson());
+                            child: InkWell(
+                              onTap: () async {
+                                // if(globalFormKey.currentState!.validate()) {
+                                //   globalFormKey.currentState!.save();
+                                //   print(requestModel.toJson());
+                                // }
+
+                        //         if(globalFormKey.currentState==null) {
+                        // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        //   content: Text("Wrong email and password!"),
+                        // ));
+                      //} else {
+                        if (globalFormKey.currentState!.validate()) {
+                          var res = await _authAPI.login(
+                              _emailField.text.trim(), _passwordField.text.trim());
+
+                              if (res.statusCode == 200) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        backgroundColor: Colors.green,
+                                          content:
+                                              Text("login Successful")));
+                                              Navigator.pushReplacement(
+                                  context, MaterialPageRoute(builder: (_)=>const Login()));
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      backgroundColor: Colors.red,
+                                      content:
+                                          Text("Login failed, Wrong email or password !"),
+                                    ),
+                                  );
                                 }
+                               } 
+                      
 
                                 // Navigator.push(
                                 //     context,
@@ -155,23 +202,33 @@ class _LoginState extends State<Login> {
                                 //         builder: (_) =>
                                 //             const BottomNavigationBarPage()));
                               },
-                              child: Material(
-                                borderRadius: BorderRadius.circular(40.0),
-                                shadowColor: Colors.redAccent,
-                                color: Colors.red,
-                                elevation: 7.0,
-                                child: const Center(
-                                  child: Text(
-                                    'LOGIN',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
+                              // child: InkWell(
+                              //   onTap: (){
+                              //     if(_emailField.text.isEmpty||_passwordField.text.isEmpty)
+                              //     {
+                              //       print('Enter email and password');
+                              //     }
+                              //     _authAPI.login(_emailField.text,_passwordField.text);
+                                  
+                              //   },
+                                child: Material(
+                                  borderRadius: BorderRadius.circular(40.0),
+                                  shadowColor: Colors.redAccent,
+                                  color: Colors.red,
+                                  elevation: 7.0,
+                                  child: const Center(
+                                    child: Text(
+                                      'LOGIN',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
+                          //),
                           const SizedBox(height: 20.0),
                         ],
                       ),
@@ -225,11 +282,11 @@ class _LoginState extends State<Login> {
     );
     }
 
-  bool validateAndSave(){
-    final form = globalFormKey.currentState;
-    //if(form?.validate()){
-      return true;
-   // }
-    //return false;
-  }
+  // bool validateAndSave(){
+  //   final form = globalFormKey.currentState;
+  //   //if(form?.validate()){
+  //     return true;
+  //  // }
+  //   //return false;
+  // }
 }
