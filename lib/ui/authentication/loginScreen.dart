@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 //import 'package:viicsoft_inventory_app/models/users.dart';
 //import 'package:viicsoft_inventory_app/ui/authentication/signupScreen.dart';
 //import 'package:viicsoft_inventory_app/ui/homeview.dart';
@@ -274,13 +275,10 @@ class _LoginState extends State<Login> {
                   ),
                 ],
               )
-
             ],
           ),
         ],
       ),
-
-
     );
     }
 
