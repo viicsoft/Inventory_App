@@ -39,7 +39,7 @@ class _EventsPageState extends State<EventsPage> {
       ),
       body: Container(
         child: Center(
-            child: FutureBuilder<Events>(
+            child: FutureBuilder<List<Event>>(
           future: EventAPI().fetchAllEvents(),
           builder: (context, snapshot) {
             return snapshot.hasError

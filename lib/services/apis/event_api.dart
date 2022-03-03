@@ -14,22 +14,15 @@ class EventAPI extends BaseAPI {
         parsed["data"]["events"].map((x) => Event.fromJson(x)));
   }
 
-  Future<Events> fetchAllEvents() async {
+  Future<List<Event>> fetchAllEvents() async {
 
     final response = await http
         .get(Uri.parse(super.allEventsPath), headers: super.headers);
+
     if (response.statusCode == 200) {
-      final body = jsonDecode(response.body);
-      //print total events
-      print(Events.fromJson(body).data.events.length);
-      return Events.fromJson(body);
-
-      print(body);
-      return body;
-      // final parsed = parse(body);
-      // final result = parsed as List<EventAPI>;
-
-
+      final  _data = jsonDecode(response.body);
+      final List<Event> events = _data['data']['events'].map<Event>((model) => Event.fromJson(model as Map<String, dynamic>)).toList();
+      return events;
     } else {
       // If the server did not return a 200 OK response,
       // then throw an exception.
