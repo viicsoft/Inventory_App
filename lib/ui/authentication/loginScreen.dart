@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:viicsoft_inventory_app/models/users.dart';
 import 'package:viicsoft_inventory_app/services/apis/user_api.dart';
 import 'package:viicsoft_inventory_app/ui/authentication/loginsignupScreen.dart';
+import 'package:viicsoft_inventory_app/ui/authentication/signupScreen.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -182,7 +183,7 @@ class _LoginState extends State<Login> {
                                           content:
                                               Text("login Successful")));
                                               Navigator.pushReplacement(
-                                  context, MaterialPageRoute(builder: (_)=>const Login()));
+                                  context, MaterialPageRoute(builder: (_)=>const SignupLogin()));
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
@@ -252,6 +253,10 @@ class _LoginState extends State<Login> {
                   const SizedBox(width: 5.0),
                   InkWell(
                     onTap: () async {
+
+                      Navigator.pushReplacement(
+                          context, MaterialPageRoute(builder: (_)=>const SignupPage()));
+
                       // try {
                       //   var req = await _authAPI.login(
                       //       _emailField.text, _passwordField.text);
