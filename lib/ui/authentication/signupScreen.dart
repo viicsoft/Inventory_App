@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:viicsoft_inventory_app/ui/authentication/loginScreen.dart';
-import '../../services/apis/user_api.dart';
+import '../../services/apis/auth_api.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({Key? key}) : super(key: key);

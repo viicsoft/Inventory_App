@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:viicsoft_inventory_app/models/events.dart';
+import 'package:viicsoft_inventory_app/ui/authentication/loginScreen.dart';
 import 'package:viicsoft_inventory_app/ui/authentication/loginsignupScreen.dart';
 import 'package:viicsoft_inventory_app/ui/eventspage.dart';
 void main() async {
@@ -12,7 +13,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Inventory App',
+<<<<<<< HEAD
       home: SignupLogin(),
+=======
+      home: Login(),
+>>>>>>> da2ea9fb2f2460c62b7b6854bbc397668aaf8a75
     );
   }
 }
