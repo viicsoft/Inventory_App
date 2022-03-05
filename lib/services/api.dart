@@ -5,8 +5,6 @@ class BaseAPI {
   static String base = 'http://34.79.101.196';   
   static var api = base + '/crisp_inventory/api';
 
-  Map<String, String> key = {"X-Api-Key": "632F2EC9771B6C4C0BDF30BE21D9009B"};
-
   Map<String, String> headers = {
     "X-Api-Key": "632F2EC9771B6C4C0BDF30BE21D9009B",
     "Content-Type": "application/json"
@@ -19,3 +17,4 @@ class BaseAPI {
   var allUsersPath = api + "/users/all";
   var allEventsPath = api + "/events/all";
 }
+ 
