@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:viicsoft_inventory_app/ui/Menu/add_category.dart';
 import 'package:viicsoft_inventory_app/ui/Menu/add_event_page.dart';
 import 'package:viicsoft_inventory_app/ui/Menu/add_item_page.dart';
-import 'package:viicsoft_inventory_app/ui/Menu/users/okwuytesting/userpage.dart';
+import 'package:viicsoft_inventory_app/ui/Menu/users/okwuytesting/userslist.dart';
 import 'package:viicsoft_inventory_app/ui/Menu/users/passwordResetSuccessPage.dart';
 import 'package:viicsoft_inventory_app/ui/Menu/users/reset_password_page.dart';
 import 'package:viicsoft_inventory_app/ui/Menu/users/userDetailsPage.dart';
@@ -22,13 +22,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Inventory App',
-      initialRoute: '/event',
+      initialRoute: '/',
   routes: {
-    //'/': (context) => const UsersScreen(errMsg: '',),
-    '/.': (context) => const SignupLogin(),
+    
+    '/': (context) => const SignupLogin(),
     '/signup': (context) => const SignupPage(),
     '/login': (context) => const Login(),
     '/homePage': (context) => const HomePage(),
+    '/UserList': (context) => const UserListWidget(),
     '/userdetails': (context) => const UserDetailsPage(),
     '/addCategory': (context) => const AddCategory(),
     '/addItem': (context) => const AddItemPage(),
