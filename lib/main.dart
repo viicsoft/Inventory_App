@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:viicsoft_inventory_app/ui/Menu/add_category.dart';
 import 'package:viicsoft_inventory_app/ui/Menu/add_event_page.dart';
 import 'package:viicsoft_inventory_app/ui/Menu/add_item_page.dart';
+import 'package:viicsoft_inventory_app/ui/Menu/users/okwuytesting/userpage.dart';
 import 'package:viicsoft_inventory_app/ui/Menu/users/passwordResetSuccessPage.dart';
 import 'package:viicsoft_inventory_app/ui/Menu/users/reset_password_page.dart';
 import 'package:viicsoft_inventory_app/ui/Menu/users/userDetailsPage.dart';
 import 'package:viicsoft_inventory_app/ui/authentication/loginScreen.dart';
+import 'package:viicsoft_inventory_app/ui/authentication/loginsignupScreen.dart';
 import 'package:viicsoft_inventory_app/ui/authentication/signupScreen.dart';
-import 'package:viicsoft_inventory_app/ui/equipment/equipmentspage.dart';
+import 'package:viicsoft_inventory_app/ui/event/events_page.dart';
 import 'package:viicsoft_inventory_app/ui/homePage.dart';
-
 void main() async {
   runApp( const MyApp());
 }
@@ -21,19 +22,21 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Inventory App',
-      initialRoute: '/',
-      routes: {
-        '/': (context) =>  const allEquipments(), //const SignupLogin(),
-        '/signup': (context) => const SignupPage(),
-        '/login': (context) => const Login(),
-        '/homePage': (context) => const HomePage(),
-        '/userdetails': (context) => const UserDetailsPage(),
-        '/addCategory': (context) => const AddCategory(),
-        '/addItem': (context) => const AddItemPage(),
-        '/addevent': (context) => const AddEventPage(),
-        '/resetpassword': (context) => const ResetPasswordPage(),
-        '/PasswordResetSuccessPage': (context) => const PasswordResetSuccessPage(),
-      },
+      initialRoute: '/event',
+  routes: {
+    //'/': (context) => const UsersScreen(errMsg: '',),
+    '/.': (context) => const SignupLogin(),
+    '/signup': (context) => const SignupPage(),
+    '/login': (context) => const Login(),
+    '/homePage': (context) => const HomePage(),
+    '/userdetails': (context) => const UserDetailsPage(),
+    '/addCategory': (context) => const AddCategory(),
+    '/addItem': (context) => const AddItemPage(),
+    '/addevent': (context) => const AddEventPage(),
+    '/resetpassword': (context) => const ResetPasswordPage(),
+    '/PasswordResetSuccessPage': (context) => const PasswordResetSuccessPage(),
+    '/event': (context) => const EventsPage(),
+  },
     );
   }
 }
