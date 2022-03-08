@@ -1,9 +1,7 @@
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
-import 'package:viicsoft_inventory_app/models/users.dart';
 import 'package:viicsoft_inventory_app/ui/Menu/users/okwuytesting/usedetail.dart';
-import 'package:viicsoft_inventory_app/ui/Menu/users/userDetailsPage.dart';
 
 class UserListWidget extends StatelessWidget {
   //final List<Users> users;
@@ -64,7 +62,8 @@ class UserListWidget extends StatelessWidget {
                   Text(
                     'Registered Users',
                     style: TextStyle(
-                        fontSize: 22, color: AppColor.homePageContainerTextBig),
+                        fontSize: 22, color: AppColor.homePageContainerTextBig,
+                        ),
                   ),
                   Expanded(flex: 2,
                     child: Container()),
@@ -85,7 +84,6 @@ class UserListWidget extends StatelessWidget {
                       child: const Center(
                         child: Text(
                           "20",
-                          //'${Provider.of<InventoryData>(context).menu.length}',
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 12,

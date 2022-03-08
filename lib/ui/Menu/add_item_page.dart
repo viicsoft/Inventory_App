@@ -138,6 +138,24 @@ class _AddItemPageState extends State<AddItemPage> {
                                   ),
                                 ),
                                 Expanded(child: Container()),
+                                DropdownButton<String>(
+                                  value: dropdowncategory,
+                                  elevation: 16,
+                                  style: TextStyle(color: Colors.grey[600]),
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      dropdowncategory = newValue!;
+                                    });
+                                  },
+                                  items: <String>['Good', 'Bad',]
+                                      .map<DropdownMenuItem<String>>(
+                                          (String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList(),
+                                ),
                                 // DropdownButton<String>(
                                 //   value: dropdowncategory,
                                 //   elevation: 16,

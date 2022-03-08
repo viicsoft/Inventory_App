@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
 import 'package:viicsoft_inventory_app/ui/event/events_page.dart';
 import 'package:viicsoft_inventory_app/ui/homePage.dart';
+import 'package:viicsoft_inventory_app/ui/store/store_page.dart';
 
 class BottomNavigationBarPage extends StatefulWidget {
   const BottomNavigationBarPage({Key? key}) : super(key: key);
@@ -16,7 +17,7 @@ class _BottomNavigationBarPageState extends State<BottomNavigationBarPage> {
   static const List<Widget> _widgetOptions = <Widget>[
     HomePage(),
     EventsPage(),
-    EventsPage(),
+    StorePage(),
   ];
 
   void _onItemTapped(int index) {

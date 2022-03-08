@@ -16,7 +16,7 @@ class UserAPI extends BaseAPI {
         "X-Api-Key": "632F2EC9771B6C4C0BDF30BE21D9009B",
         "Content-Type": "application/json",
         'Accept': 'application/json',
-        'x-token': '$token',
+        'x-token': token,
         });
 
     if (response.statusCode == 200) {
