@@ -84,7 +84,7 @@ class _ItemsPageState extends State<EventsPage> {
                           return ListView.builder(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 15, vertical: 15),
-                              itemCount: results.length,//Provider.of<InventoryData>(context).event.length,
+                              itemCount: results.length,
                               itemBuilder: (_, int index) {
                                 var startingdate = DateTime.parse("${results[index].checkOutDate}");
                                 var endingdate = DateTime.parse("${results[index].checkInDate}");

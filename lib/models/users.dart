@@ -2,7 +2,6 @@
 //
 //     final users = usersFromJson(jsonString);
 
-//import 'package:meta/meta.dart';
 import 'dart:convert';
 
 Users usersFromJson(String str) => Users.fromJson(json.decode(str));
@@ -14,125 +13,193 @@ class Users {
     required this.status,
     required this.message,
     required this.data,
-    required this.token,
   });
 
   bool status;
   String message;
   Data data;
-  String token;
 
   factory Users.fromJson(Map<String, dynamic> json) => Users(
     status: json["status"],
     message: json["message"],
     data: Data.fromJson(json["data"]),
-    token: json["token"],
   );
 
   Map<String, dynamic> toJson() => {
     "status": status,
     "message": message,
     "data": data.toJson(),
-    "token": token,
   };
 }
 
 class Data {
   Data({
-    // required this.id,
-     required this.email,
-    // required this.oauthUid,
-    // required this.oauthProvider,
-     required this.pass,
-    // required this.username,
-    // required this.fullName,
-    // required this.avatar,
-    // required this.banned,
-    // required this.lastLogin,
-    // required this.lastActivity,
-    // required this.dateCreated,
-    // required this.forgotExp,
-    // required this.rememberTime,
-    // required this.rememberExp,
-    // required this.verificationCode,
-    // required this.topSecret,
-    // required this.ipAddress,
-    // required this.createdBy,
-    // required this.updatedBy,
-    // required this.updatedAt,
-    // required this.createdAt,
+    required this.user,
   });
 
-  // String id;
-   String email;
-  // dynamic oauthUid;
-  // dynamic oauthProvider;
-   String pass;
-  // String username;
-  // String fullName;
-  // String avatar;
-  // String banned;
-  // DateTime lastLogin;
-  // dynamic lastActivity;
-  // DateTime dateCreated;
-  // dynamic forgotExp;
-  // dynamic rememberTime;
-  // dynamic rememberExp;
-  // dynamic verificationCode;
-  // dynamic topSecret;
-  // String ipAddress;
-  // dynamic createdBy;
-  // dynamic updatedBy;
-  // dynamic updatedAt;
-  // DateTime createdAt;
+  List<User> user;
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
-    // id: json["id"],
-     email: json["email"],
-    // oauthUid: json["oauth_uid"],
-    // oauthProvider: json["oauth_provider"],
-     pass: json["pass"],
-    // username: json["username"],
-    // fullName: json["full_name"],
-    // avatar: json["avatar"],
-    // banned: json["banned"],
-    // lastLogin: DateTime.parse(json["last_login"]),
-    // lastActivity: json["last_activity"],
-    // dateCreated: DateTime.parse(json["date_created"]),
-    // forgotExp: json["forgot_exp"],
-    // rememberTime: json["remember_time"],
-    // rememberExp: json["remember_exp"],
-    // verificationCode: json["verification_code"],
-    // topSecret: json["top_secret"],
-    // ipAddress: json["ip_address"],
-    // createdBy: json["created_by"],
-    // updatedBy: json["updated_by"],
-    // updatedAt: json["updated_at"],
-    // createdAt: DateTime.parse(json["created_at"]),
+    user: List<User>.from(json["user"].map((x) => User.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
-    // "id": id,
-     "email": email,
-    // "oauth_uid": oauthUid,
-    // "oauth_provider": oauthProvider,
-     "pass": pass,
-    // "username": username,
-    // "full_name": fullName,
-    // "avatar": avatar,
-    // "banned": banned,
-    // "last_login": lastLogin.toIso8601String(),
-    // "last_activity": lastActivity,
-    // "date_created": dateCreated.toIso8601String(),
-    // "forgot_exp": forgotExp,
-    // "remember_time": rememberTime,
-    // "remember_exp": rememberExp,
-    // "verification_code": verificationCode,
-    // "top_secret": topSecret,
-    // "ip_address": ipAddress,
-    // "created_by": createdBy,
-    // "updated_by": updatedBy,
-    // "updated_at": updatedAt,
-    // "created_at": createdAt.toIso8601String(),
+    "user": List<dynamic>.from(user.map((x) => x.toJson())),
+  };
+}
+
+class User {
+  User({
+    required this.id,
+    required this.email,
+    this.oauthUid,
+    this.oauthProvider,
+    required this.username,
+    required this.fullName,
+    required this.avatar,
+    required this.banned,
+    this.lastLogin,
+    this.lastActivity,
+    this.dateCreated,
+    this.forgotExp,
+    this.rememberTime,
+    this.rememberExp,
+    this.verificationCode,
+    this.topSecret,
+    this.ipAddress,
+    this.createdBy,
+    this.updatedBy,
+    this.updatedAt,
+    required this.createdAt,
+    required this.avatarThumbnail,
+    required this.group,
+  });
+
+  String id;
+  String email;
+  dynamic oauthUid;
+  dynamic oauthProvider;
+  String username;
+  String fullName;
+  String avatar;
+  String banned;
+  DateTime? lastLogin;
+  DateTime? lastActivity;
+  DateTime? dateCreated;
+  dynamic forgotExp;
+  dynamic rememberTime;
+  dynamic rememberExp;
+  dynamic verificationCode;
+  dynamic topSecret;
+  String? ipAddress;
+  dynamic createdBy;
+  dynamic updatedBy;
+  dynamic updatedAt;
+  DateTime createdAt;
+  String avatarThumbnail;
+  List<Group> group;
+
+  factory User.fromJson(Map<String, dynamic> json) => User(
+    id: json["id"],
+    email: json["email"],
+    oauthUid: json["oauth_uid"],
+    oauthProvider: json["oauth_provider"],
+    username: json["username"],
+    fullName: json["full_name"],
+    avatar: json["avatar"],
+    banned: json["banned"],
+    lastLogin: DateTime.parse(json["last_login"]),
+    lastActivity:  DateTime.parse(json["last_activity"]),
+    dateCreated: DateTime.parse(json["date_created"]),
+    forgotExp: json["forgot_exp"],
+    rememberTime: json["remember_time"],
+    rememberExp: json["remember_exp"],
+    verificationCode: json["verification_code"],
+    topSecret: json["top_secret"],
+    ipAddress: json["ip_address"] ?? null,
+    createdBy: json["created_by"],
+    updatedBy: json["updated_by"],
+    updatedAt: json["updated_at"],
+    createdAt: DateTime.parse(json["created_at"]),
+    avatarThumbnail: json["avatar_thumbnail"],
+    group: List<Group>.from(json["group"].map((x) => Group.fromJson(x))),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "email": email,
+    "oauth_uid": oauthUid,
+    "oauth_provider": oauthProvider,
+    "username": username,
+    "full_name": fullName,
+    "avatar": avatar,
+    "banned": banned,
+    "last_login": lastLogin == null ? null : lastLogin?.toIso8601String(),
+    "last_activity": lastActivity == null ? null : lastActivity?.toIso8601String(),
+    "date_created": dateCreated?.toIso8601String(),
+    "forgot_exp": forgotExp,
+    "remember_time": rememberTime,
+    "remember_exp": rememberExp,
+    "verification_code": verificationCode,
+    "top_secret": topSecret,
+    "ip_address": ipAddress == null ? null : ipAddress,
+    "created_by": createdBy,
+    "updated_by": updatedBy,
+    "updated_at": updatedAt,
+    "created_at": createdAt.toIso8601String(),
+    "avatar_thumbnail": avatarThumbnail,
+    "group": List<dynamic>.from(group.map((x) => x.toJson())),
+  };
+}
+
+class Group {
+  Group({
+    required this.userId,
+    required this.groupId,
+    this.createdBy,
+    this.updatedBy,
+    this.updatedAt,
+    required this.createdAt,
+    required this.id,
+    required this.name,
+    required this.priority,
+    required this.definition,
+  });
+
+  String userId;
+  String groupId;
+  String? createdBy;
+  dynamic updatedBy;
+  dynamic updatedAt;
+  String createdAt;
+  String id;
+  String name;
+  String priority;
+  String definition;
+
+  factory Group.fromJson(Map<String, dynamic> json) => Group(
+    userId: json["user_id"],
+    groupId: json["group_id"],
+    createdBy: json["created_by"] == null ? null : json["created_by"],
+    updatedBy: json["updated_by"],
+    updatedAt: json["updated_at"],
+    createdAt: json["created_at"],
+    id: json["id"],
+    name: json["name"],
+    priority: json["priority"],
+    definition: json["definition"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "user_id": userId,
+    "group_id": groupId,
+    "created_by": createdBy == null ? null : createdBy,
+    "updated_by": updatedBy,
+    "updated_at": updatedAt,
+    "created_at": createdAt,
+    "id": id,
+    "name": name,
+    "priority": priority,
+    "definition": definition,
   };
 }

@@ -43,6 +43,13 @@ class _ProfilePageState extends State<ProfilePage> {
               Navigator.pushNamed(context, '/userdetails');
             },
           ),
+           ListTile(
+            leading: const Icon(Icons.group),
+            title: const Text('All Users'),
+            onTap: () {
+              Navigator.pushNamed(context, '/UserList');
+            },
+          ),
           const Divider(),
           const ListTile(
             leading: Icon(Icons.storage_sharp),

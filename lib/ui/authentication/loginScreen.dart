@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:viicsoft_inventory_app/models/users.dart';
 import 'package:viicsoft_inventory_app/services/apis/auth_api.dart';
-import 'package:viicsoft_inventory_app/ui/homePage.dart';
+import 'package:viicsoft_inventory_app/ui/bottom_navigationbar.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -143,7 +143,7 @@ class _LoginState extends State<Login> {
                                         content:
                                             Text("login Successful", textAlign: TextAlign.center)));
                                             Navigator.pushReplacement(
-                                context, MaterialPageRoute(builder: (_)=>const HomePage()));
+                                context, MaterialPageRoute(builder: (_)=>const BottomNavigationBarPage()));
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
