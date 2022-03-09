@@ -1,8 +1,9 @@
-import 'package:date_format/date_format.dart';
+
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
 import 'package:viicsoft_inventory_app/models/equipments.dart';
+import 'package:viicsoft_inventory_app/services/apis/category_api.dart';
 
 class EquipmentDetailPage extends StatefulWidget {
   EquipmentElement equipmentElement;
@@ -214,7 +215,9 @@ class _EquipmentDetailPageState extends State<EquipmentDetailPage> {
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                   primary: AppColor.gradientFirst),
-                              onPressed: () {},
+                              onPressed: () {
+                                 
+                              },
                               child: const Text(
                                 'Edit',
                                 style: TextStyle(fontSize: 16),

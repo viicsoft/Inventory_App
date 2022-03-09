@@ -22,5 +22,6 @@ class BaseAPI {
   var allUsersPath = api + "/user/all";
   var allEventsPath = api + "/events/all";
   var allEquipmentsPath = api + "/equipments/all";
-  var addEquipmentsPath = api +  "/equipment_category/add";
+  var addEquipmentsCategoryPath = api +  "/equipment_category/add";
+  var allEquipmentsCategoryPath = api +  "/equipment_category/all";
 }

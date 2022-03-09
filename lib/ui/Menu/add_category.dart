@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
 import 'package:provider/provider.dart';
+import 'package:viicsoft_inventory_app/services/apis/category_api.dart';
 
 class AddCategory extends StatefulWidget {
   const AddCategory({Key? key}) : super(key: key);
@@ -13,10 +14,9 @@ class AddCategory extends StatefulWidget {
 }
 
 class _AddCategoryState extends State<AddCategory> {
-  final TextEditingController controller = TextEditingController();
+  final TextEditingController categoryName = TextEditingController();
 
   XFile? _categoryimage;
-
   final picker = ImagePicker();
 
   Future getImage(ImageSource source) async {
@@ -68,7 +68,7 @@ class _AddCategoryState extends State<AddCategory> {
                       categoryImages(context),
                       const SizedBox(height: 50),
                       TextField(
-                        controller: controller,
+                        controller: categoryName,
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
                           labelText: 'Category name',
@@ -81,16 +81,8 @@ class _AddCategoryState extends State<AddCategory> {
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
                                 primary: AppColor.gradientFirst),
-                            onPressed: () {
-                              // Provider.of<InventoryData>(context, listen: false)
-                              //     .addCategory(
-                              //         _categoryimage != null
-                              //             ? FileImage(
-                              //                 File(_categoryimage!.path))
-                              //             : const AssetImage('assets/profile.jpg')
-                              //                 as ImageProvider,
-                              //         controller.text, );
-                              // Navigator.pop(context);
+                            onPressed: () async{
+                              await CategoryAPI().addCategory(categoryName.text.trim(), _categoryimage);
                             },
                             child: const Text(
                               'Create Category',
