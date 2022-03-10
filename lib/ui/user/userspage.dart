@@ -1,7 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:viicsoft_inventory_app/models/auth.dart';
-
 import '../../services/apis/user_api.dart';
 
 class allUsers extends StatefulWidget {
@@ -19,7 +17,7 @@ class _allUsersState extends State<allUsers> {
   @override
   void initState() {
     super.initState();
-    futureUser = _userApi.fetchAllUsers();
+    futureUser = _userApi.fetchAllUser();
   }
 
   @override

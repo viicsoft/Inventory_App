@@ -259,7 +259,9 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
                             ),
                             Expanded(child: Container()),
                             InkWell(
-                              onTap: () {},
+                              onTap: () {
+                                
+                              },
                               child: Container(
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(5),

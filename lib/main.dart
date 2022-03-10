@@ -11,6 +11,9 @@ import 'package:viicsoft_inventory_app/ui/authentication/loginsignupScreen.dart'
 import 'package:viicsoft_inventory_app/ui/authentication/signupScreen.dart';
 import 'package:viicsoft_inventory_app/ui/event/events_page.dart';
 import 'package:viicsoft_inventory_app/ui/homePage.dart';
+import 'package:viicsoft_inventory_app/ui/store/store_page.dart';
+
+
 void main() async {
   runApp( const MyApp());
 }
