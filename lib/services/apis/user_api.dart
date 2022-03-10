@@ -24,4 +24,23 @@ class UserAPI extends BaseAPI {
       throw Exception('Failed to load Users');
     }
  }
+
+ Future<User> deleteUser(String id) async {
+   final String token = await SharedPrefrence().getToken();
+
+   final http.Response response = await http.delete(
+     Uri.parse(super.deleteUserPath + id),
+     headers: <String, String>{
+       "X-Api-Key": "632F2EC9771B6C4C0BDF30BE21D9009B",
+       "Content-Type": "application/json",
+       'Accept': 'application/json',
+       'x-token': token,
+     },
+   );
+   if (response.statusCode == 200) {
+     return User.fromJson(jsonDecode(response.body));
+   } else {
+     throw Exception('Failed to delete user.');
+   }
+ }
 }
