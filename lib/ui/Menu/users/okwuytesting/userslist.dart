@@ -137,7 +137,7 @@ class UserList extends StatelessWidget {
                           child: ListTile(
                             trailing: IconButton(
                                 onPressed: () {
-                                  _confirmDialog(context);
+                                  _confirmDialog(context, results[index].id.toString());
                                 },
                                 icon: Icon(
                                   Icons.delete,
@@ -185,7 +185,7 @@ class UserList extends StatelessWidget {
     );
   }
 
-  Future<void> _confirmDialog(BuildContext context) async {
+  Future<void> _confirmDialog(BuildContext context, String userId) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -203,7 +203,10 @@ class UserList extends StatelessWidget {
             ElevatedButton(
               style: ElevatedButton.styleFrom(primary: AppColor.gradientFirst),
               child: const Text('Yes'),
-              onPressed: () async {},
+              onPressed: () async {
+                await UserAPI().deleteUser(userId);
+                Navigator.of(context).pop();
+              },
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(primary: AppColor.gradientFirst),
