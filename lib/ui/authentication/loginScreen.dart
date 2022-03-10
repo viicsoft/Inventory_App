@@ -15,7 +15,7 @@ TextEditingController _passwordField = TextEditingController();
 
 class _LoginState extends State<Login> {
 
-  Data requestModel = Data(email: 'input', pass: 'input');
+  //Data requestModel = Data(email: 'input', pass: 'input');
   GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
   bool isLoading = false;
   final AuthAPI _authAPI = AuthAPI();
@@ -65,7 +65,7 @@ class _LoginState extends State<Login> {
                         TextFormField(
                           keyboardType: TextInputType.emailAddress,
                           controller: _emailField,
-                          onSaved: (input) => requestModel.email = input!,
+                          //onSaved: (input) => requestModel.email = input!,
                           validator: (input) => !(input?.contains('@') ?? false)
                           ? "Email id should be valid"
                           : null,
@@ -88,7 +88,7 @@ class _LoginState extends State<Login> {
                           obscureText: _isObscure,
                           keyboardType: TextInputType.text,
                           controller: _passwordField,
-                          onSaved: (input) => requestModel.pass = input!,
+                          //onSaved: (input) => requestModel.pass = input!,
                           validator: (input) => (input != null && input.length < 6)
                           ? "Password should be more than 5 characters"
                           : null,
