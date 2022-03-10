@@ -20,6 +20,7 @@ class CategoryAPI extends BaseAPI {
           'Accept': 'application/json',
           'x-token': token,
         });
+
     if (response.statusCode == 200) {
       final  _data = jsonDecode(response.body);
       final List<EquipmentCategory> category = _data['data']['equipment_category'].map<EquipmentCategory>((model) => EquipmentCategory.fromJson(model as Map<String, dynamic>)).toList();

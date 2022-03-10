@@ -60,7 +60,7 @@ class User {
     required this.banned,
     this.lastLogin,
     this.lastActivity,
-    this.dateCreated,
+    required this.dateCreated,
     this.forgotExp,
     this.rememberTime,
     this.rememberExp,
@@ -83,15 +83,15 @@ class User {
   String fullName;
   String avatar;
   String banned;
-  DateTime? lastLogin;
-  DateTime? lastActivity;
-  DateTime? dateCreated;
+  dynamic lastLogin;
+  dynamic lastActivity;
+  DateTime dateCreated;
   dynamic forgotExp;
   dynamic rememberTime;
   dynamic rememberExp;
   dynamic verificationCode;
   dynamic topSecret;
-  String? ipAddress;
+  dynamic ipAddress;
   dynamic createdBy;
   dynamic updatedBy;
   dynamic updatedAt;
@@ -108,15 +108,15 @@ class User {
     fullName: json["full_name"],
     avatar: json["avatar"],
     banned: json["banned"],
-    lastLogin: DateTime.parse(json["last_login"]),
-    lastActivity:  DateTime.parse(json["last_activity"]),
+    lastLogin: json["last_login"] == null ? null : DateTime.parse(json["last_login"]),
+    lastActivity: json["last_activity"] == null ? null : DateTime.parse(json["last_activity"]),
     dateCreated: DateTime.parse(json["date_created"]),
     forgotExp: json["forgot_exp"],
     rememberTime: json["remember_time"],
     rememberExp: json["remember_exp"],
     verificationCode: json["verification_code"],
     topSecret: json["top_secret"],
-    ipAddress: json["ip_address"] ?? null,
+    ipAddress: json["ip_address"] == null ? null : json["ip_address"],
     createdBy: json["created_by"],
     updatedBy: json["updated_by"],
     updatedAt: json["updated_at"],
@@ -134,9 +134,9 @@ class User {
     "full_name": fullName,
     "avatar": avatar,
     "banned": banned,
-    "last_login": lastLogin == null ? null : lastLogin?.toIso8601String(),
-    "last_activity": lastActivity == null ? null : lastActivity?.toIso8601String(),
-    "date_created": dateCreated?.toIso8601String(),
+    "last_login": lastLogin == null ? null : lastLogin.toIso8601String(),
+    "last_activity": lastActivity == null ? null : lastActivity.toIso8601String(),
+    "date_created": dateCreated.toIso8601String(),
     "forgot_exp": forgotExp,
     "remember_time": rememberTime,
     "remember_exp": rememberExp,
@@ -168,7 +168,7 @@ class Group {
 
   String userId;
   String groupId;
-  String? createdBy;
+  dynamic createdBy;
   dynamic updatedBy;
   dynamic updatedAt;
   String createdAt;

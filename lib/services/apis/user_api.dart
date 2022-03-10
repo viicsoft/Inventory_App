@@ -1,6 +1,4 @@
 import 'dart:convert';
-
-import 'package:viicsoft_inventory_app/models/equipments.dart';
 import 'package:viicsoft_inventory_app/models/users.dart';
 import 'package:viicsoft_inventory_app/services/api.dart';
 import 'package:http/http.dart' as http;
@@ -21,10 +19,9 @@ class UserAPI extends BaseAPI {
     if (response.statusCode == 200) {
       final  _data = jsonDecode(response.body);
       final List<User> users = _data['data']['user'].map<User>((model) => User.fromJson(model as Map<String, dynamic>)).toList();
-      print(response.statusCode);
       return users;
     } else {
-      throw Exception('Failed to load Equipments');
+      throw Exception('Failed to load Users');
     }
  }
 }
