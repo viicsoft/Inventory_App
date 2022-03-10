@@ -19,14 +19,12 @@ class UserList extends StatelessWidget {
         child: FutureBuilder<List<User>>(
           future: UserAPI().fetchAllUser(),
           builder: (context, snapshot) {
-            var results = snapshot.data!;
-            print(results[0].email);
             if (snapshot.hasError) {
               return SizedBox(
                 child: Container(),
               );
             } else if (snapshot.connectionState == ConnectionState.done) {
-              
+              var results = snapshot.data!;
               return Column(
                 children: [
                   Container(
@@ -122,7 +120,7 @@ class UserList extends StatelessWidget {
                         results.length, //users.isEmpty ? 0 : users.length,
                     itemBuilder: (BuildContext context, int index) {
                       return Card(
-                        margin: const EdgeInsets.only(bottom: 15),
+                        margin: const EdgeInsets.only(bottom: 15, right: 5, left: 5),
                         elevation: 2,
                         color: AppColor.homePageContainerTextBig,
                         shape: RoundedRectangleBorder(
@@ -130,11 +128,11 @@ class UserList extends StatelessWidget {
                         ),
                         child: InkWell(
                           onTap: () {
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //       builder: (context) => const UserDetailsScreen()),
-                            // );
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => UserDetailsScreen(userdetail: results[index])),
+                            );
                           },
                           child: ListTile(
                             trailing: IconButton(
@@ -151,7 +149,7 @@ class UserList extends StatelessWidget {
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(60),
                                 image: DecorationImage(
-                                  image: NetworkImage(results[index].avatar, scale: 1.0),
+                                  image: NetworkImage(results[index].avatarThumbnail),
                                   fit: BoxFit.cover,
                                  ),
                               ),
@@ -166,7 +164,7 @@ class UserList extends StatelessWidget {
                               results[index].email,
                               style: TextStyle(
                                 fontFamily: 'Roboto',
-                                color: AppColor.homePageSubtitle,
+                                color: AppColor.gradientFirst,
                               ),
                             ),
                           ),
