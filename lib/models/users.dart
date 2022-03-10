@@ -54,7 +54,7 @@ class User {
     required this.email,
     this.oauthUid,
     this.oauthProvider,
-    required this.username,
+    this.username,
     required this.fullName,
     required this.avatar,
     required this.banned,
@@ -79,7 +79,7 @@ class User {
   String email;
   dynamic oauthUid;
   dynamic oauthProvider;
-  String username;
+  String? username;
   String fullName;
   String avatar;
   String banned;

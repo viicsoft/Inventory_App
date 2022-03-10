@@ -20,11 +20,11 @@ class UserAPI extends BaseAPI {
         });
     if (response.statusCode == 200) {
       final  _data = jsonDecode(response.body);
-      final List<User> users = _data['data']['user'].map<User>((model) => User.fromJson(model as Map<String, dynamic>)).toList();
-      print(response.statusCode);
+      final List<User> users = _data['data']['events'].map<User>((model) => User.fromJson(model as Map<String, dynamic>)).toList();
+      print(users[0].email);
       return users;
     } else {
-      throw Exception('Failed to load Equipments');
+      throw Exception('Failed to load users');
     }
  }
 }

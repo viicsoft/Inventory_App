@@ -4,10 +4,10 @@ import 'package:viicsoft_inventory_app/models/users.dart';
 import 'package:viicsoft_inventory_app/services/apis/user_api.dart';
 import 'package:viicsoft_inventory_app/ui/Menu/users/okwuytesting/usedetail.dart';
 
-class UserListWidget extends StatelessWidget {
+class UserList extends StatelessWidget {
   //final List<Users> users;
 
-  const UserListWidget({
+  const UserList({
     Key? key,
   }) : super(key: key);
 

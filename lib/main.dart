@@ -28,11 +28,12 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
   routes: {
     
-    '/': (context) => const SignupLogin(),
+    '/': (context) => const UserList(),
+    //SignupLogin(),
     '/signup': (context) => const SignupPage(),
     '/login': (context) => const Login(),
     '/homePage': (context) => const HomePage(),
-    '/UserList': (context) => const UserListWidget(),
+    '/UserList': (context) => const UserList(),
     '/userdetails': (context) => const UserDetailsPage(),
     '/addCategory': (context) => const AddCategory(),
     '/addItem': (context) => const AddItemPage(),
