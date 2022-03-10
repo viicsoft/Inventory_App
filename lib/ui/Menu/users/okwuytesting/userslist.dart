@@ -19,12 +19,14 @@ class UserList extends StatelessWidget {
         child: FutureBuilder<List<User>>(
           future: UserAPI().fetchAllUser(),
           builder: (context, snapshot) {
+            var results = snapshot.data!;
+            print(results[0].email);
             if (snapshot.hasError) {
               return SizedBox(
                 child: Container(),
               );
             } else if (snapshot.connectionState == ConnectionState.done) {
-              var results = snapshot.data!;
+              
               return Column(
                 children: [
                   Container(
