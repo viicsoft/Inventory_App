@@ -5,7 +5,7 @@ import 'package:viicsoft_inventory_app/ui/Menu/add_item_page.dart';
 import 'package:viicsoft_inventory_app/ui/Menu/users/okwuytesting/userslist.dart';
 import 'package:viicsoft_inventory_app/ui/Menu/users/passwordResetSuccessPage.dart';
 import 'package:viicsoft_inventory_app/ui/Menu/users/reset_password_page.dart';
-import 'package:viicsoft_inventory_app/ui/Menu/users/userDetailsPage.dart';
+import 'package:viicsoft_inventory_app/ui/Menu/users/profileDetailsPage.dart';
 import 'package:viicsoft_inventory_app/ui/authentication/loginScreen.dart';
 import 'package:viicsoft_inventory_app/ui/authentication/loginsignupScreen.dart';
 import 'package:viicsoft_inventory_app/ui/authentication/signupScreen.dart';

@@ -21,6 +21,7 @@ class BaseAPI {
   var loginPath = api + "/user/login";
   var logoutPath = api + "";
   var deleteUserPath = api + "/user/delete";
+  var profileUserPath = api + "/user/profile";
   var allUsersPath = api + "/user/all";
   var allEventsPath = api + "/events/all";
   var allEquipmentsPath = api + "/equipments/all";
