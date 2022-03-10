@@ -148,10 +148,10 @@ class UserListWidget extends StatelessWidget {
                               height: 60,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(60),
-                                // image: DecorationImage(
-                                //   image: NetworkImage(results[index].avatarThumbnail),
-                                //   fit: BoxFit.cover,
-                                // ),
+                                image: DecorationImage(
+                                  image: NetworkImage(results[index].avatar, scale: 1.0),
+                                  fit: BoxFit.cover,
+                                 ),
                               ),
                             ),
                             title: Text(

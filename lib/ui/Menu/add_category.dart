@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
-import 'package:provider/provider.dart';
 import 'package:viicsoft_inventory_app/services/apis/category_api.dart';
 
 class AddCategory extends StatefulWidget {
@@ -82,7 +81,7 @@ class _AddCategoryState extends State<AddCategory> {
                             style: ElevatedButton.styleFrom(
                                 primary: AppColor.gradientFirst),
                             onPressed: () async{
-                              await CategoryAPI().addCategory(categoryName.text.trim(), _categoryimage);
+                              await CategoryAPI().addCategory(categoryName.text.trim(), _categoryimage!);
                             },
                             child: const Text(
                               'Create Category',
