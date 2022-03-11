@@ -20,8 +20,9 @@ class BaseAPI {
   var registerPath = api + "/user/signup";
   var loginPath = api + "/user/login";
   var logoutPath = api + "";
+  var deleteUserPath = api + "/user/delete";
+  var profileUserPath = api + "/user/profile";
   var allUsersPath = api + "/user/all";
-  var deleteUserPath = api + "user/delete/";
   var allEventsPath = api + "/events/all";
   var allEquipmentsPath = api + "/equipments/all";
   var addEquipmentsCategoryPath = api +  "/equipment_category/add";

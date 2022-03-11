@@ -19,14 +19,12 @@ class UserList extends StatelessWidget {
         child: FutureBuilder<List<User>>(
           future: UserAPI().fetchAllUser(),
           builder: (context, snapshot) {
-            var results = snapshot.data!;
-            print(results[0].email);
             if (snapshot.hasError) {
               return SizedBox(
                 child: Container(),
               );
             } else if (snapshot.connectionState == ConnectionState.done) {
-              
+              var results = snapshot.data!;
               return Column(
                 children: [
                   Container(
@@ -122,7 +120,7 @@ class UserList extends StatelessWidget {
                         results.length, //users.isEmpty ? 0 : users.length,
                     itemBuilder: (BuildContext context, int index) {
                       return Card(
-                        margin: const EdgeInsets.only(bottom: 15),
+                        margin: const EdgeInsets.only(bottom: 15, right: 5, left: 5),
                         elevation: 2,
                         color: AppColor.homePageContainerTextBig,
                         shape: RoundedRectangleBorder(
@@ -130,16 +128,16 @@ class UserList extends StatelessWidget {
                         ),
                         child: InkWell(
                           onTap: () {
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //       builder: (context) => const UserDetailsScreen()),
-                            // );
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => UserDetailsScreen(userdetail: results[index])),
+                            );
                           },
                           child: ListTile(
                             trailing: IconButton(
                                 onPressed: () {
-                                  _confirmDialog(context);
+                                  _confirmDialog(context, results[index].id.toString());
                                 },
                                 icon: Icon(
                                   Icons.delete,
@@ -151,7 +149,7 @@ class UserList extends StatelessWidget {
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(60),
                                 image: DecorationImage(
-                                  image: NetworkImage(results[index].avatar, scale: 1.0),
+                                  image: NetworkImage(results[index].avatarThumbnail),
                                   fit: BoxFit.cover,
                                  ),
                               ),
@@ -166,7 +164,7 @@ class UserList extends StatelessWidget {
                               results[index].email,
                               style: TextStyle(
                                 fontFamily: 'Roboto',
-                                color: AppColor.homePageSubtitle,
+                                color: AppColor.gradientFirst,
                               ),
                             ),
                           ),
@@ -187,7 +185,7 @@ class UserList extends StatelessWidget {
     );
   }
 
-  Future<void> _confirmDialog(BuildContext context) async {
+  Future<void> _confirmDialog(BuildContext context, String userId) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -205,7 +203,10 @@ class UserList extends StatelessWidget {
             ElevatedButton(
               style: ElevatedButton.styleFrom(primary: AppColor.gradientFirst),
               child: const Text('Yes'),
-              onPressed: () async {},
+              onPressed: () async {
+                await UserAPI().deleteUser(userId);
+                Navigator.of(context).pop();
+              },
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(primary: AppColor.gradientFirst),

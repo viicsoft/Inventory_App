@@ -2,12 +2,12 @@
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
+import 'package:viicsoft_inventory_app/models/users.dart';
 
 class UserDetailsScreen extends StatefulWidget {
-  
-  const UserDetailsScreen({Key? key}) : super(key: key);
+  User userdetail;
+  UserDetailsScreen({Key? key, required this.userdetail}) : super(key: key);
 
   @override
   State<UserDetailsScreen> createState() => _UserDetailsScreenState();
@@ -80,8 +80,8 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                               height: 100,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(100),
-                                image: const DecorationImage(
-                                  image: AssetImage('assets/musk.jpg'),
+                                image:  DecorationImage(
+                                  image: NetworkImage(widget.userdetail.avatarThumbnail),
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -101,7 +101,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                             ),
                             Expanded(child: Container()),
                              Text(
-                              'chukwuemeka',
+                              widget.userdetail.fullName,
                               style: TextStyle(
                                 color: AppColor.homePageSubtitle,
                                 fontWeight: FontWeight.w500,
@@ -123,7 +123,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                             ),
                             Expanded(child: Container()),
                             Text(
-                              'emeka09',
+                              widget.userdetail.username!,
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w500,
@@ -145,7 +145,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                             ),
                             Expanded(child: Container()),
                             Text(
-                              'Emeka@gmail.com',
+                              widget.userdetail.email,
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w500,
@@ -158,7 +158,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                         Row(
                           children: [
                             Text(
-                              'Role:',
+                              'IpA:',
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w500,
@@ -167,7 +167,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                             ),
                             Expanded(child: Container()),
                             Text(
-                              'Admin',
+                              widget.userdetail.ipAddress,
                               style: TextStyle(
                                 color: AppColor.homePageSubtitle,
                                 fontWeight: FontWeight.w500,
