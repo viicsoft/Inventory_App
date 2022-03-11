@@ -81,7 +81,23 @@ class _AddCategoryState extends State<AddCategory> {
                             style: ElevatedButton.styleFrom(
                                 primary: AppColor.gradientFirst),
                             onPressed: () async{
-                              await CategoryAPI().addCategory(categoryName.text.trim(), _categoryimage!);
+                              var res = await CategoryAPI().addCategory(categoryName.text.trim(), _categoryimage!);
+
+                              if (res.statusCode == 200 || res.statusCode == 201) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        backgroundColor: Colors.green,
+                                        content:
+                                        Text("Category added")));
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    backgroundColor: Colors.red,
+                                    content:
+                                    Text("Some thing went wrong"),
+                                  ),
+                                );
+                              }
                             },
                             child: const Text(
                               'Create Category',
