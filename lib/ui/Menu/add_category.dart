@@ -94,7 +94,7 @@ class _AddCategoryState extends State<AddCategory> {
                                   const SnackBar(
                                     backgroundColor: Colors.red,
                                     content:
-                                    Text("Some thing went wrong"),
+                                    Text("Image file too large"),
                                   ),
                                 );
                               }
