@@ -50,7 +50,7 @@ class Data {
 
 class User {
   User({
-    required this.id,
+    this.id,
     required this.email,
     this.oauthUid,
     this.oauthProvider,
@@ -75,7 +75,7 @@ class User {
     required this.group,
   });
 
-  String id;
+  String? id;
   String email;
   dynamic oauthUid;
   dynamic oauthProvider;

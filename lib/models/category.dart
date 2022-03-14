@@ -3,7 +3,7 @@
 //     final welcome = welcomeFromJson(jsonString);
 import 'dart:convert';
 
-Category welcomeFromJson(String str) => Category.fromJson(json.decode(str));
+Category categoryFromJson(String str) => Category.fromJson(json.decode(str));
 
 String welcomeToJson(Category data) => json.encode(data.toJson());
 

@@ -89,6 +89,7 @@ class _AddCategoryState extends State<AddCategory> {
                                         backgroundColor: Colors.green,
                                         content:
                                         Text("Category added")));
+                                        Navigator.pop(context);
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(

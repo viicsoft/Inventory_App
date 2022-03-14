@@ -10,9 +10,9 @@ import 'package:viicsoft_inventory_app/ui/store/equipment_detail_page.dart';
 // ignore: must_be_immutable
 class EquipmentPage extends StatefulWidget {
   EquipmentCategory equipmentCategory;
-  String categoryId;
+  //String categoryId;
   EquipmentPage(
-      {Key? key, required this.categoryId, required this.equipmentCategory})
+      {Key? key,  required this.equipmentCategory})
       : super(key: key);
 
   @override
