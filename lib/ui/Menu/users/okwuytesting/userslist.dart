@@ -205,7 +205,7 @@ class UserList extends StatelessWidget {
               style: ElevatedButton.styleFrom(primary: AppColor.gradientFirst),
               child: const Text('Yes'),
               onPressed: () async {
-                await UserAPI().deleteUser(userId);
+                var res = await UserAPI().deleteUser(userId);
                 Navigator.of(context).pop();
               },
             ),
