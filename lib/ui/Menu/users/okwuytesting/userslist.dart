@@ -138,6 +138,7 @@ class UserList extends StatelessWidget {
                             trailing: IconButton(
                                 onPressed: () {
                                   _confirmDialog(context, results[index].id.toString());
+                                  print(results[index].id);
                                 },
                                 icon: Icon(
                                   Icons.delete,
@@ -185,7 +186,7 @@ class UserList extends StatelessWidget {
     );
   }
 
-  Future<void> _confirmDialog(BuildContext context, String userId) async {
+  Future _confirmDialog(BuildContext context, String userId) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!

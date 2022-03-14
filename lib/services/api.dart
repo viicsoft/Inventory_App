@@ -17,14 +17,15 @@ class BaseAPI {
   };
 
   // more routes
-  var registerPath = api + "/user/signup";
+  var registerPath = api + "/user/signup";  
   var loginPath = api + "/user/login";
   var logoutPath = api + "";
-  var deleteUserPath = api + "/user/delete";
+  var deleteUserPath = api + "/user/delete/";
   var profileUserPath = api + "/user/profile";
   var allUsersPath = api + "/user/all";
   var allEventsPath = api + "/events/all";
   var allEquipmentsPath = api + "/equipments/all";
+  var addEquipmentsPath = api +  "/equipments/add";
   var addEquipmentsCategoryPath = api +  "/equipment_category/add";
   var allEquipmentsCategoryPath = api +  "/equipment_category/all";
 }

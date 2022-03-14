@@ -38,6 +38,7 @@ class UserAPI extends BaseAPI {
      },
    );
    if (response.statusCode == 200) {
+     //print(' delete user: ${response.body}');
      return User.fromJson(jsonDecode(response.body));
    } else {
      throw Exception('Failed to delete user.');
@@ -45,13 +46,6 @@ class UserAPI extends BaseAPI {
  }
 
 
-//  Future<List<Profile>> fetchUser() async {
-//     final String token = await SharedPrefrence().getToken();
-//     final response = await client.get('$baseUrl/user/$id');
-//     if(response.statusCode == 200){
-//       return userFromJson(response.body);
-//     }else return null;
-//   }
 
 
  Future<User> profileUser () async {
@@ -66,11 +60,12 @@ class UserAPI extends BaseAPI {
         });
     if (response.statusCode == 200) {
       final  _data = jsonDecode(response.body);
-      final User user = _data['data']['user'].map<User>((model) => User.fromJson(model as Map<String, dynamic>));
-      print(response.body);
-      return user;
+      //final User users =  User.fromJson();
+      final User users = User.fromJson(_data['data']['user']);
+      return users;
     } else {
       throw Exception('Failed to load Users');
     }
  }
+
 }

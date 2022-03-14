@@ -91,7 +91,6 @@ class _StorePageState extends State<StorePage> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => EquipmentPage(
-                                        categoryId: results[index].id,
                                         equipmentCategory: results[index]),
                                   ),
                                 );
