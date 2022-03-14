@@ -292,7 +292,7 @@ class _AddItemPageState extends State<AddItemPage> {
                                 ElevatedButton(
                                   style: ElevatedButton.styleFrom(
                                       primary: AppColor.gradientFirst),
-                                  onPressed: () {
+                                  onPressed: () { 
                                     // Provider.of<InventoryData>(context,
                                     //         listen: false)
                                     //     .addItem(
