@@ -17,9 +17,9 @@ class _AddEventPageState extends State<AddEventPage> {
   XFile? _eventImage;
   DateTime? selecteddate;
   bool hasData = false;
-  TextEditingController _eventName = TextEditingController();
-  TextEditingController _eventType = TextEditingController();
-  TextEditingController _eventLocation = TextEditingController();
+  final TextEditingController _eventName = TextEditingController();
+  final TextEditingController _eventType = TextEditingController();
+  final TextEditingController _eventLocation = TextEditingController();
   DateTime startingDate = DateTime.now();
   DateTime endingDate = DateTime.now();
   final EventAPI _eventAPI = EventAPI();
@@ -166,39 +166,35 @@ class _AddEventPageState extends State<AddEventPage> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 30, right: 30),
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                        primary: AppColor.gradientFirst),
-                                    onPressed: () async{
-                                      var res = await _eventAPI.addEvent(_eventName.text, _eventImage!, _eventType.text, _eventLocation.text, "${endingDate.day}/${endingDate.month}/${endingDate.year}", "${startingDate.day}/${startingDate.month}/${startingDate.year}");
-                                    
-                                    if (res.statusCode == 200 ||
-                                                res.statusCode == 201) {
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(const SnackBar(
-                                                      backgroundColor:
-                                                          Colors.green,
-                                                      content: Text(
-                                                          "Event Created")));
-                                              Navigator.pop(context);
-                                            } else {
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(
-                                                const SnackBar(
-                                                  backgroundColor: Colors.red,
-                                                  content: Text(
-                                                      "Something went wrong"),
-                                                ),
-                                              );
-                                            }
-                                    },
-                                    child: const Text(
-                                      'Save & Update',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      primary: AppColor.gradientFirst),
+                                  onPressed: () async{
+                                    var res = await _eventAPI.addEvent(_eventName.text, _eventImage!, _eventType.text, _eventLocation.text, "${endingDate.day}/${endingDate.month}/${endingDate.year}", "${startingDate.day}/${startingDate.month}/${startingDate.year}");
+                                  
+                                  if (res.statusCode == 200 ||
+                                              res.statusCode == 201) {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(const SnackBar(
+                                                    backgroundColor:
+                                                        Colors.green,
+                                                    content: Text(
+                                                        "Event Created")));
+                                            Navigator.pop(context);
+                                          } else {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              const SnackBar(
+                                                backgroundColor: Colors.red,
+                                                content: Text(
+                                                    "Something went wrong"),
+                                              ),
+                                            );
+                                          }
+                                  },
+                                  child: const Text(
+                                    'Save & Update',
+                                    style: TextStyle(fontSize: 16),
                                   ),
                                 ),
                               ],
@@ -225,8 +221,8 @@ class _AddEventPageState extends State<AddEventPage> {
           alignment: AlignmentDirectional.center,
           children: [
             Container(
-              width: 200,
-              height: 110,
+              width: 100,
+              height: 100,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(30),
                 image: DecorationImage(

@@ -65,7 +65,7 @@ class _AddCategoryState extends State<AddCategory> {
                   child: ListView(
                     children: [
                       categoryImages(context),
-                      const SizedBox(height: 50),
+                      SizedBox(height: MediaQuery.of(context).size.height/8),
                       TextField(
                         controller: categoryName,
                         decoration: const InputDecoration(
@@ -73,7 +73,7 @@ class _AddCategoryState extends State<AddCategory> {
                           labelText: 'Category name',
                         ),
                       ),
-                      const SizedBox(height: 50),
+                       SizedBox(height: MediaQuery.of(context).size.height/8),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [

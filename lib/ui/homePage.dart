@@ -74,7 +74,7 @@ class _HomePageState extends State<HomePage> {
                           fontSize: 25,
                           color: AppColor.homePageContainerTextBig),
                     ),
-                    const SizedBox(height: 25),
+                     SizedBox(height: MediaQuery.of(context).size.width/15),
                     Row(
                       children: [
                         Container(
@@ -103,7 +103,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 23),
+                    SizedBox(height: MediaQuery.of(context).size.width/15),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
@@ -122,7 +122,7 @@ class _HomePageState extends State<HomePage> {
                         
                       ],
                     ),
-                    const SizedBox(height: 23),
+                    SizedBox(height: MediaQuery.of(context).size.width/16),
                     Row(
                       children: [
                         Container(
@@ -156,7 +156,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            const SizedBox(height: 15),
+            SizedBox(height: MediaQuery.of(context).size.width/15),
             Row(
               children: [
                 Text(
@@ -170,7 +170,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: MediaQuery.of(context).size.width/15),
             SizedBox(
               child: Column(
                 children: [
@@ -183,7 +183,7 @@ class _HomePageState extends State<HomePage> {
                     //     MaterialPageRoute(
                     //         builder: (context) => PendingReturnPage()));
                   }),
-                  const SizedBox(height: 15),
+                  SizedBox(height: MediaQuery.of(context).size.width/16),
                   homeactivities(context,
                       qauntity: '20',
                       title: 'Collected',
@@ -193,7 +193,7 @@ class _HomePageState extends State<HomePage> {
                     //     MaterialPageRoute(
                     //         builder: (context) => CollectionPage()));
                   }),
-                  const SizedBox(height: 15),
+                  SizedBox(height: MediaQuery.of(context).size.width/16),
                   homeactivities(context,
                       qauntity: '200',
                       title: 'Not Collected',
@@ -203,7 +203,7 @@ class _HomePageState extends State<HomePage> {
                     //     MaterialPageRoute(
                     //         builder: (context) => NotCollectedPage()));
                   }),
-                  const SizedBox(height: 15),
+                  SizedBox(height: MediaQuery.of(context).size.width/16),
                 ],
               ),
             )
@@ -252,13 +252,13 @@ class _HomePageState extends State<HomePage> {
       Function()? onpressed,
       IconData? icon}) {
     return SizedBox(
-      height: 70,
+      height: MediaQuery.of(context).size.width/5,
       width: MediaQuery.of(context).size.width,
       child: Stack(
         children: [
           Container(
             width: MediaQuery.of(context).size.width,
-            height: 70,
+            height: MediaQuery.of(context).size.width/5,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 gradient: LinearGradient(
