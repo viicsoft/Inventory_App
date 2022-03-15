@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
 import 'package:viicsoft_inventory_app/models/category.dart';
 import 'package:viicsoft_inventory_app/services/apis/category_api.dart';
+import 'package:viicsoft_inventory_app/services/apis/equipment_api.dart';
 
 class AddItemPage extends StatefulWidget {
   const AddItemPage({Key? key}) : super(key: key);
@@ -35,6 +36,7 @@ class _AddItemPageState extends State<AddItemPage> {
   late Future<List<EquipmentCategory>> _category;
   EquipmentCategory? selectedCategory;
   final CategoryAPI _categoryApi = CategoryAPI();
+  final EquipmentAPI _equipmentApi = EquipmentAPI();
 
   @override
   void initState() {
@@ -303,7 +305,7 @@ class _AddItemPageState extends State<AddItemPage> {
                                               primary: AppColor.gradientFirst),
                                           onPressed: () async {
                                             var res =
-                                                await _categoryApi.addEquipment(
+                                                await _equipmentApi.addEquipment(
                                                     equipmentNameController
                                                         .text,
                                                     _itemimage!,

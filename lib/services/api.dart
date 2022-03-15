@@ -24,6 +24,7 @@ class BaseAPI {
   var profileUserPath = api + "/user/profile";
   var allUsersPath = api + "/user/all";
   var allEventsPath = api + "/events/all";
+  var addEventsPath = api + "/events/add";
   var allEquipmentsPath = api + "/equipments/all";
   var addEquipmentsPath = api +  "/equipments/add";
   var addEquipmentsCategoryPath = api +  "/equipment_category/add";

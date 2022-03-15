@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
-import 'package:provider/provider.dart';
 import 'package:viicsoft_inventory_app/models/category.dart';
 import 'package:viicsoft_inventory_app/services/apis/category_api.dart';
 import 'package:viicsoft_inventory_app/ui/store/equipment_page.dart';
@@ -87,8 +86,6 @@ class _StorePageState extends State<StorePage> {
                             return InkWell(
                               hoverColor: Colors.black,
                               onTap: () {
-
-                               // if(results[index].id == )
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(

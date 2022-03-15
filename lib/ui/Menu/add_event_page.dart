@@ -3,6 +3,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
 import 'package:provider/provider.dart';
+import 'package:viicsoft_inventory_app/services/apis/event_api.dart';
 
 
 class AddEventPage extends StatefulWidget {
@@ -13,12 +14,15 @@ class AddEventPage extends StatefulWidget {
 }
 
 class _AddEventPageState extends State<AddEventPage> {
-  XFile? _itemimage;
+  XFile? _eventImage;
   DateTime? selecteddate;
   bool hasData = false;
-  TextEditingController controller = TextEditingController();
+  TextEditingController _eventName = TextEditingController();
+  TextEditingController _eventType = TextEditingController();
+  TextEditingController _eventLocation = TextEditingController();
   DateTime startingDate = DateTime.now();
   DateTime endingDate = DateTime.now();
+  final EventAPI _eventAPI = EventAPI();
 
   final picker = ImagePicker();
 
@@ -26,7 +30,7 @@ class _AddEventPageState extends State<AddEventPage> {
     final pickedFile = await picker.pickImage(source: source, imageQuality: 50, maxHeight: 700, maxWidth: 650);
 
     setState(() {
-      _itemimage = pickedFile;
+      _eventImage = pickedFile;
     });
   }
 
@@ -100,20 +104,44 @@ class _AddEventPageState extends State<AddEventPage> {
                         padding: const EdgeInsets.only(top: 15),
                         child: ListView(
                           children: [
-                            itemImages(context),
+                            eventImages(context),
                             const SizedBox(height: 40),
                             TextField(
-                              controller: controller,
+                              controller: _eventName,
                               decoration: InputDecoration(
                                 contentPadding: const EdgeInsets.symmetric(
                                     vertical: 8.0, horizontal: 10.0),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(8),
                                 ),
-                                labelText: 'Event name*',
+                                labelText: 'Event Name*',
                               ),
                             ),
-                            const SizedBox(height: 20),
+                            const SizedBox(height: 15),
+                            TextField(
+                              controller: _eventType,
+                              decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 8.0, horizontal: 10.0),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                labelText: 'Event Type*',
+                              ),
+                            ),
+                            const SizedBox(height: 15),
+                            TextField(
+                              controller: _eventLocation,
+                              decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 8.0, horizontal: 10.0),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                labelText: 'Event Location*',
+                              ),
+                            ),
+                            const SizedBox(height: 15),
                             ListTile(
                               trailing: Text(
                                   "${startingDate.day}/${startingDate.month}/${startingDate.year}"),
@@ -138,27 +166,34 @@ class _AddEventPageState extends State<AddEventPage> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
-                                //for (int i = 0; i < event.length; i++)
                                 Padding(
                                   padding: const EdgeInsets.only(
                                       left: 30, right: 30),
                                   child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(
                                         primary: AppColor.gradientFirst),
-                                    onPressed: () {
-                                      // Provider.of<InventoryData>(context,
-                                      //         listen: false)
-                                      //     .addEvent(
-                                      //         _itemimage != null
-                                      //             ? FileImage(
-                                      //                 File(_itemimage!.path))
-                                      //             : const AssetImage(
-                                      //                     'assets/musk.jpg')
-                                      //                 as ImageProvider,
-                                      //         controller.text,
-                                      //         '${startingDate.day}/${startingDate.month}/${startingDate.year}',
-                                      //         '${endingDate.day}/${endingDate.month}/${endingDate.year}');
-                                      // Navigator.pop(context);
+                                    onPressed: () async{
+                                      var res = await _eventAPI.addEvent(_eventName.text, _eventImage!, _eventType.text, _eventLocation.text, "${endingDate.day}/${endingDate.month}/${endingDate.year}", "${startingDate.day}/${startingDate.month}/${startingDate.year}");
+                                    
+                                    if (res.statusCode == 200 ||
+                                                res.statusCode == 201) {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(const SnackBar(
+                                                      backgroundColor:
+                                                          Colors.green,
+                                                      content: Text(
+                                                          "Event Created")));
+                                              Navigator.pop(context);
+                                            } else {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                const SnackBar(
+                                                  backgroundColor: Colors.red,
+                                                  content: Text(
+                                                      "Something went wrong"),
+                                                ),
+                                              );
+                                            }
                                     },
                                     child: const Text(
                                       'Save & Update',
@@ -182,7 +217,7 @@ class _AddEventPageState extends State<AddEventPage> {
     );
   }
 
-  Column itemImages(BuildContext context) {
+  Column eventImages(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -195,8 +230,8 @@ class _AddEventPageState extends State<AddEventPage> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(30),
                 image: DecorationImage(
-                  image: _itemimage != null
-                      ? FileImage(File(_itemimage!.path))
+                  image: _eventImage != null
+                      ? FileImage(File(_eventImage!.path))
                       : const AssetImage('assets/musk.jpg') as ImageProvider,
                   fit: BoxFit.cover,
                 ),

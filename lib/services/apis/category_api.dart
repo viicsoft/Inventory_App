@@ -57,43 +57,5 @@ class CategoryAPI extends BaseAPI {
     return response;
   }
 
-  Future<http.StreamedResponse> addEquipment(
-      String equipmentName,
-      XFile image,
-      String categoryId,
-      String condition,
-      String size,
-      String description,
-      String barcode) async {
-    final String token = await SharedPrefrence().getToken();
-    Map<String, String> headers = {
-      "X-Api-Key": "632F2EC9771B6C4C0BDF30BE21D9009B",
-      'x-token': token,
-    };
-    //create multipart request for POST or PATCH method
-    var request = http.MultipartRequest(
-        "POST", Uri.parse(super.addEquipmentsPath));
-    //add header in http request
-    request.headers.addAll(headers);
-
-    //add text fields
-    request.fields["equipment_name"] = equipmentName;
-    request.fields["equipment_condition"] = condition;
-    request.fields["equipment_size"] = size;
-    request.fields["equipment_description"] = description;
-    request.fields["equipment_barcode"] = barcode;
-    request.fields["equipment_category_id"] = categoryId;
-    //create multipart using filepath, string or bytes
-    var pic = await http.MultipartFile.fromPath("equipment_image", image.path);
-    //add multipart to request
-    request.files.add(pic);
-    var response = await request.send();
-
-    //Get the response from the server
-    var responseData = await response.stream.toBytes();
-    var responseString = String.fromCharCodes(responseData);
-    print(responseString);
-    print(response.statusCode);
-    return response;
-  }
+  
 }

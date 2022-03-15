@@ -85,6 +85,15 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
+                          'Event Type:  ${widget.eventDetail.eventType}',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: AppColor.homePageSubtitle,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
                           'Location:  ${widget.eventDetail.eventLocation}',
                           style: TextStyle(
                             fontSize: 14,
