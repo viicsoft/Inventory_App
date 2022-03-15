@@ -1,4 +1,6 @@
 import 'dart:convert';
+
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:viicsoft_inventory_app/models/events.dart';
 import '../api.dart';
@@ -21,7 +23,5 @@ class EventAPI extends BaseAPI {
 
     }
   }
-
-
 
 }

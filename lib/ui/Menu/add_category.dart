@@ -19,7 +19,7 @@ class _AddCategoryState extends State<AddCategory> {
   final picker = ImagePicker();
 
   Future getImage(ImageSource source) async {
-    final pickedFile = await picker.pickImage(source: source);
+    final pickedFile = await picker.pickImage(source: source, imageQuality: 50, maxHeight: 700, maxWidth: 650);
 
     setState(() {
       _categoryimage = pickedFile;

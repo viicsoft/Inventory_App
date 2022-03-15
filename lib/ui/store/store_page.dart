@@ -87,11 +87,13 @@ class _StorePageState extends State<StorePage> {
                             return InkWell(
                               hoverColor: Colors.black,
                               onTap: () {
+
+                               // if(results[index].id == )
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => EquipmentPage(
-                                        equipmentCategory: results[index]),
+                                        equipmentCategory: results[index], categoryId: results[index].id),
                                   ),
                                 );
                               },

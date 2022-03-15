@@ -10,9 +10,9 @@ import 'package:viicsoft_inventory_app/ui/store/equipment_detail_page.dart';
 // ignore: must_be_immutable
 class EquipmentPage extends StatefulWidget {
   EquipmentCategory equipmentCategory;
-  //String categoryId;
+  String categoryId;
   EquipmentPage(
-      {Key? key,  required this.equipmentCategory})
+      {Key? key,  required this.equipmentCategory, required this.categoryId})
       : super(key: key);
 
   @override
@@ -101,8 +101,9 @@ class _EquipmentPageState extends State<EquipmentPage> {
                     } else if (snapshot.connectionState ==
                         ConnectionState.done) {
                       final results = snapshot.data!;
+                      var result = results.where((item) => item.equipmentCategoryId == widget.categoryId).toList();
                       return ListView.builder(
-                        itemCount: results.length,
+                        itemCount: result.length,
                         itemBuilder: (_, int index) {
                           return Padding(
                             padding: const EdgeInsets.only(right: 10, left: 10),
@@ -139,7 +140,7 @@ class _EquipmentPageState extends State<EquipmentPage> {
                                                       BorderRadius.circular(10),
                                                   image: DecorationImage(
                                                     image: NetworkImage(
-                                                        results[index]
+                                                        result[index]
                                                             .equipmentImage),
                                                     fit: BoxFit.cover,
                                                   ),
@@ -163,7 +164,7 @@ class _EquipmentPageState extends State<EquipmentPage> {
                                                             .start,
                                                     children: [
                                                       Text(
-                                                        results[index]
+                                                        result[index]
                                                             .equipmentName,
                                                         maxLines: 2,
                                                         style: TextStyle(
@@ -183,14 +184,14 @@ class _EquipmentPageState extends State<EquipmentPage> {
                                                                         .circular(
                                                                             5),
                                                                 color: colorscondition(
-                                                                    results[index]
+                                                                    result[index]
                                                                         .equipmentCondition)),
                                                             padding:
                                                                 const EdgeInsets
                                                                     .all(5),
                                                             height: 18,
                                                             child: Text(
-                                                              results[index]
+                                                              result[index]
                                                                   .equipmentCondition,
                                                               style: TextStyle(
                                                                   fontWeight:
@@ -216,10 +217,10 @@ class _EquipmentPageState extends State<EquipmentPage> {
                                                                 MaterialPageRoute(
                                                                   builder: (context) => EquipmentDetailPage(
                                                                       equipmentElement:
-                                                                          results[
+                                                                          result[
                                                                               index],
                                                                       equipmentId:
-                                                                          results[index]
+                                                                          result[index]
                                                                               .id),
                                                                 ),
                                                               );
@@ -237,11 +238,11 @@ class _EquipmentPageState extends State<EquipmentPage> {
                                                       .size
                                                       .width,
                                                   child: Text(
-                                                    results[index]
+                                                    result[index]
                                                             .equipmentDescription!
                                                             .isEmpty
                                                         ? 'No description'
-                                                        : results[index]
+                                                        : result[index]
                                                             .equipmentDescription!,
                                                     maxLines: 2,
                                                     style: const TextStyle(

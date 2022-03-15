@@ -3,7 +3,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
 import 'package:viicsoft_inventory_app/models/equipments.dart';
-import 'package:viicsoft_inventory_app/services/apis/category_api.dart';
 
 class EquipmentDetailPage extends StatefulWidget {
   EquipmentElement equipmentElement;
@@ -16,7 +15,7 @@ class EquipmentDetailPage extends StatefulWidget {
 }
 
 class _EquipmentDetailPageState extends State<EquipmentDetailPage> {
-  XFile? _itemimage;
+  //XFile? _itemimage;
   @override
   void initState() {
     super.initState();
@@ -156,7 +155,7 @@ class _EquipmentDetailPageState extends State<EquipmentDetailPage> {
                               ),
                               padding: const EdgeInsets.all(5),
                               height: 25,
-                              width: 60,
+                              width: MediaQuery.of(context).size.width/3.5,
                               child:  Center(
                                 child: Text(widget.equipmentElement.equipmentSize,
                                   style: const TextStyle(
