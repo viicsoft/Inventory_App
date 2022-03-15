@@ -11,13 +11,12 @@ import 'package:viicsoft_inventory_app/ui/authentication/loginsignupScreen.dart'
 import 'package:viicsoft_inventory_app/ui/authentication/signupScreen.dart';
 import 'package:viicsoft_inventory_app/ui/event/events_page.dart';
 import 'package:viicsoft_inventory_app/ui/homePage.dart';
-import 'package:viicsoft_inventory_app/ui/store/store_page.dart';
-import 'package:viicsoft_inventory_app/ui/user/users_page.dart';
 
 
 void main() async {
   runApp( const MyApp());
 }
+
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -28,7 +27,6 @@ class MyApp extends StatelessWidget {
       title: 'Inventory App',
       initialRoute: '/',
   routes: {
-    
     '/': (context) => const SignupLogin(),
     '/signup': (context) => const SignupPage(),
     '/login': (context) => const Login(),
