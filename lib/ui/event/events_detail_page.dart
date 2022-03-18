@@ -34,6 +34,7 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
 
   final EventAPI _eventAPI = EventAPI();
   final EquipmentAPI _equipmentApi = EquipmentAPI();
+  List scanedEquipment = [];
 
   @override
   void initState() {
@@ -79,14 +80,16 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: AppColor.homePageBackground,
-      body: FutureBuilder<List<EventEquipmentChecklist>>(
-        future: _eventEquipment,
-        builder: (context, snapshot) {
-          var eventEquipmentResult = snapshot.data!;
+       body: 
+      // FutureBuilder<List<EventEquipmentChecklist>>(
+      //   future: _eventEquipment,
+      //   builder: (context, snapshot) {
+      //     var eventEquipmentResult = snapshot.data!;
           
-          return ListView.builder(
-            itemBuilder: (context, index) {
-              return Container(
+          // return ListView.builder(
+          //   itemBuilder: (context, index) {
+          //     return 
+          Container(
                 padding: const EdgeInsets.only(top: 40, right: 10, left: 10),
                 child: Column(
                   children: [
@@ -110,7 +113,7 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (_) => AddEventEquipmentPage(
-                                        eventId: widget.eventDetail.id)));
+                                        eventId: widget.eventDetail.id, eventName: widget.eventDetail.eventName,)));
       
                             scaffoldKey.currentState!;
                           },
@@ -244,8 +247,7 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
                             );
                           } else if (snapshot.connectionState == ConnectionState.done) {
                             final result = snapshot.data!;
-                            var results =
-                                result.where((item) => item.id == eventEquipmentResult[index].equipmentId && eventEquipmentResult[index].equipmentId == widget.eventDetail.id).toList();
+                           // var results = result.where((item) => item.id == eventEquipmentResult[index].equipmentId && eventEquipmentResult[index].equipmentId == widget.eventDetail.id).toList();
                             return ListView.builder(
                               itemCount: result.length,
                               itemBuilder: (_, int index) {
@@ -346,6 +348,18 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
                                                                   setState(() {
                                                                     _checkin = false;
                                                                   });
+
+                                                                  if (scanedEquipment.contains(result[index].id)) {
+                                                                            setState(() {
+                                                                              scanedEquipment.remove(result[index].id);
+                                                                            }); 
+                                                                            scanOutBarcode();  
+                                                                          }else{
+                                                                            setState(() {
+                                                                              scanedEquipment.add(result[index].id);
+                                                                            });
+                                                                            scanInBarcode(); 
+                                                                          }
                                                                 },
                                                                 child: Container(
                                                                   decoration: BoxDecoration(
@@ -353,12 +367,12 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
                                                                           BorderRadius
                                                                               .circular(
                                                                                   5),
-                                                                      color: _checkin? Colors.green : AppColor.gradientFirst),
+                                                                      color: scanedEquipment.contains(result[index].id) ? AppColor.gradientFirst : Colors.green),
                                                                   padding:
                                                                       const EdgeInsets
                                                                           .all(5),
                                                                   height: 18,
-                                                                  child: _checkin? Text('Scan to checkOut',
+                                                                  child: scanedEquipment.contains(result[index].id)? Text('Scan to CheckIn',
                                                                     style: TextStyle(
                                                                         fontWeight:
                                                                             FontWeight
@@ -366,7 +380,7 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
                                                                         fontSize: 8,
                                                                         color: AppColor
                                                                             .homePageContainerTextBig),
-                                                                  ): Text('Scan to checkIn',
+                                                                  ): Text('Scan to CheckOut',
                                                                     style: TextStyle(
                                                                         fontWeight:
                                                                             FontWeight
@@ -432,10 +446,10 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
                     ),
                   ],
                 ),
-              );
-            }
-          );
-        }
+             // );
+           // }
+         // );
+       // }
       ),
     );
   }

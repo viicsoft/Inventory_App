@@ -27,6 +27,7 @@ class BaseAPI {
   var addEventsPath = api + "/events/add";
   var allEventsEquipmentPath = api + "/event_equipment_checklist/all";
   var addEventsEquipmentPath = api + "/event_equipment_checklist/add";
+  var deleteEventsEquipmentPath = api + "/event_equipment_checkout/delete/";
   var allEquipmentsPath = api + "/equipments/all";
   var addEquipmentsPath = api +  "/equipments/add";
   var addEquipmentsCategoryPath = api +  "/equipment_category/add";
