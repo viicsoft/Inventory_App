@@ -69,5 +69,4 @@ class UserAPI extends BaseAPI {
       throw Exception('Failed to load Users');
     }
  }
-
 }
