@@ -32,4 +32,7 @@ class BaseAPI {
   var addEquipmentsPath = api +  "/equipments/add";
   var addEquipmentsCategoryPath = api +  "/equipment_category/add";
   var allEquipmentsCategoryPath = api +  "/equipment_category/all";
+  var allEquipmemntCheckInPath = api + "/equipment_checkin/all";
+  var checkinEquipmentsPath = api + "/equipment_checkin/add";
+  var checkoutEquipmentsPath = api + "/event_equipment_checkout/add";
 }
