@@ -20,7 +20,7 @@ class BaseAPI {
   var registerPath = api + "/user/signup";  
   var loginPath = api + "/user/login";
   var logoutPath = api + "";
-  var deleteUserPath = api + "/user/delete/";
+  var deleteUserPath = api + "/user/delete?id=";
   var profileUserPath = api + "/user/profile";
   var allUsersPath = api + "/user/all";
   var allEventsPath = api + "/events/all";
