@@ -1,8 +1,7 @@
 import 'dart:convert';
-
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:viicsoft_inventory_app/models/eventequipment.dart';
 import 'package:viicsoft_inventory_app/models/events.dart';
 import 'package:viicsoft_inventory_app/services/sharedpref.dart';
 import '../api.dart';
@@ -19,14 +18,23 @@ class EventAPI extends BaseAPI {
       final List<Event> events = _data['data']['events'].map<Event>((model) => Event.fromJson(model as Map<String, dynamic>)).toList();
       return events;
     } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
       throw Exception('Failed to load Events');
-
     }
   }
 
+ Future<List<EventEquipmentChecklist>> fetchAllEventsEquipment() async {
 
+    final response = await http
+        .get(Uri.parse(super.allEventsEquipmentPath), headers: super.headers);
+
+    if (response.statusCode == 200) {
+      final  _data = jsonDecode(response.body);
+      final List<EventEquipmentChecklist> events = _data['data']['event_equipment_checklist'].map<EventEquipmentChecklist>((model) => EventEquipmentChecklist.fromJson(model as Map<String, dynamic>)).toList();
+      return events;
+    } else {
+      throw Exception('Failed to load Events');
+    }
+  }
 
   Future<http.StreamedResponse> addEvent(
       String eventName,
@@ -57,13 +65,24 @@ class EventAPI extends BaseAPI {
     //add multipart to request
     request.files.add(pic);
     var response = await request.send();
-
-    //Get the response from the server
-          // var responseData = await response.stream.toBytes();
-          // var responseString = String.fromCharCodes(responseData);
-          // print(responseString);
-          // print(response.statusCode);
     return response;
+  }
+  
+  Future<http.Response> addEventEquipment(String eventId, String equipmentId) async {
+    final String token = await SharedPrefrence().getToken();
+    var body = jsonEncode({'event_id': eventId, 'equipment_id': equipmentId});
+    http.Response response =
+    await http.post(Uri.parse(super.addEventsEquipmentPath), headers: {
+      "X-Api-Key": "632F2EC9771B6C4C0BDF30BE21D9009B",
+      'x-token': token,
+    }, body: body);
+
+    if (response.statusCode == 200) {
+      print(response.body);
+      return response;
+    } else {
+      throw Exception('Failed auth');
+    }
   }
 
 

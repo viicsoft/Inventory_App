@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Inventory App',
-      initialRoute: '',
+      initialRoute: '/',
   routes: {
     
     '/': (context) => const SignupLogin(),
