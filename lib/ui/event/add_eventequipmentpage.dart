@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
 import 'package:viicsoft_inventory_app/models/category.dart';
 import 'package:viicsoft_inventory_app/models/equipments.dart';
+import 'package:viicsoft_inventory_app/models/events.dart';
 import 'package:viicsoft_inventory_app/services/apis/category_api.dart';
 import 'package:viicsoft_inventory_app/services/apis/equipment_api.dart';
 import 'package:viicsoft_inventory_app/services/apis/event_api.dart';
@@ -12,7 +13,8 @@ import 'package:viicsoft_inventory_app/ui/store/equipment_detail_page.dart';
 // ignore: must_be_immutable
 class AddEventEquipmentPage extends StatefulWidget {
   String eventId;
-  AddEventEquipmentPage({Key? key, required this.eventId}) : super(key: key);
+ String eventName;
+  AddEventEquipmentPage({Key? key, required this.eventId, required this.eventName}) : super(key: key);
 
   @override
   State<AddEventEquipmentPage> createState() => _AddEventEquipmentPageState();
@@ -25,7 +27,8 @@ class _AddEventEquipmentPageState extends State<AddEventEquipmentPage> {
   late Future<List<EquipmentElement>> _equipmentsList;
   late Future<List<EquipmentCategory>> _category;
   late Future equipmentFuture;
-  bool equipmentAdded = false;
+  int? selectedIndex;
+  List selectedEquipment = [];
 
   @override
   void initState() {
@@ -60,8 +63,7 @@ class _AddEventEquipmentPageState extends State<AddEventEquipmentPage> {
                         ),
                         Expanded(child: Container()),
                         Text(
-                          '',
-                          // widget.equipmentCategory.name,
+                           widget.eventName,
                           style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.w500,
@@ -242,33 +244,35 @@ class _AddEventEquipmentPageState extends State<AddEventEquipmentPage> {
                                                                     IconButton(
                                                                         onPressed:
                                                                             () async {
-                                                                          var res = await EventAPI().addEventEquipment(
-                                                                              widget.eventId,
-                                                                              result[index].id);
-                                                                          if (res.statusCode == 200 ||
-                                                                              res.statusCode == 201) {
-                                                                                setState(() {
-                                                                                  equipmentAdded =
-                                                                                true;
-                                                                                });
-                                                                          } else {
+                                                                              var res = await EventAPI().addEventEquipment(widget.eventId, result[index].id);
+                                                                          if (res.statusCode ==200 &&  selectedEquipment.contains(result[index].id)) {
+                                                                            
                                                                             setState(() {
-                                                                              equipmentAdded =
-                                                                                false;
+                                                                              selectedEquipment.remove(result[index].id);
+                                                                            });   
+                                                                          }else{
+                                                                            //await EventAPI().deleteEventEquipment(id);
+                                                                            setState(() {
+                                                                              selectedEquipment.add(result[index].id);
                                                                             });
                                                                           }
 
-                                                                          // setState(
-                                                                          //     () {
-                                                                          //   equipmentAdded =
-                                                                          //       true;
-                                                                          // });
+                                                                          // if (selectedEquipment.contains(result[index].id)) {
+                                                                          //   setState(() {
+                                                                          //     selectedEquipment.remove(result[index].id);
+                                                                          //   });   
+                                                                          // }else{
+                                                                          //   setState(() {
+                                                                          //     selectedEquipment.add(result[index].id);
+                                                                          //   });
+                                                                          // }
+
                                                                         },
-                                                                        icon: equipmentAdded
-                                                                            ? const Icon(Icons.cancel,
-                                                                                color: Colors.red)
-                                                                            : const Icon(Icons.add_box_rounded, color: Colors.green)),
-                                                                    
+                                                                        icon: selectedEquipment.contains(result[index].id)
+                                                                        //selectedIndex ==index
+                                                                            ? const Icon(Icons.check_box_outlined,
+                                                                                color: Colors.green)
+                                                                            : const Icon(Icons.cancel_presentation, color: Colors.red)),
                                                                   ],
                                                                 ),
                                                               ],

@@ -9,6 +9,8 @@ import 'package:viicsoft_inventory_app/models/equipments.dart';
 import 'package:viicsoft_inventory_app/models/eventequipment.dart';
 import 'package:viicsoft_inventory_app/services/apis/category_api.dart';
 import 'package:viicsoft_inventory_app/services/apis/equipment_api.dart';
+import 'package:viicsoft_inventory_app/services/apis/equipment_checkin_api.dart';
+import 'package:viicsoft_inventory_app/services/apis/equipment_checkout_api.dart';
 import 'package:viicsoft_inventory_app/services/apis/event_api.dart';
 import 'package:viicsoft_inventory_app/ui/event/add_eventequipmentpage.dart';
 import 'package:viicsoft_inventory_app/ui/store/equipment_detail_page.dart';
@@ -28,12 +30,14 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   Future<List<EquipmentElement>>? _equipment;
   Future<List<EventEquipmentChecklist>>? _eventEquipment;
-  bool _checkin = true;
   String _scanInBarcode = '';
   String _scanOutBarcode = '';
 
   final EventAPI _eventAPI = EventAPI();
   final EquipmentAPI _equipmentApi = EquipmentAPI();
+  final EquipmentCheckInAPI _equipmentCheckInAPI = EquipmentCheckInAPI();
+  final EquipmentCheckOutAPI _equipmentCheckOutAPI = EquipmentCheckOutAPI();
+  List scanedEquipment = [];
 
   @override
   void initState() {
@@ -79,14 +83,16 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: AppColor.homePageBackground,
-      body: FutureBuilder<List<EventEquipmentChecklist>>(
-        future: _eventEquipment,
-        builder: (context, snapshot) {
-          var eventEquipmentResult = snapshot.data!;
+       body: 
+      // FutureBuilder<List<EventEquipmentChecklist>>(
+      //   future: _eventEquipment,
+      //   builder: (context, snapshot) {
+      //     var eventEquipmentResult = snapshot.data!;
           
-          return ListView.builder(
-            itemBuilder: (context, index) {
-              return Container(
+          // return ListView.builder(
+          //   itemBuilder: (context, index) {
+          //     return 
+          Container(
                 padding: const EdgeInsets.only(top: 40, right: 10, left: 10),
                 child: Column(
                   children: [
@@ -110,7 +116,7 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (_) => AddEventEquipmentPage(
-                                        eventId: widget.eventDetail.id)));
+                                        eventId: widget.eventDetail.id, eventName: widget.eventDetail.eventName,)));
       
                             scaffoldKey.currentState!;
                           },
@@ -244,8 +250,7 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
                             );
                           } else if (snapshot.connectionState == ConnectionState.done) {
                             final result = snapshot.data!;
-                            var results =
-                                result.where((item) => item.id == eventEquipmentResult[index].equipmentId && eventEquipmentResult[index].equipmentId == widget.eventDetail.id).toList();
+                           // var results = result.where((item) => item.id == eventEquipmentResult[index].equipmentId && eventEquipmentResult[index].equipmentId == widget.eventDetail.id).toList();
                             return ListView.builder(
                               itemCount: result.length,
                               itemBuilder: (_, int index) {
@@ -342,10 +347,30 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
                                                               ),
                                                               const SizedBox(width: 10),
                                                               InkWell(
-                                                                onTap: (){
-                                                                  setState(() {
-                                                                    _checkin = false;
-                                                                  });
+                                                                onTap: ()async {
+                                                                  await _scanIn(result[index].equipmentBarcode, result[index].id);
+                                                                    // scanOutBarcode();
+                                                                    // if(result[index].equipmentBarcode == _scanOutBarcode){
+                                                                      //await _equipmentCheckOutAPI.checkoutEquipments(widget.eventDetail.id, result[index].id);
+                                                                    
+                                                                    // setState(() async{
+                                                                      
+                                                                    //           scanedEquipment.remove(result[index].id);
+                                                                    //         });
+                                                                        //    }
+                                                                  //  else if(!scanedEquipment.contains(result[index].id)){
+                                                                  //     //scanOutBarcode();
+                                                                  //     if (result[index].equipmentBarcode == _scanInBarcode){
+                                                                    
+                                                                  //   setState(() async{
+                                                                    //   await _equipmentCheckInAPI.checkinEquipments(result[index].id);
+                                                                  //             scanedEquipment.add(result[index].id);
+                                                                  //           });
+                                                                  //         }
+                                                                  //  }
+                                                                  // else{
+                                                                  //   _confirmDialog(context);
+                                                                  // }
                                                                 },
                                                                 child: Container(
                                                                   decoration: BoxDecoration(
@@ -353,12 +378,12 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
                                                                           BorderRadius
                                                                               .circular(
                                                                                   5),
-                                                                      color: _checkin? Colors.green : AppColor.gradientFirst),
+                                                                      color: scanedEquipment.contains(result[index].id) ? AppColor.gradientFirst : Colors.green),
                                                                   padding:
                                                                       const EdgeInsets
                                                                           .all(5),
                                                                   height: 18,
-                                                                  child: _checkin? Text('Scan to checkOut',
+                                                                  child: scanedEquipment.contains(result[index].id)? Text('Scan to CheckIn',
                                                                     style: TextStyle(
                                                                         fontWeight:
                                                                             FontWeight
@@ -366,7 +391,7 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
                                                                         fontSize: 8,
                                                                         color: AppColor
                                                                             .homePageContainerTextBig),
-                                                                  ): Text('Scan to checkIn',
+                                                                  ): Text('Scan to CheckOut',
                                                                     style: TextStyle(
                                                                         fontWeight:
                                                                             FontWeight
@@ -432,11 +457,46 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
                     ),
                   ],
                 ),
-              );
-            }
-          );
-        }
+             // );
+           // }
+         // );
+       // }
       ),
+    );
+  }
+
+  _scanIn(String? equipmentBarcode, String equipmentId)async{
+   await scanInBarcode();
+    if(equipmentBarcode == _scanInBarcode){
+    return await _equipmentCheckInAPI.checkinEquipments(equipmentId);
+    }
+  }
+
+  _confirmDialog(BuildContext context) {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Warning!'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                Text('Invalid Barcode Or Equipment Does not Exist'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(primary: AppColor.gradientFirst),
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 

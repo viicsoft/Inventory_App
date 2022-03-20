@@ -67,7 +67,7 @@ class EventAPI extends BaseAPI {
     var response = await request.send();
     return response;
   }
-  
+
   Future<http.Response> addEventEquipment(String eventId, String equipmentId) async {
     final String token = await SharedPrefrence().getToken();
     var body = jsonEncode({'event_id': eventId, 'equipment_id': equipmentId});
@@ -84,6 +84,28 @@ class EventAPI extends BaseAPI {
       throw Exception('Failed auth');
     }
   }
+
+
+  Future<EventEquipmentChecklist> deleteEventEquipment(String id) async {
+   final String token = await SharedPrefrence().getToken();
+    var body = jsonEncode({'id': id});
+   final http.Response response = await http.delete(
+     Uri.parse(super.deleteEventsEquipmentPath + id),
+     headers: <String, String>{
+       "X-Api-Key": "632F2EC9771B6C4C0BDF30BE21D9009B",
+       "Content-Type": "application/json",
+       'Accept': 'application/json',
+       'x-token': token,
+     },
+     body: body,
+   );
+   if (response.statusCode == 200) {
+     //print(' delete user: ${response.body}');
+     return EventEquipmentChecklist.fromJson(jsonDecode(response.body));
+   } else {
+     throw Exception('Failed to delete user.');
+   }
+ }
 
 
 }

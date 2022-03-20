@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:viicsoft_inventory_app/models/equipments.dart';
+import 'package:viicsoft_inventory_app/services/apis/equipment_api.dart';
 import '../component/colors.dart';
 import '../component/item_images.dart';
 import 'Menu/users/profile_page.dart';
@@ -12,7 +14,15 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
+
 class _HomePageState extends State<HomePage> {
+  Future<List<EquipmentElement>>? _equipment;
+  final EquipmentAPI _equipmentApi = EquipmentAPI();
+  @override
+  void initState() {
+   _equipment = _equipmentApi.fetchAllEquipments();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,185 +44,210 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       backgroundColor: AppColor.homePageBackground,
-      body: ListView(
-        children: [
-          Container(
-            padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
-            child: Column(
-              children: [
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.width/1.5,
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          AppColor.gradientFirst,
-                          AppColor.gradientSecond.withOpacity(0.8)
-                        ],
-                        begin: Alignment.bottomLeft,
-                        end: Alignment.centerRight,
-                      ),
-                      borderRadius: const BorderRadius.only(
-                        topRight: Radius.circular(40),
-                        topLeft: Radius.circular(40),
-                        bottomLeft: Radius.circular(40),
-                        bottomRight: Radius.circular(40),
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          offset: const Offset(2, 5),
-                          blurRadius: 4,
-                          color: AppColor.gradientSecond.withOpacity(0.2),
-                        )
-                      ]),
-                  child: Container(
-                    padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Inventory Summary',
-                          style: TextStyle(
-                              fontSize: 25,
-                              color: AppColor.homePageContainerTextBig),
-                        ),
-                         SizedBox(height: MediaQuery.of(context).size.width/15),
-                        Row(
+      body: FutureBuilder<List<EquipmentElement>>(
+        future: _equipment,
+        builder: (context, snapshot) {
+          if(snapshot.connectionState == ConnectionState.done) {
+            final result = snapshot.data!;
+          if(result.isNotEmpty){
+          var fairResult = result.where((item) => item.equipmentCondition == 'FAIR').toList();
+          var badResult = result.where((item) => item.equipmentCondition == 'BAD').toList();
+          var newResult = result.where((item) => item.equipmentCondition == 'NEW').toList();
+          var oldResult = result.where((item) => item.equipmentCondition == 'OLD').toList();
+          var goodResult = newResult + oldResult;
+          return ListView(
+            children: [
+              Container(
+                padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                child: Column(
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.width/1.45,
+                      decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              AppColor.gradientFirst,
+                              AppColor.gradientSecond.withOpacity(0.8)
+                            ],
+                            begin: Alignment.bottomLeft,
+                            end: Alignment.centerRight,
+                          ),
+                          borderRadius: const BorderRadius.only(
+                            topRight: Radius.circular(40),
+                            topLeft: Radius.circular(40),
+                            bottomLeft: Radius.circular(40),
+                            bottomRight: Radius.circular(40),
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              offset: const Offset(2, 5),
+                              blurRadius: 4,
+                              color: AppColor.gradientSecond.withOpacity(0.2),
+                            )
+                          ]),
+                      child: Container(
+                        padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.white,
-                              ),
-                              padding: const EdgeInsets.all(5),
-                              height: 25,
-                              child: const Center(
-                                child: Text("",
-                                  //'${Provider.of<InventoryData>(context).menu.length}',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 12,
-                                      color: Colors.black),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 10),
                             Text(
-                              'Total Equipments Recorded',
+                              'Inventory Summary',
                               style: TextStyle(
-                                  fontSize: 16,
+                                  fontSize: 25,
                                   color: AppColor.homePageContainerTextBig),
                             ),
-                          ],
-                        ),
-                        SizedBox(height: MediaQuery.of(context).size.width/15),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            equipmentCondition(qauntity: '10', condition: 'Fair'),
-                            const SizedBox(
-                                height: 50,
-                                child: VerticalDivider(
-                                    color: Colors.white, thickness: 2)),
-                            equipmentCondition(qauntity: '10', condition: 'Bad'),
-                            const SizedBox(
-                                height: 50,
-                                child: VerticalDivider(
-                                    color: Colors.white, thickness: 2)),
-                            equipmentCondition(
-                                qauntity: '120000', condition: 'Good'),
-                            
-                          ],
-                        ),
-                        SizedBox(height: MediaQuery.of(context).size.width/16),
-                        Row(
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.white,
-                              ),
-                              padding: const EdgeInsets.all(5),
-                              height: 25,
-                              child: const Center(
-                                child: Text("",
-                                  //'${Provider.of<InventoryData>(context).menu.length}',
-                                  style:TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 12,
-                                      color: Colors.black),
+                             SizedBox(height: MediaQuery.of(context).size.width/15),
+                            Row(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Colors.white,
+                                  ),
+                                  padding: const EdgeInsets.all(5),
+                                  height: 25,
+                                  child:  Center(
+                                    child: Text(result.length.toString(),
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 12,
+                                          color: Colors.black),
+                                    ),
+                                  ),
                                 ),
-                              ),
+                                const SizedBox(width: 10),
+                                Text(
+                                  'Total Equipments Recorded',
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: AppColor.homePageContainerTextBig),
+                                ),
+                              ],
                             ),
-                            const SizedBox(width: 10),
-                            Text(
-                              'Equipments Available in Stock',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: AppColor.homePageContainerTextBig,
-                              ),
+                            SizedBox(height: MediaQuery.of(context).size.width/15),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                
+                                equipmentCondition(qauntity: fairResult.isEmpty? '0': '${fairResult.length}', condition: 'Fair'),
+                                const SizedBox(
+                                    height: 50,
+                                    child: VerticalDivider(
+                                        color: Colors.white, thickness: 2)),
+                                equipmentCondition(qauntity: badResult.isEmpty? '0' :'${badResult.length}', condition: 'Bad'),
+                                const SizedBox(
+                                    height: 50,
+                                    child: VerticalDivider(
+                                        color: Colors.white, thickness: 2)),
+                                equipmentCondition(
+                                    qauntity: goodResult.isEmpty? '0' :'${goodResult.length}', condition: 'Good'),
+                                
+                              ],
                             ),
+                            SizedBox(height: MediaQuery.of(context).size.width/16),
+                            Row(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Colors.white,
+                                  ),
+                                  padding: const EdgeInsets.all(5),
+                                  height: 25,
+                                  child: const Center(
+                                    child: Text("",
+                                      //'${Provider.of<InventoryData>(context).menu.length}',
+                                      style:TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 12,
+                                          color: Colors.black),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Text(
+                                  'Equipments Available in Stock',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: AppColor.homePageContainerTextBig,
+                                  ),
+                                ),
+                              ],
+                            )
                           ],
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(height: MediaQuery.of(context).size.width/15),
-                Row(
-                  children: [
-                    Text(
-                      'Activities',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500,
-                        color: AppColor.homePageTitle,
+                        ),
                       ),
                     ),
+                    SizedBox(height: MediaQuery.of(context).size.width/15),
+                    Row(
+                      children: [
+                        Text(
+                          'Activities',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w500,
+                            color: AppColor.homePageTitle,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: MediaQuery.of(context).size.width/15),
+                    SizedBox(
+                      child: Column(
+                        children: [
+                          homeactivities(context,
+                              qauntity: '20',
+                              title: 'Pending Return',
+                              icon: Icons.pending, onpressed: () {
+                            // Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //         builder: (context) => PendingReturnPage()));
+                          }),
+                          SizedBox(height: MediaQuery.of(context).size.width/16),
+                          homeactivities(context,
+                              qauntity: '20',
+                              title: 'Collected',
+                              icon: Icons.collections, onpressed: () {
+                            // Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //         builder: (context) => CollectionPage()));
+                          }),
+                          SizedBox(height: MediaQuery.of(context).size.width/16),
+                          homeactivities(context,
+                              qauntity: '200',
+                              title: 'Not Collected',
+                              icon: Icons.not_interested, onpressed: () {
+                            // Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //         builder: (context) => NotCollectedPage()));
+                          }),
+                          SizedBox(height: MediaQuery.of(context).size.width/16),
+                        ],
+                      ),
+                    )
                   ],
                 ),
-                SizedBox(height: MediaQuery.of(context).size.width/15),
-                SizedBox(
-                  child: Column(
-                    children: [
-                      homeactivities(context,
-                          qauntity: '20',
-                          title: 'Pending Return',
-                          icon: Icons.pending, onpressed: () {
-                        // Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //         builder: (context) => PendingReturnPage()));
-                      }),
-                      SizedBox(height: MediaQuery.of(context).size.width/16),
-                      homeactivities(context,
-                          qauntity: '20',
-                          title: 'Collected',
-                          icon: Icons.collections, onpressed: () {
-                        // Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //         builder: (context) => CollectionPage()));
-                      }),
-                      SizedBox(height: MediaQuery.of(context).size.width/16),
-                      homeactivities(context,
-                          qauntity: '200',
-                          title: 'Not Collected',
-                          icon: Icons.not_interested, onpressed: () {
-                        // Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //         builder: (context) => NotCollectedPage()));
-                      }),
-                      SizedBox(height: MediaQuery.of(context).size.width/16),
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ),
-        ],
+              ),
+            ],
+          );
+        }
+        else {
+              return Center(
+                child: CircularProgressIndicator(color: AppColor.gradientFirst),
+              );
+            }
+        }
+        else {
+              return  Center(
+                child: CircularProgressIndicator(color: AppColor.gradientFirst),
+              );
+            }
+        }
       ),
     );
   }
