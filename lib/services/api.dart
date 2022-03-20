@@ -31,6 +31,12 @@ class BaseAPI {
   var addEquipmentsPath = api +  "/equipments/add";
   var addEquipmentsCategoryPath = api +  "/equipment_category/add";
   var allEquipmentsCategoryPath = api +  "/equipment_category/all";
+  var allEventEquipmentsChecklistPath = api = "/event_equipment_checklist/all";
+  var addEventEquipmentsChecklistPath = api + "/event_equipment_checklist/add";
+  var updateEventEquipmentsChecklistPath = api + "/event_equipment_checklist/update";
+  var detailEventEquipmentsChecklistPath = api + "/event_equipment_checklist/detail?id=";
+  var deleteEventEquipmentsChecklistPath = api + "/event_equipment_checklist/delete?id=";
+
   var allEquipmemntCheckInPath = api + "/equipment_checkin/all";
   var checkinEquipmentsPath = api + "/equipment_checkin/add";
   var allEquipmemntCheckOutPath = api + "/event_equipment_checkout/all";
