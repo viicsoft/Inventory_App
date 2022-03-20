@@ -30,10 +30,10 @@ class EquipmentCheckInAPI extends BaseAPI {
     }
   }
 
-  Future<http.Response> checkinEquipments(String id) async {
+  Future<http.Response> checkinEquipments(String equipmentid) async {
     final String token = await SharedPrefrence().getToken();
 
-    var body = jsonEncode({'equipment_id': id});
+    var body = jsonEncode({'equipment_id': equipmentid});
     final http.Response response = await http.post(
         Uri.parse(super.checkinEquipmentsPath),
         headers: <String, String>{
