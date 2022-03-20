@@ -5,30 +5,30 @@ import 'dart:convert';
 import 'package:viicsoft_inventory_app/services/api.dart';
 import 'package:http/http.dart' as http;
 import '../../models/equipmentcheckin.dart';
+import '../../models/eventequipmentcheckout.dart';
 import '../sharedpref.dart';
 
 class EquipmentCheckOutAPI extends BaseAPI {
 
-  // Future<List<EquipmentCheckOut>> fetchAllEquipmentCheckOut() async {
-  //   final String token = await SharedPrefrence().getToken();
-  //   final response = await http
-  //       .get(Uri.parse(super.allEquipmemntCheckOutPath),
-  //       headers: {
-  //         "X-Api-Key": "632F2EC9771B6C4C0BDF30BE21D9009B",
-  //         "Content-Type": "application/json",
-  //         'Accept': 'application/json',
-  //         'x-token': token,
-  //       });
-  //
-  //   if (response.statusCode == 200) {
-  //     final  _data = jsonDecode(response.body);
-  //     final List<EquipmentCheck> equipments = _data['data']['equipment_checkin'].map<EquipmentCheckin>((model) => EquipmentCheckin.fromJson(model as Map<String, dynamic>)).toList();
-  //     print(equipments);
-  //     return equipments;
-  //   } else {
-  //     throw Exception('Failed to load Events');
-  //   }
-  // }
+  Future<List<EventEquipmentCheckout>> fetchAllEquipmentCheckOut() async {
+    final String token = await SharedPrefrence().getToken();
+    final response = await http
+        .get(Uri.parse(super.allEquipmemntCheckOutPath),
+        headers: {
+          "X-Api-Key": "632F2EC9771B6C4C0BDF30BE21D9009B",
+          "Content-Type": "application/json",
+          'Accept': 'application/json',
+          'x-token': token,
+        });
+
+    if (response.statusCode == 200) {
+      final  _data = jsonDecode(response.body);
+      final List<EventEquipmentCheckout> equipments = _data['data']['event_equipment_checkout'].map<EventEquipmentCheckout>((model) => EventEquipmentCheckout.fromJson(model as Map<String, dynamic>)).toList();
+      return equipments;
+    } else {
+      throw Exception('Failed to load Events');
+    }
+  }
 
   Future<http.Response> checkoutEquipments(String eventId,String equipmentId) async {
     final String token = await SharedPrefrence().getToken();

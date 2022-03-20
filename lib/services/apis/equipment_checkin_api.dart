@@ -23,7 +23,6 @@ class EquipmentCheckInAPI extends BaseAPI {
     if (response.statusCode == 200) {
       final  _data = jsonDecode(response.body);
       final List<EquipmentCheckin> equipments = _data['data']['equipment_checkin'].map<EquipmentCheckin>((model) => EquipmentCheckin.fromJson(model as Map<String, dynamic>)).toList();
-      print(equipments);
       return equipments;
     } else {
       throw Exception('Failed to load Events');
