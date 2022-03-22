@@ -41,10 +41,10 @@ class Data {
     required this.eventEquipmentCheckout,
   });
 
-  List<EventEquipmentCheckout> eventEquipmentCheckout;
+  List<EquipmentCheckout> eventEquipmentCheckout;
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
-    eventEquipmentCheckout: List<EventEquipmentCheckout>.from(json["event_equipment_checkout"].map((x) => EventEquipmentCheckout.fromJson(x))),
+    eventEquipmentCheckout: List<EquipmentCheckout>.from(json["event_equipment_checkout"].map((x) => EquipmentCheckout.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -52,8 +52,8 @@ class Data {
   };
 }
 
-class EventEquipmentCheckout {
-  EventEquipmentCheckout({
+class EquipmentCheckout {
+  EquipmentCheckout({
     required this.id,
     required this.eventId,
     required this.equipmentId,
@@ -65,7 +65,7 @@ class EventEquipmentCheckout {
   String equipmentId;
   DateTime equipmentOutDatetime;
 
-  factory EventEquipmentCheckout.fromJson(Map<String, dynamic> json) => EventEquipmentCheckout(
+  factory EquipmentCheckout.fromJson(Map<String, dynamic> json) => EquipmentCheckout(
     id: json["id"],
     eventId: json["event_id"],
     equipmentId: json["equipment_id"],

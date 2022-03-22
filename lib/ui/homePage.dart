@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:viicsoft_inventory_app/models/equipments.dart';
 import 'package:viicsoft_inventory_app/services/apis/equipment_api.dart';
+import 'package:viicsoft_inventory_app/ui/event/checkin_equipment.dart';
+import 'package:viicsoft_inventory_app/ui/event/checkout_equipment.dart';
 import '../component/colors.dart';
 import '../component/item_images.dart';
 import 'Menu/users/profile_page.dart';
@@ -209,22 +211,22 @@ class _HomePageState extends State<HomePage> {
                           SizedBox(height: MediaQuery.of(context).size.width/16),
                           homeactivities(context,
                               qauntity: '20',
-                              title: 'Collected',
+                              title: 'CheckOut Equipment',
                               icon: Icons.collections, onpressed: () {
-                            // Navigator.push(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //         builder: (context) => CollectionPage()));
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const CheckOutEquipmentPage()));
                           }),
                           SizedBox(height: MediaQuery.of(context).size.width/16),
                           homeactivities(context,
                               qauntity: '200',
-                              title: 'Not Collected',
+                              title: 'CheckIn Equipment',
                               icon: Icons.not_interested, onpressed: () {
-                            // Navigator.push(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //         builder: (context) => NotCollectedPage()));
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const CheckInEquipmentPage()));
                           }),
                           SizedBox(height: MediaQuery.of(context).size.width/16),
                         ],

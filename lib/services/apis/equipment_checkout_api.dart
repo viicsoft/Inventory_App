@@ -10,7 +10,7 @@ import '../sharedpref.dart';
 
 class EquipmentCheckOutAPI extends BaseAPI {
 
-  Future<List<EventEquipmentCheckout>> fetchAllEquipmentCheckOut() async {
+  Future<List<EquipmentCheckout>> fetchAllEquipmentCheckOut() async {
     final String token = await SharedPrefrence().getToken();
     final response = await http
         .get(Uri.parse(super.allEquipmemntCheckOutPath),
@@ -23,7 +23,7 @@ class EquipmentCheckOutAPI extends BaseAPI {
 
     if (response.statusCode == 200) {
       final  _data = jsonDecode(response.body);
-      final List<EventEquipmentCheckout> equipments = _data['data']['event_equipment_checkout'].map<EventEquipmentCheckout>((model) => EventEquipmentCheckout.fromJson(model as Map<String, dynamic>)).toList();
+      final List<EquipmentCheckout> equipments = _data['data']['event_equipment_checkout'].map<EquipmentCheckout>((model) => EquipmentCheckout.fromJson(model as Map<String, dynamic>)).toList();
       return equipments;
     } else {
       throw Exception('Failed to load Events');
