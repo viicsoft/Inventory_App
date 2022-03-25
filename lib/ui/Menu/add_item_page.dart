@@ -353,8 +353,8 @@ class _AddItemPageState extends State<AddItemPage> {
                 ),
               );
             } else {
-              return const Center(
-                child: CircularProgressIndicator(),
+              return Center(
+                child: CircularProgressIndicator(color: AppColor.gradientFirst),
               );
             }
           }),

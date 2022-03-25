@@ -1,19 +1,15 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
-import 'package:viicsoft_inventory_app/models/category.dart';
 import 'package:viicsoft_inventory_app/models/equipments.dart';
 import 'package:viicsoft_inventory_app/models/eventequipment.dart';
-import 'package:viicsoft_inventory_app/services/apis/category_api.dart';
 import 'package:viicsoft_inventory_app/services/apis/equipment_api.dart';
 import 'package:viicsoft_inventory_app/services/apis/equipment_checkin_api.dart';
+import 'package:viicsoft_inventory_app/services/apis/equipment_checklist_api.dart';
 import 'package:viicsoft_inventory_app/services/apis/equipment_checkout_api.dart';
 import 'package:viicsoft_inventory_app/services/apis/event_api.dart';
 import 'package:viicsoft_inventory_app/ui/event/add_eventequipmentpage.dart';
-import 'package:viicsoft_inventory_app/ui/store/equipment_detail_page.dart';
 
 import '../../models/events.dart';
 
@@ -33,7 +29,7 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
   String _scanInBarcode = '';
   String _scanOutBarcode = '';
 
-  final EventAPI _eventAPI = EventAPI();
+  final EventEquipmentChecklistAPI _eventEquipmentAPI = EventEquipmentChecklistAPI();
   final EquipmentAPI _equipmentApi = EquipmentAPI();
   final EquipmentCheckInAPI _equipmentCheckInAPI = EquipmentCheckInAPI();
   final EquipmentCheckOutAPI _equipmentCheckOutAPI = EquipmentCheckOutAPI();
@@ -42,7 +38,7 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
   @override
   void initState() {
     _equipment = _equipmentApi.fetchAllEquipments();
-    _eventEquipment = _eventAPI.fetchAllEventsEquipment();
+    _eventEquipment = _eventEquipmentAPI.fetchAllEquipmentCheckList();
     super.initState();
   }
 
@@ -94,8 +90,6 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
                 );
               } else {
                 var eventEquipmentResult = snapshot.data!;
-
-                return ListView.builder(itemBuilder: (context, index) {
                   return Container(
                     padding:
                         const EdgeInsets.only(top: 40, right: 10, left: 10),
@@ -268,228 +262,223 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
                                     .toList();
                                 var result = results
                                     .where((item) =>
-                                        item.id ==
-                                        eventequipment[0].equipmentId)
+                                        item.id == widget.eventDetail.id)
                                     .toList();
                                 return ListView.builder(
-                                  itemBuilder: (context, index) {
-                                    return ListView.builder(
-                                      itemCount: result.length,
-                                      itemBuilder: (_, int index) {
-                                        return Container(
-                                          height: 120,
-                                          padding: const EdgeInsets.only(
-                                              bottom: 5, right: 5),
-                                          child: Card(
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
+                                    itemBuilder: (context, index) {
+                                  return ListView.builder(
+                                    itemCount: result.length,
+                                    itemBuilder: (_, int index) {
+                                      return Container(
+                                        height: 120,
+                                        padding: const EdgeInsets.only(
+                                            bottom: 5, right: 5),
+                                        child: Card(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                          elevation: 3,
+                                          shadowColor: AppColor.gradientSecond,
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                              top: 5,
+                                              left: 5,
                                             ),
-                                            elevation: 3,
-                                            shadowColor: AppColor.gradientSecond,
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                top: 5,
-                                                left: 5,
-                                              ),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Row(
-                                                    children: [
-                                                      Column(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Container(
+                                                          width: 75,
+                                                          height: 90,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10),
+                                                            image:
+                                                                DecorationImage(
+                                                              image: NetworkImage(
+                                                                  result[index]
+                                                                      .equipmentImage),
+                                                              fit: BoxFit.cover,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    const SizedBox(width: 10),
+                                                    Expanded(
+                                                      child: Column(
                                                         crossAxisAlignment:
                                                             CrossAxisAlignment
                                                                 .start,
                                                         children: [
-                                                          Container(
-                                                            width: 75,
-                                                            height: 90,
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(10),
-                                                              image:
-                                                                  DecorationImage(
-                                                                image: NetworkImage(
-                                                                    result[index]
-                                                                        .equipmentImage),
-                                                                fit: BoxFit.cover,
-                                                              ),
+                                                          SizedBox(
+                                                            width:
+                                                                MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width,
+                                                            child: Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Text(
+                                                                  result[index]
+                                                                      .equipmentName,
+                                                                  maxLines: 2,
+                                                                  style: TextStyle(
+                                                                      color: AppColor
+                                                                          .homePageTitle,
+                                                                      fontSize:
+                                                                          14,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500),
+                                                                ),
+                                                                Row(
+                                                                  children: [
+                                                                    Container(
+                                                                      decoration: BoxDecoration(
+                                                                          borderRadius: BorderRadius.circular(
+                                                                              5),
+                                                                          color:
+                                                                              colorscondition(result[index].equipmentCondition)),
+                                                                      padding:
+                                                                          const EdgeInsets.all(
+                                                                              5),
+                                                                      height:
+                                                                          18,
+                                                                      child:
+                                                                          Text(
+                                                                        result[index]
+                                                                            .equipmentCondition,
+                                                                        style: TextStyle(
+                                                                            fontWeight: FontWeight
+                                                                                .bold,
+                                                                            fontSize:
+                                                                                8,
+                                                                            color:
+                                                                                AppColor.homePageContainerTextBig),
+                                                                      ),
+                                                                    ),
+                                                                    const SizedBox(
+                                                                        width:
+                                                                            10),
+                                                                    InkWell(
+                                                                      onTap:
+                                                                          () async {
+                                                                        if (scanedEquipment
+                                                                            .contains(result[index].id)) {
+                                                                          await _checkIn(
+                                                                              result[index].equipmentBarcode,
+                                                                              result[index].id);
+                                                                          setState(
+                                                                              () {
+                                                                            scanedEquipment.remove(result[index].id);
+                                                                          });
+                                                                        } else if (!scanedEquipment
+                                                                            .contains(result[index].id)) {
+                                                                          _checkOut(
+                                                                              result[index].equipmentBarcode,
+                                                                              result[index].id,
+                                                                              widget.eventDetail.id);
+                                                                          setState(
+                                                                              () {
+                                                                            scanedEquipment.add(result[index].id);
+                                                                          });
+                                                                        } else {
+                                                                          _confirmDialog(
+                                                                              context);
+                                                                        }
+                                                                      },
+                                                                      child:
+                                                                          Container(
+                                                                        decoration: BoxDecoration(
+                                                                            borderRadius: BorderRadius.circular(
+                                                                                5),
+                                                                            color: checkcolors(checkinId: '', equipmentId: result[index].id)),
+                                                                        padding:
+                                                                            const EdgeInsets.all(5),
+                                                                        height:
+                                                                            18,
+                                                                        child: scanedEquipment.contains(result[index].id)
+                                                                            ? Text(
+                                                                                'Scan to CheckIn',
+                                                                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 8, color: AppColor.homePageContainerTextBig),
+                                                                              )
+                                                                            : Text(
+                                                                                'Scan to CheckOut',
+                                                                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 8, color: AppColor.homePageContainerTextBig),
+                                                                              ),
+                                                                      ),
+                                                                    ),
+                                                                    Expanded(
+                                                                        child:
+                                                                            Container()),
+                                                                    TextButton(
+                                                                      style: TextButton.styleFrom(
+                                                                          primary:
+                                                                              AppColor.gradientFirst),
+                                                                      onPressed:
+                                                                          () {},
+                                                                      child: Icon(
+                                                                          Icons
+                                                                              .delete,
+                                                                          color:
+                                                                              AppColor.gradientFirst),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          SizedBox(
+                                                            width:
+                                                                MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width,
+                                                            child: Text(
+                                                              result[index]
+                                                                      .equipmentDescription!
+                                                                      .isEmpty
+                                                                  ? 'No description'
+                                                                  : result[
+                                                                          index]
+                                                                      .equipmentDescription!,
+                                                              maxLines: 2,
+                                                              style: const TextStyle(
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500),
                                                             ),
                                                           ),
                                                         ],
                                                       ),
-                                                      const SizedBox(width: 10),
-                                                      Expanded(
-                                                        child: Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            SizedBox(
-                                                              width: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .width,
-                                                              child: Column(
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  Text(
-                                                                    result[index]
-                                                                        .equipmentName,
-                                                                    maxLines: 2,
-                                                                    style: TextStyle(
-                                                                        color: AppColor
-                                                                            .homePageTitle,
-                                                                        fontSize:
-                                                                            14,
-                                                                        fontWeight:
-                                                                            FontWeight
-                                                                                .w500),
-                                                                  ),
-                                                                  Row(
-                                                                    children: [
-                                                                      Container(
-                                                                        decoration: BoxDecoration(
-                                                                            borderRadius:
-                                                                                BorderRadius.circular(
-                                                                                    5),
-                                                                            color: colorscondition(
-                                                                                result[index].equipmentCondition)),
-                                                                        padding:
-                                                                            const EdgeInsets
-                                                                                .all(5),
-                                                                        height: 18,
-                                                                        child: Text(
-                                                                          result[index]
-                                                                              .equipmentCondition,
-                                                                          style: TextStyle(
-                                                                              fontWeight: FontWeight
-                                                                                  .bold,
-                                                                              fontSize:
-                                                                                  8,
-                                                                              color:
-                                                                                  AppColor.homePageContainerTextBig),
-                                                                        ),
-                                                                      ),
-                                                                      const SizedBox(
-                                                                          width:
-                                                                              10),
-                                                                      InkWell(
-                                                                        onTap:
-                                                                            () async {
-                                                                          if (scanedEquipment
-                                                                              .contains(
-                                                                                  result[index].id)) {
-                                                                            await _checkIn(
-                                                                                result[index].equipmentBarcode,
-                                                                                result[index].id);
-                                                                            setState(
-                                                                                () {
-                                                                              scanedEquipment
-                                                                                  .remove(result[index].id);
-                                                                            });
-                                                                          } else if (!scanedEquipment
-                                                                              .contains(
-                                                                                  result[index].id)) {
-                                                                            _checkOut(
-                                                                                result[index].equipmentBarcode,
-                                                                                result[index].id,
-                                                                                widget.eventDetail.id);
-                                                                            setState(
-                                                                                () {
-                                                                              scanedEquipment
-                                                                                  .add(result[index].id);
-                                                                            });
-                                                                          } else {
-                                                                            _confirmDialog(
-                                                                                context);
-                                                                          }
-                                                                        },
-                                                                        child:
-                                                                            Container(
-                                                                          decoration: BoxDecoration(
-                                                                              borderRadius: BorderRadius.circular(
-                                                                                  5),
-                                                                              color: scanedEquipment.contains(result[index].id)
-                                                                                  ? AppColor.gradientFirst
-                                                                                  : Colors.green),
-                                                                          padding:
-                                                                              const EdgeInsets.all(
-                                                                                  5),
-                                                                          height:
-                                                                              18,
-                                                                          child: scanedEquipment
-                                                                                  .contains(result[index].id)
-                                                                              ? Text(
-                                                                                  'Scan to CheckIn',
-                                                                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 8, color: AppColor.homePageContainerTextBig),
-                                                                                )
-                                                                              : Text(
-                                                                                  'Scan to CheckOut',
-                                                                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 8, color: AppColor.homePageContainerTextBig),
-                                                                                ),
-                                                                        ),
-                                                                      ),
-                                                                      Expanded(
-                                                                          child:
-                                                                              Container()),
-                                                                      TextButton(
-                                                                        style: TextButton.styleFrom(
-                                                                            primary:
-                                                                                AppColor.gradientFirst),
-                                                                        onPressed:
-                                                                            () {},
-                                                                        child: Icon(
-                                                                            Icons
-                                                                                .delete,
-                                                                            color: AppColor
-                                                                                .gradientFirst),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                            SizedBox(
-                                                              width: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .width,
-                                                              child: Text(
-                                                                result[index]
-                                                                        .equipmentDescription!
-                                                                        .isEmpty
-                                                                    ? 'No description'
-                                                                    : result[index]
-                                                                        .equipmentDescription!,
-                                                                maxLines: 2,
-                                                                style: const TextStyle(
-                                                                    fontSize: 14,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w500),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
+                                                    )
+                                                  ],
+                                                ),
+                                              ],
                                             ),
                                           ),
-                                        );
-                                      },
-                                    );
-                                  }
-                                );
+                                        ),
+                                      );
+                                    },
+                                  );
+                                });
                               } else {
                                 return Center(
                                   child: CircularProgressIndicator(
@@ -502,9 +491,9 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
                       ],
                     ),
                   );
-                });
+                }
               }
-            }
+            
             return Center(
               child: CircularProgressIndicator(color: AppColor.gradientFirst),
             );
@@ -554,6 +543,13 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
         );
       },
     );
+  }
+  Color checkcolors({String? equipmentId, String? checkinId}) {
+    if (equipmentId == checkinId) {
+      return Colors.red;
+    } else {
+      return Colors.green;
+    }
   }
 
   Color colorscondition(String conditionresult) {

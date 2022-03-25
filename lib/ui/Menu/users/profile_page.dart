@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:viicsoft_inventory_app/ui/store/store_page.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -51,15 +52,10 @@ class _ProfilePageState extends State<ProfilePage> {
             },
           ),
           const Divider(),
-          const ListTile(
-            leading: Icon(Icons.storage_sharp),
-            title: Text('Store'),
-            // onTap: () => Navigator.push(
-            //   context,
-            //   MaterialPageRoute(
-            //     builder: (context) => const StorePage(),
-            //   ),
-            // ),
+           ListTile(
+            leading: const Icon(Icons.storage_sharp),
+            title: const Text('Store'),
+            onTap: () => Navigator.pushNamed(context, '/store')
           ),
            ListTile(
             leading: const Icon(Icons.add),

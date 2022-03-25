@@ -117,10 +117,7 @@ class _AddEventEquipmentPageState extends State<AddEventEquipmentPage> {
                             if (snapshot.connectionState ==
                                 ConnectionState.done) {
                               if (selectedCategory == null) {
-                                return Center(
-                                  child: CircularProgressIndicator(
-                                      color: AppColor.gradientFirst),
-                                );
+                                return SizedBox(child: Container());
                               } else {
                                 final results = snapshot.data!;
                                 var result = results

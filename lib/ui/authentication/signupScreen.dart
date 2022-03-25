@@ -162,7 +162,7 @@ class _SignupPageState extends State<SignupPage> {
                                     _emailField.text,
                                     _passwordField.text);
                                 if (res.statusCode == 200) {
-                                  setState(() {});
+                                  //setState(() {});
                                   _formkey.currentState!.reset();
                                   ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(

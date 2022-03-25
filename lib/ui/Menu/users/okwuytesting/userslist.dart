@@ -20,9 +20,10 @@ class UserList extends StatelessWidget {
           future: UserAPI().fetchAllUser(),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
-              return SizedBox(
-                child: Container(),
-              );
+              return Center(
+                                child: CircularProgressIndicator(
+                                    color: AppColor.gradientFirst),
+                              );
             } else if (snapshot.connectionState == ConnectionState.done) {
               var results = snapshot.data!;
               return Column(

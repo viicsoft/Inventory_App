@@ -274,10 +274,10 @@ class _CheckInEquipmentPageState extends State<CheckInEquipmentPage> {
             );
           }
           //}
-
           ),
     );
   }
+  
 
   Color colorscondition(String conditionresult) {
     if (conditionresult == 'NEW') {

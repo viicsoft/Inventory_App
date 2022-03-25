@@ -12,7 +12,6 @@ import 'package:viicsoft_inventory_app/ui/authentication/signupScreen.dart';
 import 'package:viicsoft_inventory_app/ui/event/events_page.dart';
 import 'package:viicsoft_inventory_app/ui/homePage.dart';
 import 'package:viicsoft_inventory_app/ui/store/store_page.dart';
-import 'package:viicsoft_inventory_app/ui/user/users_page.dart';
 
 
 void main() async {
@@ -41,6 +40,7 @@ class MyApp extends StatelessWidget {
     '/resetpassword': (context) => const ResetPasswordPage(),
     '/PasswordResetSuccessPage': (context) => const PasswordResetSuccessPage(),
     '/event': (context) => const EventsPage(),
+    '/store': (context) => const StorePage(),
   },
     );
   }

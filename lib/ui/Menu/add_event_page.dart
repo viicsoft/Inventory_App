@@ -41,6 +41,7 @@ class _AddEventPageState extends State<AddEventPage> {
 
   @override
   Widget build(BuildContext context) {
+    var screenSize = MediaQuery.of(context).size;
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -57,8 +58,8 @@ class _AddEventPageState extends State<AddEventPage> {
           children: [
             Container(
               padding: const EdgeInsets.only(top: 50, left: 10, right: 30),
-              width: MediaQuery.of(context).size.width,
-              height: 110,
+              width: screenSize.width,
+              height: screenSize.width*0.28,
               child: Column(
                 children: [
                   Row(
@@ -67,9 +68,9 @@ class _AddEventPageState extends State<AddEventPage> {
                         onPressed: () {
                           Navigator.pop(context);
                         },
-                        icon: const Icon(
+                        icon:  Icon(
                           Icons.arrow_back_ios_new,
-                          size: 23,
+                          size: screenSize.width*0.06,
                           color: Colors.white,
                         ),
                       ),
@@ -89,7 +90,7 @@ class _AddEventPageState extends State<AddEventPage> {
             Expanded(
               child: Container(
                 padding: const EdgeInsets.only(left: 30, right: 30),
-                width: MediaQuery.of(context).size.width,
+                width: screenSize.width,
                 decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
@@ -101,11 +102,11 @@ class _AddEventPageState extends State<AddEventPage> {
                   children: [
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.only(top: 15),
+                        padding: EdgeInsets.only(top: screenSize.width*0.03),
                         child: ListView(
                           children: [
                             eventImages(context),
-                            const SizedBox(height: 40),
+                            SizedBox(height: screenSize.width*0.13),
                             TextField(
                               controller: _eventName,
                               decoration: InputDecoration(
@@ -117,7 +118,7 @@ class _AddEventPageState extends State<AddEventPage> {
                                 labelText: 'Event Name*',
                               ),
                             ),
-                            const SizedBox(height: 15),
+                             SizedBox(height: screenSize.width*0.06),
                             TextField(
                               controller: _eventType,
                               decoration: InputDecoration(
@@ -129,7 +130,7 @@ class _AddEventPageState extends State<AddEventPage> {
                                 labelText: 'Event Type*',
                               ),
                             ),
-                            const SizedBox(height: 15),
+                             SizedBox(height: screenSize.width*0.06),
                             TextField(
                               controller: _eventLocation,
                               decoration: InputDecoration(
@@ -141,7 +142,7 @@ class _AddEventPageState extends State<AddEventPage> {
                                 labelText: 'Event Location*',
                               ),
                             ),
-                            const SizedBox(height: 15),
+                            SizedBox(height: screenSize.width*0.06),
                             ListTile(
                               trailing: Text(
                                   "${startingDate.day}/${startingDate.month}/${startingDate.year}"),
@@ -162,7 +163,7 @@ class _AddEventPageState extends State<AddEventPage> {
                               title: const Icon(Icons.arrow_drop_down),
                               onTap: () => _endingDate(context),
                             ),
-                            const SizedBox(height: 50),
+                            SizedBox(height: screenSize.width*0.12),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
@@ -221,10 +222,10 @@ class _AddEventPageState extends State<AddEventPage> {
           alignment: AlignmentDirectional.center,
           children: [
             Container(
-              width: 100,
-              height: 100,
+              width: MediaQuery.of(context).size.width*0.35,
+              height: MediaQuery.of(context).size.width*0.3,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(30),
+                borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width*0.06),
                 image: DecorationImage(
                   image: _eventImage != null
                       ? FileImage(File(_eventImage!.path))
@@ -296,6 +297,7 @@ class _AddEventPageState extends State<AddEventPage> {
     if (selected != null && selected != startingDate) {
       setState(() {
         startingDate = selected;
+        endingDate = selected;
       });
     }
   }

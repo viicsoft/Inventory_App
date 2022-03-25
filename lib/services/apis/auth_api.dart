@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
+//import 'package:shared_preferences/shared_preferences.dart';
 import 'package:viicsoft_inventory_app/models/auth.dart';
 import '../api.dart';
 import '../sharedpref.dart';
@@ -29,6 +29,7 @@ class AuthAPI extends BaseAPI {
       var data = jsonDecode(response.body);
       var token = AuthModel.fromJson(data).token;
       SharedPrefrence().setToken(token);
+      print(token);
       return response;
     } else {
       throw Exception('Failed auth');

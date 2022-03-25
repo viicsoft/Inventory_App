@@ -22,20 +22,6 @@ class EventAPI extends BaseAPI {
     }
   }
 
- Future<List<EventEquipmentChecklist>> fetchAllEventsEquipment() async {
-
-    final response = await http
-        .get(Uri.parse(super.allEventsEquipmentPath), headers: super.headers);
-
-    if (response.statusCode == 200) {
-      final  _data = jsonDecode(response.body);
-      final List<EventEquipmentChecklist> events = _data['data']['event_equipment_checklist'].map<EventEquipmentChecklist>((model) => EventEquipmentChecklist.fromJson(model as Map<String, dynamic>)).toList();
-      return events;
-    } else {
-      throw Exception('Failed to load Events');
-    }
-  }
-
   Future<http.StreamedResponse> addEvent(
       String eventName,
       XFile eventImage,

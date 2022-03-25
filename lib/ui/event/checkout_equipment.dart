@@ -93,7 +93,7 @@ class _CheckOutEquipmentPageState extends State<CheckOutEquipmentPage> {
                                 } else {
                                   for (int i=0; i < equipmentCheckout.length; i++){
                                   final results = snapshot.data!;
-                                  var result = results.where((item) => item.id == equipmentCheckout[i].equipmentId).toList();
+                                  var result = results.where((item) => item.id == equipmentCheckout[0].equipmentId).toList();
                                   return ListView.builder(
                                     itemCount: result.length,
                                     itemBuilder: (_, int index) {

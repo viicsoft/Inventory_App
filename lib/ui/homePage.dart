@@ -49,9 +49,13 @@ class _HomePageState extends State<HomePage> {
       body: FutureBuilder<List<EquipmentElement>>(
         future: _equipment,
         builder: (context, snapshot) {
-          if(snapshot.connectionState == ConnectionState.done) {
+          if(snapshot.hasError) {
+            return Center(
+                child: CircularProgressIndicator(color: AppColor.gradientFirst),
+              );
+            
+          }else if (snapshot.connectionState == ConnectionState.done){
             final result = snapshot.data!;
-          if(result.isNotEmpty){
           var fairResult = result.where((item) => item.equipmentCondition == 'FAIR').toList();
           var badResult = result.where((item) => item.equipmentCondition == 'BAD').toList();
           var newResult = result.where((item) => item.equipmentCondition == 'NEW').toList();
@@ -244,12 +248,8 @@ class _HomePageState extends State<HomePage> {
               );
             }
         }
-        else {
-              return  Center(
-                child: CircularProgressIndicator(color: AppColor.gradientFirst),
-              );
-            }
-        }
+        
+        
       ),
     );
   }

@@ -8,12 +8,12 @@ import '../../models/equipmentcheckin.dart';
 import '../../models/eventequipment.dart';
 import '../sharedpref.dart';
 
-class EquipmentCheckInAPI extends BaseAPI {
+class EventEquipmentChecklistAPI extends BaseAPI {
 
   Future<List<EventEquipmentChecklist>> fetchAllEquipmentCheckList() async {
     final String token = await SharedPrefrence().getToken();
     final response = await http
-        .get(Uri.parse(super.allEquipmemntCheckInPath),
+        .get(Uri.parse(super.allEventEquipmentChecklistPath),
         headers: {
           "X-Api-Key": "632F2EC9771B6C4C0BDF30BE21D9009B",
           "Content-Type": "application/json",
@@ -23,7 +23,7 @@ class EquipmentCheckInAPI extends BaseAPI {
 
     if (response.statusCode == 200) {
       final  _data = jsonDecode(response.body);
-      final List<EventEquipmentChecklist> equipments = _data['data']['equipment_checkin'].map<EventEquipmentChecklist>((model) => EventEquipmentChecklist.fromJson(model as Map<String, dynamic>)).toList();
+      final List<EventEquipmentChecklist> equipments = _data['data']['event_equipment_checklist'].map<EventEquipmentChecklist>((model) => EventEquipmentChecklist.fromJson(model as Map<String, dynamic>)).toList();
       return equipments;
     } else {
       throw Exception('Failed to load Events');

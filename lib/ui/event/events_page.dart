@@ -67,9 +67,10 @@ class _ItemsPageState extends State<EventsPage> {
                           future: EventAPI().fetchAllEvents(),
                           builder: (context, snapshot) {
                             if (snapshot.hasError) {
-                              return SizedBox(
-                                child: Container(),
-                              );
+                              return Center(
+                          child: CircularProgressIndicator(
+                              color: AppColor.gradientFirst),
+                        );
                             } else if (snapshot.connectionState ==
                                 ConnectionState.done) {
                               final results = snapshot.data!;
