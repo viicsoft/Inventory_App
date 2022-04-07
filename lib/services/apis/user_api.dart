@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:image_picker/image_picker.dart';
+import 'package:viicsoft_inventory_app/models/userProfile.dart';
 import 'package:viicsoft_inventory_app/models/users.dart';
 import 'package:viicsoft_inventory_app/services/api.dart';
 import 'package:http/http.dart' as http;
@@ -48,9 +50,7 @@ class UserAPI extends BaseAPI {
  }
 
 
-
-
- Future<User> profileUser () async {
+ Future<ProfileUser> fetchProfileUser () async {
     final String token = await SharedPrefrence().getToken();
     final response = await http
         .get(Uri.parse(super.profileUserPath),
@@ -62,11 +62,36 @@ class UserAPI extends BaseAPI {
         });
     if (response.statusCode == 200) {
       final  _data = jsonDecode(response.body);
-      final userResponse = new User.fromJson(_data['data']['user']);
-      print(userResponse.fullName);
+       final userResponse = ProfileUser.fromJson(_data['data']['user']);
       return userResponse;
     } else {
       throw Exception('Failed to load Users');
     }
  }
+
+
+ Future<http.StreamedResponse> updateUserProfile(String email,String password, String id, XFile avatar, String fullname) async {
+    final String token = await SharedPrefrence().getToken();
+    Map<String, String> headers = {
+      "X-Api-Key": "632F2EC9771B6C4C0BDF30BE21D9009B",
+      'x-token': token,
+    };
+    //create multipart request for POST or PATCH method
+    var request = http.MultipartRequest(
+        "POST", Uri.parse(super.updateprofileUserPath));
+    //add header in http request
+    request.headers.addAll(headers);
+    request.fields["email"] = email;
+    request.fields["password"] = password;
+    request.fields["full_name"] = fullname;
+    request.fields["id"] = id;
+    var pic = await http.MultipartFile.fromPath("avatar", avatar.path);
+    request.files.add(pic);
+    var response = await request.send();
+    var responseData = await response.stream.toBytes();
+    var responseString = String.fromCharCodes(responseData);
+    print(responseString);
+    return response;
+  }
+
 }

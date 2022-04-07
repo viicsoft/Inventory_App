@@ -7,40 +7,57 @@ import 'package:viicsoft_inventory_app/component/colors.dart';
 import 'package:viicsoft_inventory_app/models/category.dart';
 import 'package:viicsoft_inventory_app/services/apis/category_api.dart';
 import 'package:viicsoft_inventory_app/services/apis/equipment_api.dart';
+import 'package:viicsoft_inventory_app/ui/store/store_page.dart';
 
-class AddItemPage extends StatefulWidget {
-  const AddItemPage({Key? key}) : super(key: key);
+class UpdateEquipmentPage extends StatefulWidget {
+  String? equipmentName;
+  String image;
+  String categoryId;
+  String condition;
+  String size;
+  String description;
+  String barcode;
+  String id;
+  UpdateEquipmentPage(
+      {Key? key,
+      required this.barcode,
+      required this.categoryId,
+      required this.condition,
+      required this.description,
+      required this.equipmentName,
+      required this.image,
+      required this.size,
+      required this.id})
+      : super(key: key);
 
   @override
-  State<AddItemPage> createState() => _AddItemPageState();
+  State<UpdateEquipmentPage> createState() => _UpdateEquipmentPageState();
 }
 
-class _AddItemPageState extends State<AddItemPage> {
+class _UpdateEquipmentPageState extends State<UpdateEquipmentPage> {
+  bool _isOnlineImage = true;
   XFile? _itemimage;
-  String _newCondition = 'NEW';
-  String _newSize = 'NORMAL';
-  TextEditingController descriptionController = TextEditingController();
-  TextEditingController equipmentNameController = TextEditingController();
 
   final picker = ImagePicker();
 
   Future getImage(ImageSource source) async {
-    final pickedFile = await picker.pickImage(source: source, imageQuality: 50, maxHeight: 700, maxWidth: 650);
+    final pickedFile = await picker.pickImage(
+        source: source, imageQuality: 50, maxHeight: 700, maxWidth: 650);
 
     setState(() {
       _itemimage = pickedFile;
+      _isOnlineImage = false;
     });
   }
 
-  String _scanBarcode = '';
   late Future<List<EquipmentCategory>> _category;
-  EquipmentCategory? newselectedCategory;
+  EquipmentCategory? selectedCategory;
   final CategoryAPI _categoryApi = CategoryAPI();
   final EquipmentAPI _equipmentApi = EquipmentAPI();
 
   @override
   void initState() {
-   _category = _categoryApi.fetchAllCategory();
+    _category = _categoryApi.fetchAllCategory();
     super.initState();
   }
 
@@ -55,7 +72,7 @@ class _AddItemPageState extends State<AddItemPage> {
 
     if (!mounted) return;
     setState(() {
-      _scanBarcode = barcodeScanRes;
+      widget.barcode = barcodeScanRes;
     });
   }
 
@@ -63,6 +80,10 @@ class _AddItemPageState extends State<AddItemPage> {
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController descriptionController =
+        TextEditingController(text: widget.description);
+    TextEditingController equipmentNameController =
+        TextEditingController(text: widget.equipmentName);
     return Scaffold(
       body: FutureBuilder<List<EquipmentCategory>>(
           future: _category,
@@ -110,7 +131,7 @@ class _AddItemPageState extends State<AddItemPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Add New Item',
+                                  'Update Equipment',
                                   style: TextStyle(
                                       fontSize: 25,
                                       color: AppColor.homePageContainerTextBig),
@@ -153,13 +174,14 @@ class _AddItemPageState extends State<AddItemPage> {
                                         ),
                                         Expanded(child: Container()),
                                         DropdownButton<EquipmentCategory>(
-                                          value: newselectedCategory,
+                                          value:
+                                              selectedCategory,
                                           elevation: 16,
                                           style: TextStyle(
                                               color: Colors.grey[600]),
                                           onChanged: (newValue) {
                                             setState(() {
-                                              newselectedCategory = newValue!;
+                                              selectedCategory = newValue!;
                                             });
                                           },
                                           items: category
@@ -167,11 +189,14 @@ class _AddItemPageState extends State<AddItemPage> {
                                             return DropdownMenuItem<
                                                 EquipmentCategory>(
                                               value: value,
-                                              child: Text(value.name, style: TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w500,
-                                            color: AppColor.gradientFirst,
-                                          ),),
+                                              child: Text(
+                                                value.name,
+                                                style: TextStyle(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: AppColor.gradientFirst,
+                                                ),
+                                              ),
                                             );
                                           }).toList(),
                                         ),
@@ -189,7 +214,7 @@ class _AddItemPageState extends State<AddItemPage> {
                                           borderRadius:
                                               BorderRadius.circular(8),
                                         ),
-                                        labelText: 'item name*',
+                                        labelText: 'Equipment Name',
                                       ),
                                     ),
                                     const SizedBox(height: 10),
@@ -205,13 +230,13 @@ class _AddItemPageState extends State<AddItemPage> {
                                         ),
                                         Expanded(child: Container()),
                                         DropdownButton<String>(
-                                          value: _newCondition,
+                                          value: widget.condition,
                                           elevation: 16,
                                           style: TextStyle(
                                               color: Colors.grey[600]),
                                           onChanged: (String? newValue) {
                                             setState(() {
-                                              _newCondition = newValue!;
+                                              widget.condition = newValue!;
                                             });
                                           },
                                           items: <String>[
@@ -242,13 +267,13 @@ class _AddItemPageState extends State<AddItemPage> {
                                         ),
                                         Expanded(child: Container()),
                                         DropdownButton<String>(
-                                          value: _newSize,
+                                          value: widget.size,
                                           elevation: 16,
                                           style: TextStyle(
                                               color: Colors.grey[600]),
                                           onChanged: (String? newValue) {
                                             setState(() {
-                                              _newSize = newValue!;
+                                              widget.size = newValue!;
                                             });
                                           },
                                           items: <String>[
@@ -293,7 +318,7 @@ class _AddItemPageState extends State<AddItemPage> {
                                           padding:
                                               const EdgeInsets.only(top: 15),
                                           child: Text(
-                                              'Result : $_scanBarcode\n',
+                                              'Barcode : ${widget.barcode}\n',
                                               style: const TextStyle(
                                                   fontSize: 16)),
                                         ),
@@ -308,16 +333,17 @@ class _AddItemPageState extends State<AddItemPage> {
                                           style: ElevatedButton.styleFrom(
                                               primary: AppColor.gradientFirst),
                                           onPressed: () async {
-                                            var res =
-                                                await _equipmentApi.addEquipment(
+                                            var res = await _equipmentApi
+                                                .updateEquipment(
                                                     equipmentNameController
                                                         .text,
-                                                    _itemimage!,
-                                                    newselectedCategory!.id,
-                                                    _newCondition,
-                                                    _newSize,
+                                                    //_itemimage!,
+                                                    selectedCategory!.id,
+                                                    widget.condition,
+                                                    widget.size,
                                                     descriptionController.text,
-                                                    _scanBarcode);
+                                                    widget.barcode,
+                                                    widget.id);
                                             if (res.statusCode == 200 ||
                                                 res.statusCode == 201) {
                                               ScaffoldMessenger.of(context)
@@ -325,10 +351,9 @@ class _AddItemPageState extends State<AddItemPage> {
                                                       backgroundColor:
                                                           Colors.green,
                                                       content: Text(
-                                                          "Equipment added")));
+                                                          "Equipment Updated")));
                                               Navigator.pop(context);
                                             } else {
-                                              print(res.statusCode);
                                               ScaffoldMessenger.of(context)
                                                   .showSnackBar(
                                                 const SnackBar(
@@ -340,7 +365,7 @@ class _AddItemPageState extends State<AddItemPage> {
                                             }
                                           },
                                           child: const Text(
-                                            'Add Item',
+                                            'Update Equipment',
                                             style: TextStyle(fontSize: 16),
                                           ),
                                         ),
@@ -379,63 +404,69 @@ class _AddItemPageState extends State<AddItemPage> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(50),
                 image: DecorationImage(
-                  image: _itemimage != null
-                      ? FileImage(File(_itemimage!.path))
-                      : const AssetImage('assets/camera.jpg') as ImageProvider,
+                  image: userimage(_isOnlineImage, widget.image),
                   fit: BoxFit.cover,
                 ),
               ),
             ),
-            Positioned(
-              bottom: 0,
-              right: 0,
-              child: InkWell(
-                onTap: () => showDialog<String>(
-                  context: context,
-                  builder: (BuildContext context) => AlertDialog(
-                    title: const Text('Select Image'),
-                    content: const Text(
-                        'Select image from device gallery or use device camera'),
-                    actions: <Widget>[
-                      TextButton(
-                        onPressed: () {
-                          getImage(ImageSource.camera);
-                          Navigator.pop(context);
-                        },
-                        child: const Text('Camera'),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          getImage(ImageSource.gallery);
-                          Navigator.pop(context);
-                        },
-                        child: const Text('Gallery'),
-                      ),
-                    ],
-                  ),
-                ),
-                child: Container(
-                  height: 25,
-                  width: 25,
-                  decoration: BoxDecoration(
-                    color: AppColor.homePageTitle,
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      width: 1.5,
-                      color: Colors.white,
-                    ),
-                  ),
-                  child: const Icon(
-                    Icons.edit,
-                    size: 15,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
+            // Positioned(
+            //   bottom: 0,
+            //   right: 0,
+            //   child: InkWell(
+            //     onTap: () => showDialog<String>(
+            //       context: context,
+            //       builder: (BuildContext context) => AlertDialog(
+            //         title: const Text('Select Image'),
+            //         content: const Text(
+            //             'Select image from device gallery or use device camera'),
+            //         actions: <Widget>[
+            //           TextButton(
+            //             onPressed: () {
+            //               getImage(ImageSource.camera);
+            //               Navigator.pop(context);
+            //             },
+            //             child: const Text('Camera'),
+            //           ),
+            //           TextButton(
+            //             onPressed: () {
+            //               getImage(ImageSource.gallery);
+            //               Navigator.pop(context);
+            //             },
+            //             child: const Text('Gallery'),
+            //           ),
+            //         ],
+            //       ),
+            //     ),
+            //     child: Container(
+            //       height: 25,
+            //       width: 25,
+            //       decoration: BoxDecoration(
+            //         color: AppColor.homePageTitle,
+            //         shape: BoxShape.circle,
+            //         border: Border.all(
+            //           width: 1.5,
+            //           color: Colors.white,
+            //         ),
+            //       ),
+            //       child: const Icon(
+            //         Icons.edit,
+            //         size: 15,
+            //         color: Colors.white,
+            //       ),
+            //     ),
+            //   ),
+            // ),
           ],
         ),
       ],
     );
+  }
+
+  ImageProvider userimage(bool saverImage, String url) {
+    if (saverImage) {
+      return NetworkImage(url);
+    } else {
+      return FileImage(File(_itemimage!.path));
+    }
   }
 }

@@ -7,7 +7,6 @@ class BaseAPI {
 
   
 
-
   //Map<String, String> key = {"X-Api-Key": "632F2EC9771B6C4C0BDF30BE21D9009B"};
 
   Map<String, String> headers = {
@@ -21,14 +20,23 @@ class BaseAPI {
   var logoutPath = api + "";
   var deleteUserPath = api + "/user/delete?id=";
   var profileUserPath = api + "/user/profile";
+  var updateprofileUserPath = api + "/user/update_profile";
   var allUsersPath = api + "/user/all";
   var allEventsPath = api + "/events/all";
   var addEventsPath = api + "/events/add";
+  var upDateEventsPath = api + "/Events/update";
+  var deleteEventsPath = api + "/Events/delete?id=";
+  var allFutureEventsPath = api + "/events_future/all";
+  var allPastEventsPath = api + "/events_past/all";
   var addEventsEquipmentPath = api + "/event_equipment_checklist/add";
   var deleteEventsEquipmentPath = api + "/event_equipment_checkout/delete/";
   var allEquipmentsPath = api + "/equipments/all";
   var addEquipmentsPath = api +  "/equipments/add";
+  var updateEquipmentsPath = api +  "/Equipments/update";
+  var avialableEquipmentsPath = api + "/equipments_available/all";
+  var deleteEquipmentsPath = api +  "/Equipments/delete?id=";
   var addEquipmentsCategoryPath = api +  "/equipment_category/add";
+  var deleteEquipmentsCategoryPath = api +  "/Equipment_category/delete?id=";
   var allEquipmentsCategoryPath = api +  "/equipment_category/all";
   var allEventEquipmentChecklistPath = api + "/event_equipment_checklist/all";
   var addEventEquipmentsChecklistPath = api + "/event_equipment_checklist/add";

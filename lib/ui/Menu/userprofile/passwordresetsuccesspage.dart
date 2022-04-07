@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
 
-class PasswordResetSuccessPage extends StatefulWidget {
-  const PasswordResetSuccessPage({Key? key}) : super(key: key);
+class ProfileChangeSuccessPage extends StatefulWidget {
+  const ProfileChangeSuccessPage({Key? key}) : super(key: key);
 
   @override
-  State<PasswordResetSuccessPage> createState() => _PasswordResetSuccessPageState();
+  State<ProfileChangeSuccessPage> createState() => _ProfileChangeSuccessPageState();
 }
 
-class _PasswordResetSuccessPageState extends State<PasswordResetSuccessPage> {
+class _ProfileChangeSuccessPageState extends State<ProfileChangeSuccessPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +35,7 @@ class _PasswordResetSuccessPageState extends State<PasswordResetSuccessPage> {
             ),
             Expanded(child: Container()),
             Text(
-              'Password Reset\n Successfully !',
+              'Profile Update\n Successfully !',
               style: TextStyle(
                 fontSize: 30,
                 color: AppColor.homePageTitle,

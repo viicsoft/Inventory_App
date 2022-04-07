@@ -5,8 +5,11 @@ Widget textform(
       IconData? icon,
       Widget? suffixIcon,
       String? initialValue,
+      //TextEditingController? controller,
+      bool readOnly = false,
       bool obscureText = false}) {
     return TextFormField(
+      readOnly: readOnly,
       initialValue: initialValue,
       obscureText: obscureText,
       decoration: InputDecoration(

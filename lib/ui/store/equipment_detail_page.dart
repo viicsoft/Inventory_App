@@ -1,14 +1,14 @@
-
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
 import 'package:viicsoft_inventory_app/models/equipments.dart';
+import 'package:viicsoft_inventory_app/ui/store/update_equipment.dart';
 
 class EquipmentDetailPage extends StatefulWidget {
   EquipmentElement equipmentElement;
-  String equipmentId;
-  EquipmentDetailPage({Key? key, required this.equipmentElement, required this.equipmentId}) : super(key: key);
-  
+  EquipmentDetailPage(
+      {Key? key, required this.equipmentElement,})
+      : super(key: key);
 
   @override
   State<EquipmentDetailPage> createState() => _EquipmentDetailPageState();
@@ -18,10 +18,13 @@ class _EquipmentDetailPageState extends State<EquipmentDetailPage> {
   //XFile? _itemimage;
   @override
   void initState() {
+    setState(() {});
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
+    var screenSize = MediaQuery.of(context).size.height;
     return Scaffold(
       body: Column(
         children: [
@@ -59,7 +62,7 @@ class _EquipmentDetailPageState extends State<EquipmentDetailPage> {
           ),
           Expanded(
             child: Container(
-              padding: const EdgeInsets.only(left: 30, right: 30),
+              padding: const EdgeInsets.only(left: 20, right: 20),
               width: MediaQuery.of(context).size.width,
               decoration: const BoxDecoration(
                 color: Colors.white,
@@ -74,18 +77,19 @@ class _EquipmentDetailPageState extends State<EquipmentDetailPage> {
                     child: ListView(
                       children: [
                         Container(
-                          margin: const EdgeInsets.only(right: 50, left: 50),
-                          width: 100,
-                          height: 110,
+                          margin: const EdgeInsets.only(right: 10, left: 10),
+                          width: MediaQuery.of(context).size.width*0.5,
+                          height: screenSize * 0.21,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(30),
                             image: DecorationImage(
-                              image: NetworkImage(widget.equipmentElement.equipmentImage),
-                              fit: BoxFit.cover,
+                              image: NetworkImage(
+                                  widget.equipmentElement.equipmentImage),
+                              fit: BoxFit.fill,
                             ),
                           ),
                         ),
-                        const SizedBox(height: 50),
+                         SizedBox(height: screenSize* 0.05),
                         Row(
                           children: [
                             Text(
@@ -97,7 +101,8 @@ class _EquipmentDetailPageState extends State<EquipmentDetailPage> {
                               ),
                             ),
                             Expanded(child: Container()),
-                            Text(widget.equipmentElement.equipmentName,
+                            Text(
+                              widget.equipmentElement.equipmentName,
                               style: const TextStyle(
                                 fontWeight: FontWeight.w500,
                                 fontSize: 14,
@@ -105,7 +110,7 @@ class _EquipmentDetailPageState extends State<EquipmentDetailPage> {
                             )
                           ],
                         ),
-                        const SizedBox(height: 30),
+                        SizedBox(height: screenSize*0.035),
                         Row(
                           children: [
                             Text(
@@ -120,13 +125,15 @@ class _EquipmentDetailPageState extends State<EquipmentDetailPage> {
                             Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(5),
-                                color: colorscondition(widget.equipmentElement.equipmentCondition),
+                                color: colorscondition(
+                                    widget.equipmentElement.equipmentCondition),
                               ),
                               padding: const EdgeInsets.all(5),
                               height: 25,
                               width: 60,
                               child: Center(
-                                child: Text(widget.equipmentElement.equipmentCondition,
+                                child: Text(
+                                  widget.equipmentElement.equipmentCondition,
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 12,
@@ -136,7 +143,7 @@ class _EquipmentDetailPageState extends State<EquipmentDetailPage> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 30),
+                        SizedBox(height: screenSize*0.035),
                         Row(
                           children: [
                             Text(
@@ -155,9 +162,10 @@ class _EquipmentDetailPageState extends State<EquipmentDetailPage> {
                               ),
                               padding: const EdgeInsets.all(5),
                               height: 25,
-                              width: MediaQuery.of(context).size.width/3.5,
-                              child:  Center(
-                                child: Text(widget.equipmentElement.equipmentSize,
+                              width: MediaQuery.of(context).size.width / 3.5,
+                              child: Center(
+                                child: Text(
+                                  widget.equipmentElement.equipmentSize,
                                   style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 12),
@@ -166,7 +174,7 @@ class _EquipmentDetailPageState extends State<EquipmentDetailPage> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 30),
+                        SizedBox(height: screenSize*0.035),
                         Row(
                           children: [
                             Text(
@@ -178,7 +186,8 @@ class _EquipmentDetailPageState extends State<EquipmentDetailPage> {
                               ),
                             ),
                             Expanded(child: Container()),
-                            Text(widget.equipmentElement.equipmentBarcode!,
+                            Text(
+                              widget.equipmentElement.equipmentBarcode!,
                               style: const TextStyle(
                                 fontWeight: FontWeight.w500,
                                 fontSize: 14,
@@ -186,7 +195,7 @@ class _EquipmentDetailPageState extends State<EquipmentDetailPage> {
                             )
                           ],
                         ),
-                        const SizedBox(height: 30),
+                        SizedBox(height: screenSize*0.035),
                         Text(
                           'Description:',
                           style: TextStyle(
@@ -197,9 +206,11 @@ class _EquipmentDetailPageState extends State<EquipmentDetailPage> {
                         ),
                         const SizedBox(height: 10),
                         TextFormField(
+                          readOnly: true,
                           keyboardType: TextInputType.multiline,
                           maxLines: null,
-                          initialValue: widget.equipmentElement.equipmentDescription,
+                          initialValue:
+                              widget.equipmentElement.equipmentDescription,
                           decoration: const InputDecoration(
                             contentPadding: EdgeInsets.symmetric(
                                 vertical: 25.0, horizontal: 10.0),
@@ -207,7 +218,7 @@ class _EquipmentDetailPageState extends State<EquipmentDetailPage> {
                             //labelText: 'Description',
                           ),
                         ),
-                        const SizedBox(height: 40),
+                        SizedBox(height: screenSize*0.05),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
@@ -215,7 +226,29 @@ class _EquipmentDetailPageState extends State<EquipmentDetailPage> {
                               style: ElevatedButton.styleFrom(
                                   primary: AppColor.gradientFirst),
                               onPressed: () {
-                                 
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) => UpdateEquipmentPage(
+                                              barcode: widget.equipmentElement
+                                                  .equipmentBarcode!,
+                                              categoryId: widget
+                                                  .equipmentElement
+                                                  .equipmentCategoryId,
+                                              condition: widget.equipmentElement
+                                                  .equipmentCondition,
+                                              description: widget
+                                                  .equipmentElement
+                                                  .equipmentDescription!,
+                                              equipmentName: widget
+                                                  .equipmentElement
+                                                  .equipmentName,
+                                              image: widget.equipmentElement
+                                                  .equipmentImage,
+                                              size: widget.equipmentElement
+                                                  .equipmentSize,
+                                                  id: widget.equipmentElement.id,
+                                            )));
                               },
                               child: const Text(
                                 'Edit',
@@ -235,15 +268,16 @@ class _EquipmentDetailPageState extends State<EquipmentDetailPage> {
       ),
     );
   }
-  Color colorscondition(String conditionresult){
-                  if(conditionresult == 'NEW'){
-                    return Colors.green;
-                  }else if (conditionresult == 'OLD') {
-                    return Colors.lime[900]!;
-                  }else if (conditionresult == 'FAIR'){
-                    return Colors.greenAccent;
-                  }else{
-                    return Colors.red;
-                  }
-                }
+
+  Color colorscondition(String conditionresult) {
+    if (conditionresult == 'NEW') {
+      return Colors.green;
+    } else if (conditionresult == 'OLD') {
+      return Colors.lime[900]!;
+    } else if (conditionresult == 'FAIR') {
+      return Colors.greenAccent;
+    } else {
+      return Colors.red;
+    }
+  }
 }

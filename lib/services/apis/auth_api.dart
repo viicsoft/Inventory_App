@@ -29,14 +29,14 @@ class AuthAPI extends BaseAPI {
       var data = jsonDecode(response.body);
       var token = AuthModel.fromJson(data).token;
       SharedPrefrence().setToken(token);
-      print(token);
       return response;
     } else {
       throw Exception('Failed auth');
     }
   }
 
-  Future<http.Response> logout(int id, String token) async {
+  Future<http.Response> logout(int id) async {
+    final String token = await SharedPrefrence().getToken();
     var body = jsonEncode({'id': id, 'token': token});
     http.Response response = await http.post(Uri.parse(super.logoutPath),
         headers: super.headers, body: body);

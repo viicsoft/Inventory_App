@@ -65,7 +65,7 @@ class _EquipmentPageState extends State<EquipmentPage> {
             ),
             const SizedBox(height: 10),
             Padding(
-              padding: const EdgeInsets.only(left: 30, right: 30),
+              padding: const EdgeInsets.only(left: 15, right: 15),
               child: Container(
                 width: MediaQuery.of(context).size.width,
                 height: 150,
@@ -76,10 +76,10 @@ class _EquipmentPageState extends State<EquipmentPage> {
                     ),
                     color: Colors.white,
                     borderRadius: const BorderRadius.only(
-                      topRight: Radius.circular(10),
-                      topLeft: Radius.circular(10),
-                      bottomLeft: Radius.circular(10),
-                      bottomRight: Radius.circular(10),
+                      topRight: Radius.circular(20),
+                      topLeft: Radius.circular(20),
+                      bottomLeft: Radius.circular(20),
+                      bottomRight: Radius.circular(20),
                     ),
                     boxShadow: [
                       BoxShadow(
@@ -101,162 +101,165 @@ class _EquipmentPageState extends State<EquipmentPage> {
                     } else if (snapshot.connectionState ==
                         ConnectionState.done) {
                       final results = snapshot.data!;
-                      var result = results.where((item) => item.equipmentCategoryId == widget.categoryId).toList();
+                      var result = results.where((item) => widget.categoryId.contains(item.equipmentCategoryId)).toList();
                       return ListView.builder(
                         itemCount: result.length,
                         itemBuilder: (_, int index) {
                           return Padding(
-                            padding: const EdgeInsets.only(right: 10, left: 10),
+                            padding: const EdgeInsets.only(right: 5, left: 5),
                             child: Container(
-                              height: 120,
+                              height: 105,
                               padding:
-                                  const EdgeInsets.only(bottom: 5, right: 5),
-                              child: Card(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                elevation: 3,
-                                shadowColor: AppColor.gradientSecond,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                    top: 5,
-                                    left: 5,
+                                  const EdgeInsets.only(bottom: 3, right: 3),
+                              child: InkWell(
+                                onLongPress: () async{
+                                 await _confirmDialog(context, result[index].id, result[index].equipmentName);
+                                  setState(() {});
+                                },
+                                child: Card(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
                                   ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Container(
-                                                width: 75,
-                                                height: 90,
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                  image: DecorationImage(
-                                                    image: NetworkImage(
-                                                        result[index]
-                                                            .equipmentImage),
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          const SizedBox(width: 10),
-                                          Expanded(
-                                            child: Column(
+                                  elevation: 3,
+                                  shadowColor: AppColor.gradientSecond,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                      top: 3,
+                                      left: 3,
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Column(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
-                                                SizedBox(
-                                                  width: MediaQuery.of(context)
-                                                      .size
-                                                      .width,
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
-                                                        result[index]
-                                                            .equipmentName,
-                                                        maxLines: 2,
-                                                        style: TextStyle(
-                                                            color: AppColor
-                                                                .homePageTitle,
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w500),
-                                                      ),
-                                                      Row(
-                                                        children: [
-                                                          Container(
-                                                            decoration: BoxDecoration(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            5),
-                                                                color: colorscondition(
-                                                                    result[index]
-                                                                        .equipmentCondition)),
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .all(5),
-                                                            height: 18,
-                                                            child: Text(
-                                                              result[index]
-                                                                  .equipmentCondition,
-                                                              style: TextStyle(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  fontSize: 8,
-                                                                  color: AppColor
-                                                                      .homePageContainerTextBig),
-                                                            ),
-                                                          ),
-                                                          Expanded(
-                                                              child:
-                                                                  Container()),
-                                                          TextButton(
-                                                            style: TextButton
-                                                                .styleFrom(
-                                                                    primary:
-                                                                        AppColor
-                                                                            .gradientFirst),
-                                                            onPressed: () {
-                                                              Navigator.push(
-                                                                context,
-                                                                MaterialPageRoute(
-                                                                  builder: (context) => EquipmentDetailPage(
-                                                                      equipmentElement:
-                                                                          result[
-                                                                              index],
-                                                                      equipmentId:
-                                                                          result[index]
-                                                                              .id),
-                                                                ),
-                                                              );
-                                                            },
-                                                            child: const Text(
-                                                                'View'),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  width: MediaQuery.of(context)
-                                                      .size
-                                                      .width,
-                                                  child: Text(
-                                                    result[index]
-                                                            .equipmentDescription!
-                                                            .isEmpty
-                                                        ? 'No description'
-                                                        : result[index]
-                                                            .equipmentDescription!,
-                                                    maxLines: 2,
-                                                    style: const TextStyle(
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.w500),
+                                                Container(
+                                                  width: 65,
+                                                  height: 75,
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(10),
+                                                    image: DecorationImage(
+                                                      image: NetworkImage(
+                                                          result[index]
+                                                              .equipmentImage),
+                                                      fit: BoxFit.cover,
+                                                    ),
                                                   ),
                                                 ),
                                               ],
                                             ),
-                                          )
-                                        ],
-                                      ),
-                                    ],
+                                            const SizedBox(width: 15),
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  SizedBox(
+                                                    width: MediaQuery.of(context)
+                                                        .size
+                                                        .width,
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          result[index]
+                                                              .equipmentName,
+                                                          maxLines: 1,
+                                                          style: TextStyle(
+                                                              color: AppColor
+                                                                  .homePageTitle,
+                                                              fontSize: 13,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500),
+                                                        ),
+                                                        Row(
+                                                          children: [
+                                                            Container(
+                                                              decoration: BoxDecoration(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              5),
+                                                                  color: colorscondition(
+                                                                      result[index]
+                                                                          .equipmentCondition)),
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(5),
+                                                              height: 17,
+                                                              child: Text(
+                                                                result[index]
+                                                                    .equipmentCondition,
+                                                                style: TextStyle(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    fontSize: 8,
+                                                                    color: AppColor
+                                                                        .homePageContainerTextBig),
+                                                              ),
+                                                            ),
+                                                            Expanded(
+                                                                child:
+                                                                    Container()),
+                                                            TextButton(
+                                                              style: TextButton
+                                                                  .styleFrom(
+                                                                      primary:
+                                                                          AppColor
+                                                                              .gradientFirst),
+                                                              onPressed: () {
+                                                                Navigator.push(
+                                                                  context,
+                                                                  MaterialPageRoute(
+                                                                    builder: (context) => EquipmentDetailPage(
+                                                                        equipmentElement:
+                                                                            result[
+                                                                                index],),
+                                                                  ),
+                                                                );
+                                                              },
+                                                              child: const Text(
+                                                                  'View'),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: MediaQuery.of(context)
+                                                        .size
+                                                        .width,
+                                                    child: Text(
+                                                      result[index]
+                                                              .equipmentDescription!
+                                                              .isEmpty
+                                                          ? 'No description'
+                                                          : result[index]
+                                                              .equipmentDescription!,
+                                                      maxLines: 2,
+                                                      style: const TextStyle(
+                                                          fontSize: 12,
+                                                          fontWeight:
+                                                              FontWeight.w500),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
@@ -288,5 +291,54 @@ class _EquipmentPageState extends State<EquipmentPage> {
     } else {
       return Colors.red;
     }
+  }
+  Future _confirmDialog(
+      BuildContext context, String equipmentId, String equipmentName) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Warning!'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Are you sure want delete Equipment $equipmentName ?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(primary: AppColor.gradientFirst),
+              child: const Text('Yes'),
+              onPressed: () async {
+                var res = await EquipmentAPI().deleteEquipment(equipmentId);
+                if (res.statusCode == 200) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      backgroundColor: Colors.green,
+                      content:
+                          Text("$equipmentName Equipment successfully deleted")));
+                  Navigator.of(context).pop();
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      backgroundColor: Colors.red,
+                      content: Text(" Operation failed ! Something went wrong"),
+                    ),
+                  );
+                }
+              },
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(primary: AppColor.gradientFirst),
+              child: const Text('No'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }

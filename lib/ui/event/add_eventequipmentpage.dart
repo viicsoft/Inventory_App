@@ -130,11 +130,11 @@ class _AddEventEquipmentPageState extends State<AddEventEquipmentPage> {
                                   itemBuilder: (_, int index) {
                                     return Padding(
                                       padding: const EdgeInsets.only(
-                                          right: 10, left: 10),
+                                          right: 5, left: 5),
                                       child: Container(
-                                        height: 120,
+                                        height: 105,
                                         padding: const EdgeInsets.only(
-                                            bottom: 5, right: 5),
+                                            bottom: 2, right: 3),
                                         child: Card(
                                           shape: RoundedRectangleBorder(
                                             borderRadius:
@@ -144,8 +144,8 @@ class _AddEventEquipmentPageState extends State<AddEventEquipmentPage> {
                                           shadowColor: AppColor.gradientSecond,
                                           child: Padding(
                                             padding: const EdgeInsets.only(
-                                              top: 5,
-                                              left: 5,
+                                              top: 3,
+                                              left: 3,
                                             ),
                                             child: Column(
                                               crossAxisAlignment:
@@ -159,8 +159,8 @@ class _AddEventEquipmentPageState extends State<AddEventEquipmentPage> {
                                                               .start,
                                                       children: [
                                                         Container(
-                                                          width: 75,
-                                                          height: 90,
+                                                          width: 65,
+                                                          height: 80,
                                                           decoration:
                                                               BoxDecoration(
                                                             borderRadius:
@@ -178,7 +178,7 @@ class _AddEventEquipmentPageState extends State<AddEventEquipmentPage> {
                                                         ),
                                                       ],
                                                     ),
-                                                    const SizedBox(width: 10),
+                                                    const SizedBox(width: 15),
                                                     Expanded(
                                                       child: Column(
                                                         crossAxisAlignment:
@@ -199,7 +199,7 @@ class _AddEventEquipmentPageState extends State<AddEventEquipmentPage> {
                                                                 Text(
                                                                   result[index]
                                                                       .equipmentName,
-                                                                  maxLines: 2,
+                                                                  maxLines: 1,
                                                                   style: TextStyle(
                                                                       color: AppColor
                                                                           .homePageTitle,
@@ -221,7 +221,7 @@ class _AddEventEquipmentPageState extends State<AddEventEquipmentPage> {
                                                                           const EdgeInsets.all(
                                                                               5),
                                                                       height:
-                                                                          18,
+                                                                          17,
                                                                       child:
                                                                           Text(
                                                                         result[index]
@@ -291,7 +291,7 @@ class _AddEventEquipmentPageState extends State<AddEventEquipmentPage> {
                                                                       .equipmentDescription!,
                                                               maxLines: 2,
                                                               style: const TextStyle(
-                                                                  fontSize: 14,
+                                                                  fontSize: 12,
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .w500),

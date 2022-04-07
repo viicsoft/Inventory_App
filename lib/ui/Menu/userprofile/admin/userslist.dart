@@ -2,15 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
 import 'package:viicsoft_inventory_app/models/users.dart';
 import 'package:viicsoft_inventory_app/services/apis/user_api.dart';
-import 'package:viicsoft_inventory_app/ui/Menu/users/okwuytesting/usedetail.dart';
+import 'package:viicsoft_inventory_app/ui/Menu/userprofile/admin/usedetail.dart';
 
-class UserList extends StatelessWidget {
+class UserList extends StatefulWidget {
   //final List<Users> users;
 
   const UserList({
     Key? key,
   }) : super(key: key);
 
+  @override
+  State<UserList> createState() => _UserListState();
+}
+
+class _UserListState extends State<UserList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -137,9 +142,9 @@ class UserList extends StatelessWidget {
                           },
                           child: ListTile(
                             trailing: IconButton(
-                                onPressed: () {
-                                  _confirmDialog(context, results[index].id.toString());
-                                  print(results[index].id);
+                                onPressed: () async{
+                                  await _confirmDialog(context, results[index].id.toString(), results[index].fullName);
+                                  setState(() {});
                                 },
                                 icon: Icon(
                                   Icons.delete,
@@ -187,7 +192,8 @@ class UserList extends StatelessWidget {
     );
   }
 
-  Future _confirmDialog(BuildContext context, String userId) async {
+  Future _confirmDialog(
+      BuildContext context, String userId, String userName) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -196,8 +202,8 @@ class UserList extends StatelessWidget {
           title: const Text('Warning!'),
           content: SingleChildScrollView(
             child: ListBody(
-              children: const <Widget>[
-                Text('Are you sure want delete this user?'),
+              children: <Widget>[
+                Text('Are you sure want delete $userName ?'),
               ],
             ),
           ),
@@ -207,7 +213,20 @@ class UserList extends StatelessWidget {
               child: const Text('Yes'),
               onPressed: () async {
                 var res = await UserAPI().deleteUser(userId);
-                Navigator.of(context).pop();
+                if (res.statusCode == 200) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      backgroundColor: Colors.green,
+                      content:
+                          Text("$userName successfully deleted")));
+                  Navigator.of(context).pop();
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                     SnackBar(
+                      backgroundColor: Colors.red,
+                      content: Text('Are you sure want to delete $userName?'),
+                    ),
+                  );
+                }
               },
             ),
             ElevatedButton(

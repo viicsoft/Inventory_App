@@ -1,13 +1,21 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:viicsoft_inventory_app/models/avialable_equipment.dart';
+import 'package:viicsoft_inventory_app/models/equipmentcheckin.dart';
 import 'package:viicsoft_inventory_app/models/equipments.dart';
+import 'package:viicsoft_inventory_app/models/eventequipmentcheckout.dart';
 import 'package:viicsoft_inventory_app/services/apis/equipment_api.dart';
+import 'package:viicsoft_inventory_app/services/apis/equipment_checkin_api.dart';
+import 'package:viicsoft_inventory_app/services/apis/equipment_checkout_api.dart';
 import 'package:viicsoft_inventory_app/ui/event/checkin_equipment.dart';
 import 'package:viicsoft_inventory_app/ui/event/checkout_equipment.dart';
+import 'package:viicsoft_inventory_app/ui/store/bad_equipment.dart';
+import 'package:viicsoft_inventory_app/ui/store/fair_equipment.dart';
+import 'package:viicsoft_inventory_app/ui/store/good_equipment.dart';
 import '../component/colors.dart';
 import '../component/item_images.dart';
-import 'Menu/users/profile_page.dart';
+import 'Menu/userprofile/profile_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -16,240 +24,342 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-
 class _HomePageState extends State<HomePage> {
   Future<List<EquipmentElement>>? _equipment;
+  Future<List<EquipmentsAvailable>>? _avialableequipment;
   final EquipmentAPI _equipmentApi = EquipmentAPI();
   @override
   void initState() {
-   _equipment = _equipmentApi.fetchAllEquipments();
+    _equipment = _equipmentApi.fetchAllEquipments();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      drawer: const ProfilePage(),
-      appBar: AppBar(
-        toolbarHeight: 80,
-        iconTheme: const IconThemeData(
-          color: Colors.black, 
-        ),
-        elevation: 0,
-        backgroundColor: AppColor.homePageBackground,
-        title: Text(
-          'Dashboard',
-          style: TextStyle(
-            fontSize: 30,
-            color: AppColor.homePageTitle,
-            fontWeight: FontWeight.w700,
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        drawer: const ProfilePage(),
+        appBar: AppBar(
+          toolbarHeight: 80,
+          iconTheme: const IconThemeData(
+            color: Colors.black,
+          ),
+          elevation: 0,
+          backgroundColor: AppColor.homePageBackground,
+          title: Text(
+            'Dashboard',
+            style: TextStyle(
+              fontSize: 30,
+              color: AppColor.homePageTitle,
+              fontWeight: FontWeight.w700,
+            ),
           ),
         ),
-      ),
-      backgroundColor: AppColor.homePageBackground,
-      body: FutureBuilder<List<EquipmentElement>>(
-        future: _equipment,
-        builder: (context, snapshot) {
-          if(snapshot.hasError) {
-            return Center(
-                child: CircularProgressIndicator(color: AppColor.gradientFirst),
-              );
-            
-          }else if (snapshot.connectionState == ConnectionState.done){
-            final result = snapshot.data!;
-          var fairResult = result.where((item) => item.equipmentCondition == 'FAIR').toList();
-          var badResult = result.where((item) => item.equipmentCondition == 'BAD').toList();
-          var newResult = result.where((item) => item.equipmentCondition == 'NEW').toList();
-          var oldResult = result.where((item) => item.equipmentCondition == 'OLD').toList();
-          var goodResult = newResult + oldResult;
-          return ListView(
-            children: [
-              Container(
-                padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                child: Column(
+        backgroundColor: AppColor.homePageBackground,
+        body: FutureBuilder<List<EquipmentElement>>(
+            future: _equipment,
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Center(
+                  child:
+                      CircularProgressIndicator(color: AppColor.gradientFirst),
+                );
+              } else if (snapshot.connectionState == ConnectionState.done) {
+                final result = snapshot.data!;
+                var fairResult = result
+                    .where((item) => item.equipmentCondition == 'FAIR')
+                    .toList();
+                var badResult = result
+                    .where((item) => item.equipmentCondition == 'BAD')
+                    .toList();
+                var newResult = result
+                    .where((item) => item.equipmentCondition == 'NEW')
+                    .toList();
+                var oldResult = result
+                    .where((item) => item.equipmentCondition == 'OLD')
+                    .toList();
+                var goodResult = newResult + oldResult;
+                return ListView(
                   children: [
                     Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.width/1.45,
-                      decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              AppColor.gradientFirst,
-                              AppColor.gradientSecond.withOpacity(0.8)
-                            ],
-                            begin: Alignment.bottomLeft,
-                            end: Alignment.centerRight,
-                          ),
-                          borderRadius: const BorderRadius.only(
-                            topRight: Radius.circular(40),
-                            topLeft: Radius.circular(40),
-                            bottomLeft: Radius.circular(40),
-                            bottomRight: Radius.circular(40),
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              offset: const Offset(2, 5),
-                              blurRadius: 4,
-                              color: AppColor.gradientSecond.withOpacity(0.2),
-                            )
-                          ]),
-                      child: Container(
-                        padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Inventory Summary',
-                              style: TextStyle(
-                                  fontSize: 25,
-                                  color: AppColor.homePageContainerTextBig),
-                            ),
-                             SizedBox(height: MediaQuery.of(context).size.width/15),
-                            Row(
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: Colors.white,
-                                  ),
-                                  padding: const EdgeInsets.all(5),
-                                  height: 25,
-                                  child:  Center(
-                                    child: Text(result.length.toString(),
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 12,
-                                          color: Colors.black),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 10),
-                                Text(
-                                  'Total Equipments Recorded',
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      color: AppColor.homePageContainerTextBig),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.width/15),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                
-                                equipmentCondition(qauntity: fairResult.isEmpty? '0': '${fairResult.length}', condition: 'Fair'),
-                                const SizedBox(
-                                    height: 50,
-                                    child: VerticalDivider(
-                                        color: Colors.white, thickness: 2)),
-                                equipmentCondition(qauntity: badResult.isEmpty? '0' :'${badResult.length}', condition: 'Bad'),
-                                const SizedBox(
-                                    height: 50,
-                                    child: VerticalDivider(
-                                        color: Colors.white, thickness: 2)),
-                                equipmentCondition(
-                                    qauntity: goodResult.isEmpty? '0' :'${goodResult.length}', condition: 'Good'),
-                                
-                              ],
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.width/16),
-                            Row(
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: Colors.white,
-                                  ),
-                                  padding: const EdgeInsets.all(5),
-                                  height: 25,
-                                  child: const Center(
-                                    child: Text("",
-                                      //'${Provider.of<InventoryData>(context).menu.length}',
-                                      style:TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 12,
-                                          color: Colors.black),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 10),
-                                Text(
-                                  'Equipments Available in Stock',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: AppColor.homePageContainerTextBig,
-                                  ),
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.width/15),
-                    Row(
-                      children: [
-                        Text(
-                          'Activities',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w500,
-                            color: AppColor.homePageTitle,
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.width/15),
-                    SizedBox(
+                      padding:
+                          const EdgeInsets.only(top: 20, left: 20, right: 20),
                       child: Column(
                         children: [
-                          homeactivities(context,
-                              qauntity: '20',
-                              title: 'Pending Return',
-                              icon: Icons.pending, onpressed: () {
-                            // Navigator.push(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //         builder: (context) => PendingReturnPage()));
-                          }),
-                          SizedBox(height: MediaQuery.of(context).size.width/16),
-                          homeactivities(context,
-                              qauntity: '20',
-                              title: 'CheckOut Equipment',
-                              icon: Icons.collections, onpressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const CheckOutEquipmentPage()));
-                          }),
-                          SizedBox(height: MediaQuery.of(context).size.width/16),
-                          homeactivities(context,
-                              qauntity: '200',
-                              title: 'CheckIn Equipment',
-                              icon: Icons.not_interested, onpressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const CheckInEquipmentPage()));
-                          }),
-                          SizedBox(height: MediaQuery.of(context).size.width/16),
+                          Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.width / 1.45,
+                            decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    AppColor.gradientFirst,
+                                    AppColor.gradientSecond.withOpacity(0.8)
+                                  ],
+                                  begin: Alignment.bottomLeft,
+                                  end: Alignment.centerRight,
+                                ),
+                                borderRadius: const BorderRadius.only(
+                                  topRight: Radius.circular(40),
+                                  topLeft: Radius.circular(40),
+                                  bottomLeft: Radius.circular(40),
+                                  bottomRight: Radius.circular(40),
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    offset: const Offset(2, 5),
+                                    blurRadius: 4,
+                                    color: AppColor.gradientSecond
+                                        .withOpacity(0.2),
+                                  )
+                                ]),
+                            child: Container(
+                              padding: const EdgeInsets.only(
+                                  top: 15, left: 15, right: 15),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Inventory Summary',
+                                    style: TextStyle(
+                                        fontSize: 25,
+                                        color:
+                                            AppColor.homePageContainerTextBig),
+                                  ),
+                                  SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.width /
+                                              15),
+                                  Row(
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          color: Colors.white,
+                                        ),
+                                        padding: const EdgeInsets.all(5),
+                                        height: 25,
+                                        child: Center(
+                                          child: Text(
+                                            result.length.toString(),
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 12,
+                                                color: Colors.black),
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 10),
+                                      Text(
+                                        'Total Equipments Recorded',
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            color: AppColor
+                                                .homePageContainerTextBig),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.width /
+                                              15),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      InkWell(
+                                        onTap: () =>Navigator.push(context, MaterialPageRoute(builder: (_)=> const FairEquipmentPage())),
+                                        child: equipmentCondition(
+                                          qauntity: fairResult.isEmpty
+                                              ? '0'
+                                              : '${fairResult.length}',
+                                          condition: 'Fair'),
+                                      ),
+                                      
+                                      const SizedBox(
+                                          height: 50,
+                                          child: VerticalDivider(
+                                              color: Colors.white,
+                                              thickness: 2)),
+                                              InkWell(
+                                        onTap: () =>Navigator.push(context, MaterialPageRoute(builder: (_)=> const BadEquipmentPage())),
+                                      child: equipmentCondition(
+                                          qauntity: badResult.isEmpty
+                                              ? '0'
+                                              : '${badResult.length}',
+                                          condition: 'Bad'),),
+                                      const SizedBox(
+                                          height: 50,
+                                          child: VerticalDivider(
+                                              color: Colors.white,
+                                              thickness: 2)),
+                                              InkWell(
+                                        onTap: () =>Navigator.push(context, MaterialPageRoute(builder: (_)=> const GoodEquipmentPage())),
+                                      child:equipmentCondition(
+                                          qauntity: goodResult.isEmpty
+                                              ? '0'
+                                              : '${goodResult.length}',
+                                          condition: 'Good'),),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.width /
+                                              16),
+                                  Row(
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          color: Colors.white,
+                                        ),
+                                        padding: const EdgeInsets.all(5),
+                                        height: 25,
+                                        child: Center(
+                                          child: FutureBuilder<
+                                                  List<EquipmentsAvailable>>(
+                                              future: _equipmentApi.fetchAvialableEquipments(),
+                                              builder: (context, snapshot) {
+                                                if (snapshot.connectionState == ConnectionState.done) {
+                                                  var aviableEquipment =
+                                                      snapshot.data!;
+                                                  return Text(
+                                                    aviableEquipment.length
+                                                        .toString(),
+                                                    style: const TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 12,
+                                                        color: Colors.black),
+                                                  );
+                                                }
+                                                return Center(
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                          color: AppColor
+                                                              .gradientFirst),
+                                                );
+                                              }),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 10),
+                                      Text(
+                                        'Equipments Available in Stock',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          color:
+                                              AppColor.homePageContainerTextBig,
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                              height: MediaQuery.of(context).size.width / 15),
+                          Row(
+                            children: [
+                              Text(
+                                'Activities',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColor.homePageTitle,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                              height: MediaQuery.of(context).size.width / 15),
+                          SizedBox(
+                            child: Column(
+                              children: [
+                                homeactivities(context,
+                                    qauntity: '20',
+                                    title: 'Pending Return',
+                                    icon: Icons.pending, onpressed: () {
+                                  // Navigator.push(
+                                  //     context,
+                                  //     MaterialPageRoute(
+                                  //         builder: (context) => PendingReturnPage()));
+                                }),
+                                SizedBox(
+                                    height:
+                                        MediaQuery.of(context).size.width / 16),
+                                FutureBuilder<List<EquipmentCheckout>>(
+                                    future: EquipmentCheckOutAPI()
+                                        .fetchAllEquipmentCheckOut(),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.hasData) {
+                                          return homeactivities(context,
+                                              qauntity: snapshot.data!.length
+                                                  .toString(),
+                                              title: 'CheckOut Equipment',
+                                              icon: Icons.collections,
+                                              onpressed: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        CheckOutEquipmentPage(
+                                                            equipmentCheckout: 
+                                                            snapshot.data!
+                                                            )
+                                                                ));
+                                          });
+                                        }
+                                      return Center(
+                                        child: CircularProgressIndicator(
+                                            color: AppColor.gradientFirst),
+                                      );
+                                    }),
+                                SizedBox(
+                                    height:
+                                        MediaQuery.of(context).size.width / 16),
+                                FutureBuilder<List<EquipmentCheckin>>(
+                                  future: EquipmentCheckInAPI().fetchAllEquipmentCheckIn(),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData){
+                                    return homeactivities(context,
+                                        qauntity: snapshot.data!.length.toString(),
+                                        title: 'CheckIn Equipment',
+                                        icon: Icons.not_interested, onpressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                   CheckInEquipmentPage(equipmentCheckIn: snapshot.data!)));
+                                    });
+                                  }
+                                   return Center(
+                                        child: CircularProgressIndicator(
+                                            color: AppColor.gradientFirst),
+                                      );
+                                  }
+                                ),
+                                SizedBox(
+                                    height:
+                                        MediaQuery.of(context).size.width / 16),
+                              ],
+                            ),
+                          )
                         ],
                       ),
-                    )
+                    ),
                   ],
-                ),
-              ),
-            ],
-          );
-        }
-        else {
-              return Center(
-                child: CircularProgressIndicator(color: AppColor.gradientFirst),
-              );
-            }
-        }
-        
-        
+                );
+              } else {
+                return Center(
+                  child:
+                      CircularProgressIndicator(color: AppColor.gradientFirst),
+                );
+              }
+            }),
       ),
     );
   }
@@ -287,19 +397,19 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  homeactivities(BuildContext context,
+  Widget homeactivities(BuildContext context,
       {String? qauntity,
       String? title,
       Function()? onpressed,
       IconData? icon}) {
     return SizedBox(
-      height: MediaQuery.of(context).size.width/5.5,
+      height: MediaQuery.of(context).size.width / 5.5,
       width: MediaQuery.of(context).size.width,
       child: Stack(
         children: [
           Container(
             width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.width/5.5,
+            height: MediaQuery.of(context).size.width / 5.5,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 gradient: LinearGradient(

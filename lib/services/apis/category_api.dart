@@ -57,5 +57,25 @@ class CategoryAPI extends BaseAPI {
     return response;
   }
 
-  
+  Future<http.Response> deleteCategory(String id) async {
+   final String token = await SharedPrefrence().getToken();
+
+   var body = jsonEncode({'id': id});
+   final http.Response response = await http.post(
+     Uri.parse(super.deleteEquipmentsCategoryPath + id),
+     headers: <String, String>{
+       "X-Api-Key": "632F2EC9771B6C4C0BDF30BE21D9009B",
+       "Content-Type": "application/json",
+       'Accept': 'application/json',
+       'x-token': token,
+     },
+     body: body
+   );
+   if (response.statusCode == 200) {
+     print(' delete user: ${response.statusCode}');
+     return response;
+   } else {
+     throw Exception('Failed to delete Category.');
+   }
+ }
 }

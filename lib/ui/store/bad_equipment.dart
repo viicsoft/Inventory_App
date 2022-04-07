@@ -1,34 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
-import 'package:viicsoft_inventory_app/models/equipmentcheckin.dart';
 import 'package:viicsoft_inventory_app/models/equipments.dart';
 import 'package:viicsoft_inventory_app/services/apis/equipment_api.dart';
-import 'package:viicsoft_inventory_app/services/apis/equipment_checkin_api.dart';
 
 // ignore: must_be_immutable
-class CheckInEquipmentPage extends StatefulWidget {
-List<EquipmentCheckin>? equipmentCheckIn;
-  CheckInEquipmentPage({Key? key, required this.equipmentCheckIn}) : super(key: key);
+class BadEquipmentPage extends StatefulWidget {
+ const BadEquipmentPage({Key? key}) : super(key: key);
 
   @override
-  State<CheckInEquipmentPage> createState() => _CheckInEquipmentPageState();
+  State<BadEquipmentPage> createState() => _BadEquipmentPageState();
 }
 
-class _CheckInEquipmentPageState extends State<CheckInEquipmentPage> {
-  //EquipmentCategory? selectedCategory;
-  final EquipmentCheckInAPI _equipmentCheckinAPI = EquipmentCheckInAPI();
+class _BadEquipmentPageState extends State<BadEquipmentPage> {
   final EquipmentAPI _equipmentAPI = EquipmentAPI();
   late Future<List<EquipmentElement>> _equipmentsList;
-  late Future<List<EquipmentCheckin>> _equipmentCheckin;
-  late Future equipmentFuture;
-  int? selectedIndex;
-  List selectedEquipment = [];
 
   @override
   void initState() {
     super.initState();
     _equipmentsList = _equipmentAPI.fetchAllEquipments();
-    _equipmentCheckin = _equipmentCheckinAPI.fetchAllEquipmentCheckIn();
   }
 
   @override
@@ -52,7 +42,7 @@ class _CheckInEquipmentPageState extends State<CheckInEquipmentPage> {
                         ),
                         Expanded(child: Container()),
                         Text(
-                          'CheckIn Equipment',
+                          'Bad Equipment',
                           style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.w500,
@@ -78,9 +68,8 @@ class _CheckInEquipmentPageState extends State<CheckInEquipmentPage> {
                               return const Center(
                                   child: CircularProgressIndicator());
                             } else {
-                              var checkIn = List<String>.generate(widget.equipmentCheckIn!.length, (i) => widget.equipmentCheckIn![i].equipmentId).toList();
                               final results = snapshot.data!;
-                              var result = results.where((item) => checkIn.contains(item.id)).toList();
+                              var result = results.where((item) => item.equipmentCondition == 'BAD').toList();
                               return ListView.builder(
                                 itemCount: result.length,
                                 itemBuilder: (_, int index) {
@@ -171,8 +160,7 @@ class _CheckInEquipmentPageState extends State<CheckInEquipmentPage> {
                                                                         borderRadius:
                                                                             BorderRadius.circular(
                                                                                 5),
-                                                                        color: colorscondition(
-                                                                            result[index].equipmentCondition)),
+                                                                        color: Colors.red),
                                                                     padding:
                                                                         const EdgeInsets
                                                                             .all(5),
@@ -192,7 +180,7 @@ class _CheckInEquipmentPageState extends State<CheckInEquipmentPage> {
                                                                   Expanded(
                                                                       child:
                                                                           Container()),
-                                                                  const Icon(Icons.check_circle, color: Colors.green),
+                                                                  const Icon(Icons.dangerous, color: Colors.red),
                                                                                           const SizedBox(width: 5),
                                                                 ],
                                                               ),
@@ -255,18 +243,5 @@ class _CheckInEquipmentPageState extends State<CheckInEquipmentPage> {
           //}
           
     );
-  }
-  
-
-  Color colorscondition(String conditionresult) {
-    if (conditionresult == 'NEW') {
-      return Colors.green;
-    } else if (conditionresult == 'OLD') {
-      return Colors.lime[900]!;
-    } else if (conditionresult == 'FAIR') {
-      return Colors.greenAccent;
-    } else {
-      return Colors.red;
-    }
   }
 }
