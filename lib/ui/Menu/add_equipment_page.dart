@@ -360,7 +360,7 @@ class _AddEquipmentPageState extends State<AddEquipmentPage> {
                                             }
                                           },
                                           child: const Text(
-                                            'Add Item',
+                                            'Add Equipment',
                                             style: TextStyle(fontSize: 16),
                                           ),
                                         ),

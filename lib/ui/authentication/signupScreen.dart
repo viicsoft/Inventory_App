@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:viicsoft_inventory_app/ui/authentication/loginScreen.dart';
 import '../../services/apis/auth_api.dart';
 
@@ -33,11 +34,8 @@ class _SignupPageState extends State<SignupPage> {
               children: <Widget>[
                 Column(
                   children: <Widget>[
-
-
                     Container(
-                      padding:
-                          const EdgeInsets.fromLTRB(15.0, 70.0, 0.0, 0.0),
+                      padding: const EdgeInsets.fromLTRB(15.0, 70.0, 0.0, 0.0),
                       child: const Text(
                         'SIGN UP',
                         style: TextStyle(
@@ -52,8 +50,6 @@ class _SignupPageState extends State<SignupPage> {
                           top: 30.0, left: 20.0, right: 20.0),
                       child: Column(
                         children: <Widget>[
-
-
                           TextFormField(
                             controller: _fullNameField,
                             decoration: const InputDecoration(
@@ -69,8 +65,6 @@ class _SignupPageState extends State<SignupPage> {
                               return null;
                             },
                           ),
-
-
                           const SizedBox(height: 10.0),
                           TextFormField(
                             keyboardType: TextInputType.emailAddress,
@@ -88,8 +82,6 @@ class _SignupPageState extends State<SignupPage> {
                               return null;
                             },
                           ),
-
-
                           const SizedBox(height: 10.0),
                           TextFormField(
                             obscureText: _isObscurePassword,
@@ -119,9 +111,6 @@ class _SignupPageState extends State<SignupPage> {
                               return null;
                             },
                           ),
-
-
-
                           const SizedBox(height: 10.0),
                           TextFormField(
                             obscureText: _isObscureConfirmPassword,
@@ -133,7 +122,8 @@ class _SignupPageState extends State<SignupPage> {
                                       : Icons.visibility_off),
                                   onPressed: () {
                                     setState(() {
-                                      _isObscureConfirmPassword = !_isObscureConfirmPassword;
+                                      _isObscureConfirmPassword =
+                                          !_isObscureConfirmPassword;
                                     });
                                   }),
                               labelText: 'Confirm Pasword',
@@ -143,20 +133,16 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                             validator: (value) {
                               if (_passwordField.text !=
-                                      _confirmPasswordField.text) {
+                                  _confirmPasswordField.text) {
                                 return 'Please Confirm Pasword*';
                               }
                               return null;
                             },
                           ),
-
-                          
-
                           const SizedBox(height: 80.0),
                           InkWell(
                             onTap: () async {
-                              if (_formkey.currentState!.validate()
-                                  ) {
+                              if (_formkey.currentState!.validate()) {
                                 var res = await _authAPI.signUp(
                                     _fullNameField.text,
                                     _emailField.text,
@@ -166,11 +152,12 @@ class _SignupPageState extends State<SignupPage> {
                                   _formkey.currentState!.reset();
                                   ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
-                                        backgroundColor: Colors.green,
-                                          content:
-                                              Text("SignUp Successful")));
-                                              Navigator.pushReplacement(
-                                  context, MaterialPageRoute(builder: (_)=>const Login()));
+                                          backgroundColor: Colors.green,
+                                          content: Text("SignUp Successful")));
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (_) => const Login()));
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
@@ -201,9 +188,6 @@ class _SignupPageState extends State<SignupPage> {
                               ),
                             ),
                           ),
-
-
-
                           const SizedBox(height: 50.0),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -215,9 +199,6 @@ class _SignupPageState extends State<SignupPage> {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-
-
-                              
                               const SizedBox(width: 5.0),
                               InkWell(
                                 onTap: () {

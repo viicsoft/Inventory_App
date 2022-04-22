@@ -219,7 +219,7 @@ class _AddEventPageState extends State<AddEventPage> {
                                       }
                                     },
                                     child: const Text(
-                                      'Save & Update',
+                                      'Create Event',
                                       style: TextStyle(fontSize: 16),
                                     ),
                                   ),

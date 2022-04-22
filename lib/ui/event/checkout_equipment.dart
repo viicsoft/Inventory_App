@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
 import 'package:viicsoft_inventory_app/models/eventequipmentcheckout.dart';
 import 'package:viicsoft_inventory_app/models/events.dart';
@@ -46,7 +45,6 @@ class _CheckOutEquipmentPageState extends State<CheckOutEquipmentPage> {
                           icon: const Icon(
                             Icons.arrow_back_ios_new,
                             size: 25,
-                            //color: AppColor.homePageContainerTextBig,
                           ),
                         ),
                         Expanded(child: Container()),
@@ -55,7 +53,6 @@ class _CheckOutEquipmentPageState extends State<CheckOutEquipmentPage> {
                           style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.w500,
-                            //color: AppColor.homePageContainerTextBig,
                           ),
                         ),
                         SizedBox(
