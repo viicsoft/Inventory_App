@@ -3,11 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
-import 'package:viicsoft_inventory_app/component/textform.dart';
-import 'package:viicsoft_inventory_app/models/userProfile.dart';
-import 'package:viicsoft_inventory_app/models/users.dart';
+import 'package:viicsoft_inventory_app/models/profile.dart';
 import 'package:viicsoft_inventory_app/services/apis/user_api.dart';
-//import 'package:inventory/handburger/reset_password_page.dart';
 
 class ProfileDetailPage extends StatefulWidget {
   final ProfileUser userDetail;
@@ -23,10 +20,10 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
   bool _isObscure = true;
   bool _isObscureConfirmPassword = true;
   XFile? _profileimage;
-  final TextEditingController _newEmail = TextEditingController();
+  bool noImage = false;
+
   final TextEditingController _newPassword = TextEditingController();
   final TextEditingController _confirmPasswordField = TextEditingController();
-  final TextEditingController _newName = TextEditingController();
   GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
 
   final picker = ImagePicker();
@@ -43,6 +40,10 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController _newEmail =
+        TextEditingController(text: widget.userDetail.email);
+    final TextEditingController _newName =
+        TextEditingController(text: widget.userDetail.fullName);
     return Scaffold(
       body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 50),
@@ -77,16 +78,29 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                             alignment: AlignmentDirectional.center,
                             children: [
                               Container(
-                                height: 100,
-                                width: 100,
-                                child: CircleAvatar(
-                                  backgroundColor: Colors.white,
-                                  child: ClipOval(
-                                    child: userimage(
-                                        _isOnlineImage, widget.userDetail.avatar),
+                                width: 90,
+                                height: 90,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(40),
+                                  image: DecorationImage(
+                                    image: _isOnlineImage
+                                        ? NetworkImage(
+                                            widget.userDetail.avatarThumbnail)
+                                        : FileImage(File(_profileimage!.path))
+                                            as ImageProvider,
+                                    fit: BoxFit.cover,
                                   ),
-                                  ),
+                                ),
                               ),
+                              // SizedBox(
+                              //   height: 100,
+                              //   width: 100,
+                              //   child: CircleAvatar(
+                              //     backgroundColor: Colors.white,
+                              //     child: userimage(
+                              //         _isOnlineImage, widget.userDetail.avatar),
+                              //   ),
+                              // ),
                               Positioned(
                                 bottom: 0,
                                 right: 0,
@@ -139,6 +153,12 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                               ),
                             ],
                           ),
+                          Center(
+                            child: Text(
+                              noImage ? 'No image selected !' : '',
+                              style: TextStyle(color: AppColor.gradientFirst),
+                            ),
+                          ),
                           const SizedBox(height: 20),
                           Text(
                             widget.userDetail.fullName,
@@ -165,7 +185,7 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                                 Icons.person,
                                 color: Colors.grey,
                               ),
-                              labelText: 'Change Full Name*',
+                              labelText: 'Name*',
                             ),
                           ),
                           const SizedBox(height: 10),
@@ -180,7 +200,7 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                                 Icons.email,
                                 color: Colors.grey,
                               ),
-                              labelText: 'Change Email*',
+                              labelText: 'Email*',
                             ),
                           ),
                           const SizedBox(height: 10),
@@ -239,20 +259,31 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 20),
+                      SizedBox(height: MediaQuery.of(context).size.width * 0.2),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           ElevatedButton(
                             onPressed: () async {
                               if (globalFormKey.currentState!.validate()) {
+                                if (_profileimage == null) {
+                                  setState(() {
+                                    noImage = true;
+                                  });
+                                } else {
+                                  setState(() {
+                                    noImage = false;
+                                  });
+                                }
                                 var res = await UserAPI().updateUserProfile(
                                     _newEmail.text.trim(),
                                     _newPassword.text.trim(),
                                     widget.userDetail.id,
                                     _profileimage!,
-                                    _newEmail.text.trim());
+                                    _newName.text.trim());
                                 if (res.statusCode == 200) {
+                                  _newPassword.clear();
+                                  _confirmPasswordField.clear();
                                   Navigator.pushNamed(
                                       context, '/profileChangeSuccessPage');
                                 } else {
@@ -264,15 +295,6 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                                     ),
                                   );
                                 }
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    backgroundColor: Colors.red,
-                                    content: Text(
-                                        "Login failed, Wrong email or password !",
-                                        textAlign: TextAlign.center),
-                                  ),
-                                );
                               }
                             },
                             child: const Text('Save'),
@@ -292,13 +314,7 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
 
   userimage(bool saverImage, String url) {
     if (saverImage) {
-      return Image.network(
-        url,
-        errorBuilder:
-            (BuildContext context, Object exception, StackTrace? stackTrace) {
-          return Image.asset('assets/No_image.png');
-        },
-      );
+      return Image.network(url);
     } else {
       return Image.file(File(_profileimage!.path));
 

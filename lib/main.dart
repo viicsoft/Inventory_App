@@ -1,46 +1,61 @@
 import 'package:flutter/material.dart';
 import 'package:viicsoft_inventory_app/ui/Menu/add_category.dart';
 import 'package:viicsoft_inventory_app/ui/Menu/add_event_page.dart';
-import 'package:viicsoft_inventory_app/ui/Menu/add_item_page.dart';
-import 'package:viicsoft_inventory_app/ui/Menu/userprofile/admin/userslist.dart';
-import 'package:viicsoft_inventory_app/ui/Menu/userprofile/passwordresetsuccesspage.dart';
-import 'package:viicsoft_inventory_app/ui/Menu/userprofile/reset_password_page.dart';
+import 'package:viicsoft_inventory_app/ui/Menu/add_equipment_page.dart';
+import 'package:viicsoft_inventory_app/ui/Menu/user_profile/admin/userslist.dart';
+import 'package:viicsoft_inventory_app/ui/Menu/user_profile/passwordresetsuccesspage.dart';
+import 'package:viicsoft_inventory_app/ui/Menu/user_profile/reset_password_page.dart';
 import 'package:viicsoft_inventory_app/ui/authentication/loginScreen.dart';
 import 'package:viicsoft_inventory_app/ui/authentication/loginsignupScreen.dart';
 import 'package:viicsoft_inventory_app/ui/authentication/signupScreen.dart';
 import 'package:viicsoft_inventory_app/ui/event/events_page.dart';
-import 'package:viicsoft_inventory_app/ui/homePage.dart';
+import 'package:viicsoft_inventory_app/ui/home_page.dart';
 import 'package:viicsoft_inventory_app/ui/store/store_page.dart';
-
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 void main() async {
-  runApp( const MyApp());
+  runApp(const MyApp());
 }
+
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Inventory App',
-      initialRoute: '/',
-  routes: {
-    
-    '/': (context) => const //CheckOutEquipmentPage(),
-    SignupLogin(),
-    '/signup': (context) => const SignupPage(),
-    '/login': (context) => const Login(),
-    '/homePage': (context) => const HomePage(),
-    '/UserList': (context) => const UserList(),
-    '/addCategory': (context) => const AddCategory(),
-    '/addItem': (context) => const AddItemPage(),
-    '/addevent': (context) => const AddEventPage(),
-    '/resetpassword': (context) => const ResetPasswordPage(),
-    '/profileChangeSuccessPage': (context) => const ProfileChangeSuccessPage (),
-    '/event': (context) => const EventsPage(),
-    '/store': (context) => const StorePage(),
-  },
+    return RefreshConfiguration(
+      headerTriggerDistance: 80.0, // header trigger refresh trigger distance
+      maxOverScrollExtent:
+          50, //The maximum dragging range of the head. Set this property if a rush out of the view area occurs
+      maxUnderScrollExtent: 0, // Maximum dragging range at the bottom
+      enableScrollWhenRefreshCompleted:
+          true, //This property is incompatible with PageView and TabBarView. If you need TabBarView to slide left and right, you need to set it to true.
+      enableLoadingWhenFailed:
+          true, //In the case of load failure, users can still trigger more loads by gesture pull-up.
+      hideFooterWhenNotFull:
+          false, // Disable pull-up to load more functionality when Viewport is less than one screen
+      enableBallisticLoad: true,
+
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Inventory App',
+        initialRoute: '/',
+        routes: {
+          '/': (context) => const //CheckOutEquipmentPage(),
+              SignupLogin(),
+          '/signup': (context) => const SignupPage(),
+          '/login': (context) => const Login(),
+          '/homePage': (context) => const HomePage(),
+          '/UserList': (context) => const UserList(),
+          '/addCategory': (context) => const AddCategory(),
+          '/addItem': (context) => const AddEquipmentPage(),
+          '/addevent': (context) => const AddEventPage(),
+          '/resetpassword': (context) => const ResetPasswordPage(),
+          '/profileChangeSuccessPage': (context) =>
+              const ProfileChangeSuccessPage(),
+          '/event': (context) => const EventsPage(),
+          '/store': (context) => const StorePage(),
+        },
+      ),
     );
   }
 }

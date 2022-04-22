@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
 import 'package:viicsoft_inventory_app/ui/event/events_page.dart';
-import 'package:viicsoft_inventory_app/ui/homePage.dart';
+import 'package:viicsoft_inventory_app/ui/home_page.dart';
 import 'package:viicsoft_inventory_app/ui/store/store_page.dart';
 
 class BottomNavigationBarPage extends StatefulWidget {
   const BottomNavigationBarPage({Key? key}) : super(key: key);
 
   @override
-  State<BottomNavigationBarPage> createState() => _BottomNavigationBarPageState();
+  State<BottomNavigationBarPage> createState() =>
+      _BottomNavigationBarPageState();
 }
+
 class _BottomNavigationBarPageState extends State<BottomNavigationBarPage> {
   int _selectedIndex = 0;
   // static const TextStyle optionStyle =

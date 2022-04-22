@@ -8,24 +8,26 @@ import 'package:viicsoft_inventory_app/models/category.dart';
 import 'package:viicsoft_inventory_app/services/apis/category_api.dart';
 import 'package:viicsoft_inventory_app/services/apis/equipment_api.dart';
 
-class AddItemPage extends StatefulWidget {
-  const AddItemPage({Key? key}) : super(key: key);
+class AddEquipmentPage extends StatefulWidget {
+  const AddEquipmentPage({Key? key}) : super(key: key);
 
   @override
-  State<AddItemPage> createState() => _AddItemPageState();
+  State<AddEquipmentPage> createState() => _AddEquipmentPageState();
 }
 
-class _AddItemPageState extends State<AddItemPage> {
+class _AddEquipmentPageState extends State<AddEquipmentPage> {
   XFile? _itemimage;
   String _newCondition = 'NEW';
-  String _newSize = 'NORMAL';
+  String _newSize = 'SHORT';
+  GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController equipmentNameController = TextEditingController();
-
   final picker = ImagePicker();
+  bool noImage = false;
 
   Future getImage(ImageSource source) async {
-    final pickedFile = await picker.pickImage(source: source, imageQuality: 50, maxHeight: 700, maxWidth: 650);
+    final pickedFile = await picker.pickImage(
+        source: source, imageQuality: 50, maxHeight: 700, maxWidth: 650);
 
     setState(() {
       _itemimage = pickedFile;
@@ -40,7 +42,7 @@ class _AddItemPageState extends State<AddItemPage> {
 
   @override
   void initState() {
-   _category = _categoryApi.fetchAllCategory();
+    _category = _categoryApi.fetchAllCategory();
     super.initState();
   }
 
@@ -64,89 +66,91 @@ class _AddItemPageState extends State<AddItemPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder<List<EquipmentCategory>>(
-          future: _category,
-          builder: (context, snapshot) {
-            final category = snapshot.data;
-            if (category != null) {
-              return Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      AppColor.gradientFirst,
-                      AppColor.gradientSecond,
-                    ],
-                    begin: const FractionalOffset(0.0, 0.4),
-                    end: Alignment.topRight,
+      body: Form(
+        key: globalFormKey,
+        child: FutureBuilder<List<EquipmentCategory>>(
+            future: _category,
+            builder: (context, snapshot) {
+              final category = snapshot.data;
+              if (category != null) {
+                return Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        AppColor.gradientFirst,
+                        AppColor.gradientSecond,
+                      ],
+                      begin: const FractionalOffset(0.0, 0.4),
+                      end: Alignment.topRight,
+                    ),
                   ),
-                ),
-                child: Column(
-                  children: [
-                    Container(
-                      padding:
-                          const EdgeInsets.only(top: 30, left: 30, right: 30),
-                      width: MediaQuery.of(context).size.width,
-                      height: 130,
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              IconButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                icon: const Icon(
-                                  Icons.arrow_back_ios_new,
-                                  size: 25,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Container(
-                            padding: const EdgeInsets.only(
-                                top: 10, left: 20, right: 20),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Column(
+                    children: [
+                      Container(
+                        padding:
+                            const EdgeInsets.only(top: 30, left: 30, right: 30),
+                        width: MediaQuery.of(context).size.width,
+                        height: 130,
+                        child: Column(
+                          children: [
+                            Row(
                               children: [
-                                Text(
-                                  'Add New Item',
-                                  style: TextStyle(
-                                      fontSize: 25,
-                                      color: AppColor.homePageContainerTextBig),
+                                IconButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  icon: const Icon(
+                                    Icons.arrow_back_ios_new,
+                                    size: 25,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ],
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.only(left: 30, right: 30),
-                        width: MediaQuery.of(context).size.width,
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.only(
-                            topRight: Radius.circular(70),
-                            topLeft: Radius.circular(70),
-                          ),
+                            Container(
+                              padding: const EdgeInsets.only(
+                                  top: 10, left: 20, right: 20),
+                              child: Text(
+                                'Add New Equipment',
+                                style: TextStyle(
+                                    fontSize: 25,
+                                    color: AppColor.homePageContainerTextBig),
+                              ),
+                            ),
+                          ],
                         ),
-                        child: Column(
-                          children: [
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 20),
+                      ),
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.only(left: 30, right: 30),
+                          width: MediaQuery.of(context).size.width,
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(70),
+                              topLeft: Radius.circular(70),
+                            ),
+                          ),
+                          child: Column(
+                            children: [
+                              Expanded(
                                 child: ListView(
                                   children: [
                                     itemImages(context),
-                                    const SizedBox(height: 20),
+                                    Center(
+                                      child: Text(
+                                        noImage ? 'No image selected !' : '',
+                                        style: TextStyle(
+                                            color: AppColor.gradientFirst),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 10),
                                     Row(
                                       children: [
                                         Text(
                                           'Category*',
                                           style: TextStyle(
-                                            fontSize: 16,
+                                            fontSize: 14,
                                             fontWeight: FontWeight.w500,
                                             color: AppColor.homePageTitle,
                                           ),
@@ -167,38 +171,38 @@ class _AddItemPageState extends State<AddItemPage> {
                                             return DropdownMenuItem<
                                                 EquipmentCategory>(
                                               value: value,
-                                              child: Text(value.name, style: TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w500,
-                                            color: AppColor.gradientFirst,
-                                          ),),
+                                              child: Text(
+                                                value.name,
+                                                style: TextStyle(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: AppColor.gradientFirst,
+                                                ),
+                                              ),
                                             );
                                           }).toList(),
                                         ),
                                       ],
                                     ),
-                                    const SizedBox(height: 10),
-                                    TextField(
+                                    const SizedBox(height: 8),
+                                    TextFormField(
                                       controller: equipmentNameController,
-                                      decoration: InputDecoration(
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                                vertical: 8.0,
-                                                horizontal: 10.0),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                        ),
-                                        labelText: 'item name*',
+                                      validator: (input) => (input!.isEmpty)
+                                          ? "Add Equipment Name"
+                                          : null,
+                                      decoration: const InputDecoration(
+                                        contentPadding: EdgeInsets.symmetric(
+                                            vertical: 8.0, horizontal: 10.0),
+                                        labelText: 'Equipment Name*',
                                       ),
                                     ),
-                                    const SizedBox(height: 10),
+                                    const SizedBox(height: 5),
                                     Row(
                                       children: [
                                         Text(
                                           'Condition*',
                                           style: TextStyle(
-                                            fontSize: 16,
+                                            fontSize: 14,
                                             fontWeight: FontWeight.w500,
                                             color: AppColor.homePageTitle,
                                           ),
@@ -208,6 +212,7 @@ class _AddItemPageState extends State<AddItemPage> {
                                           value: _newCondition,
                                           elevation: 16,
                                           style: TextStyle(
+                                              fontSize: 14,
                                               color: Colors.grey[600]),
                                           onChanged: (String? newValue) {
                                             setState(() {
@@ -229,13 +234,13 @@ class _AddItemPageState extends State<AddItemPage> {
                                         ),
                                       ],
                                     ),
-                                    const SizedBox(height: 10),
+                                    const SizedBox(height: 8),
                                     Row(
                                       children: [
                                         Text(
                                           'Size*',
                                           style: TextStyle(
-                                            fontSize: 16,
+                                            fontSize: 14,
                                             fontWeight: FontWeight.w500,
                                             color: AppColor.homePageTitle,
                                           ),
@@ -245,6 +250,7 @@ class _AddItemPageState extends State<AddItemPage> {
                                           value: _newSize,
                                           elevation: 16,
                                           style: TextStyle(
+                                              fontSize: 14,
                                               color: Colors.grey[600]),
                                           onChanged: (String? newValue) {
                                             setState(() {
@@ -252,10 +258,9 @@ class _AddItemPageState extends State<AddItemPage> {
                                             });
                                           },
                                           items: <String>[
-                                            'NORMAL',
+                                            'SHORT',
                                             'LONG',
                                             'VERY LONG',
-                                            'SHORT',
                                             'VERY SHORT',
                                           ].map<DropdownMenuItem<String>>(
                                               (String value) {
@@ -267,9 +272,12 @@ class _AddItemPageState extends State<AddItemPage> {
                                         ),
                                       ],
                                     ),
-                                    const SizedBox(height: 10),
-                                    TextField(
+                                    const SizedBox(height: 8),
+                                    TextFormField(
                                       controller: descriptionController,
+                                      validator: (input) => (input!.isEmpty)
+                                          ? "Add Equipment Description"
+                                          : null,
                                       keyboardType: TextInputType.multiline,
                                       maxLines: null,
                                       decoration: const InputDecoration(
@@ -295,11 +303,11 @@ class _AddItemPageState extends State<AddItemPage> {
                                           child: Text(
                                               'Result : $_scanBarcode\n',
                                               style: const TextStyle(
-                                                  fontSize: 16)),
+                                                  fontSize: 14)),
                                         ),
                                       ],
                                     ),
-                                    const SizedBox(height: 40),
+                                    const SizedBox(height: 30),
                                     Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.stretch,
@@ -308,35 +316,47 @@ class _AddItemPageState extends State<AddItemPage> {
                                           style: ElevatedButton.styleFrom(
                                               primary: AppColor.gradientFirst),
                                           onPressed: () async {
-                                            var res =
-                                                await _equipmentApi.addEquipment(
-                                                    equipmentNameController
-                                                        .text,
-                                                    _itemimage!,
-                                                    newselectedCategory!.id,
-                                                    _newCondition,
-                                                    _newSize,
-                                                    descriptionController.text,
-                                                    _scanBarcode);
-                                            if (res.statusCode == 200 ||
-                                                res.statusCode == 201) {
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(const SnackBar(
-                                                      backgroundColor:
-                                                          Colors.green,
-                                                      content: Text(
-                                                          "Equipment added")));
-                                              Navigator.pop(context);
-                                            } else {
-                                              print(res.statusCode);
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(
-                                                const SnackBar(
-                                                  backgroundColor: Colors.red,
-                                                  content: Text(
-                                                      "Something went wrong"),
-                                                ),
-                                              );
+                                            if (globalFormKey.currentState!
+                                                .validate()) {
+                                              if (_itemimage == null) {
+                                                setState(() {
+                                                  noImage = true;
+                                                });
+                                              } else {
+                                                setState(() {
+                                                  noImage = false;
+                                                });
+                                              }
+                                              var res = await _equipmentApi
+                                                  .addEquipment(
+                                                      equipmentNameController
+                                                          .text,
+                                                      _itemimage!,
+                                                      newselectedCategory!.id,
+                                                      _newCondition,
+                                                      _newSize,
+                                                      descriptionController
+                                                          .text,
+                                                      _scanBarcode);
+                                              if (res.statusCode == 200 ||
+                                                  res.statusCode == 201) {
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(const SnackBar(
+                                                        backgroundColor:
+                                                            Colors.green,
+                                                        content: Text(
+                                                            "Equipment added")));
+                                                Navigator.pop(context);
+                                              } else {
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  const SnackBar(
+                                                    backgroundColor: Colors.red,
+                                                    content: Text(
+                                                        "Something went wrong"),
+                                                  ),
+                                                );
+                                              }
                                             }
                                           },
                                           child: const Text(
@@ -349,20 +369,21 @@ class _AddItemPageState extends State<AddItemPage> {
                                   ],
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              );
-            } else {
-              return Center(
-                child: CircularProgressIndicator(color: AppColor.gradientFirst),
-              );
-            }
-          }),
+                    ],
+                  ),
+                );
+              } else {
+                return Center(
+                  child:
+                      CircularProgressIndicator(color: AppColor.gradientFirst),
+                );
+              }
+            }),
+      ),
     );
   }
 
@@ -374,10 +395,11 @@ class _AddItemPageState extends State<AddItemPage> {
           alignment: AlignmentDirectional.center,
           children: [
             Container(
-              width: 80,
-              height: 80,
+              width: MediaQuery.of(context).size.width * 0.25,
+              height: MediaQuery.of(context).size.width * 0.22,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(50),
+                borderRadius: BorderRadius.circular(
+                    MediaQuery.of(context).size.width * 0.06),
                 image: DecorationImage(
                   image: _itemimage != null
                       ? FileImage(File(_itemimage!.path))

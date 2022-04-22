@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-import 'package:viicsoft_inventory_app/models/eventequipment.dart';
 import 'package:viicsoft_inventory_app/models/events.dart';
 import 'package:viicsoft_inventory_app/models/futureevent.dart';
 import 'package:viicsoft_inventory_app/models/pastevent.dart';
@@ -9,15 +8,15 @@ import 'package:viicsoft_inventory_app/services/sharedpref.dart';
 import '../api.dart';
 
 class EventAPI extends BaseAPI {
-
   Future<List<Event>> fetchAllEvents() async {
-
-    final response = await http
-        .get(Uri.parse(super.allEventsPath), headers: super.headers);
+    final response =
+        await http.get(Uri.parse(super.allEventsPath), headers: super.headers);
 
     if (response.statusCode == 200) {
-      final  _data = jsonDecode(response.body);
-      final List<Event> events = _data['data']['events'].map<Event>((model) => Event.fromJson(model as Map<String, dynamic>)).toList();
+      final _data = jsonDecode(response.body);
+      final List<Event> events = _data['data']['events']
+          .map<Event>((model) => Event.fromJson(model as Map<String, dynamic>))
+          .toList();
       return events;
     } else {
       throw Exception('Failed to load Events');
@@ -26,15 +25,18 @@ class EventAPI extends BaseAPI {
 
   Future<List<EventsFuture>> fetchFutureEvents() async {
     final String token = await SharedPrefrence().getToken();
-    final response = await http
-        .get(Uri.parse(super.allFutureEventsPath), headers: {
+    final response =
+        await http.get(Uri.parse(super.allFutureEventsPath), headers: {
       "X-Api-Key": "632F2EC9771B6C4C0BDF30BE21D9009B",
       'x-token': token,
     });
 
     if (response.statusCode == 200) {
-      final  _data = jsonDecode(response.body);
-      final List<EventsFuture> events = _data['data']['events_future'].map<EventsFuture>((model) => EventsFuture.fromJson(model as Map<String, dynamic>)).toList();
+      final _data = jsonDecode(response.body);
+      final List<EventsFuture> events = _data['data']['events_future']
+          .map<EventsFuture>(
+              (model) => EventsFuture.fromJson(model as Map<String, dynamic>))
+          .toList();
       return events;
     } else {
       throw Exception('Failed to load Future Events');
@@ -43,15 +45,18 @@ class EventAPI extends BaseAPI {
 
   Future<List<EventsPast>> fetchPastEvents() async {
     final String token = await SharedPrefrence().getToken();
-    final response = await http
-        .get(Uri.parse(super.allPastEventsPath), headers: {
+    final response =
+        await http.get(Uri.parse(super.allPastEventsPath), headers: {
       "X-Api-Key": "632F2EC9771B6C4C0BDF30BE21D9009B",
       'x-token': token,
     });
 
     if (response.statusCode == 200) {
-      final  _data = jsonDecode(response.body);
-      final List<EventsPast> events = _data['data']['events_past'].map<EventsPast>((model) => EventsPast.fromJson(model as Map<String, dynamic>)).toList();
+      final _data = jsonDecode(response.body);
+      final List<EventsPast> events = _data['data']['events_past']
+          .map<EventsPast>(
+              (model) => EventsPast.fromJson(model as Map<String, dynamic>))
+          .toList();
       return events;
     } else {
       throw Exception('Failed to load Past Events');
@@ -71,8 +76,7 @@ class EventAPI extends BaseAPI {
       'x-token': token,
     };
     //create multipart request for POST or PATCH method
-    var request = http.MultipartRequest(
-        "POST", Uri.parse(super.addEventsPath));
+    var request = http.MultipartRequest("POST", Uri.parse(super.addEventsPath));
     //add header in http request
     request.headers.addAll(headers);
 
@@ -92,7 +96,7 @@ class EventAPI extends BaseAPI {
 
   Future<http.StreamedResponse> updateEvent(
       String eventName,
-     // XFile eventImage,
+      // XFile eventImage,
       String eventType,
       String eventLocation,
       String checkinDate,
@@ -103,8 +107,8 @@ class EventAPI extends BaseAPI {
       "X-Api-Key": "632F2EC9771B6C4C0BDF30BE21D9009B",
       'x-token': token,
     };
-    var request = http.MultipartRequest(
-        "POST", Uri.parse(super.upDateEventsPath));
+    var request =
+        http.MultipartRequest("POST", Uri.parse(super.upDateEventsPath));
     request.headers.addAll(headers);
     request.fields["event_name"] = eventName;
     request.fields["event_type"] = eventType;
@@ -118,17 +122,19 @@ class EventAPI extends BaseAPI {
     return response;
   }
 
-  Future<http.Response> addEventEquipment(String eventId, String equipmentId) async {
+  Future<http.Response> addEventEquipment(
+      String eventId, String equipmentId) async {
     final String token = await SharedPrefrence().getToken();
     var body = jsonEncode({'event_id': eventId, 'equipment_id': equipmentId});
     http.Response response =
-    await http.post(Uri.parse(super.addEventsEquipmentPath), headers: {
-      "X-Api-Key": "632F2EC9771B6C4C0BDF30BE21D9009B",
-      'x-token': token,
-    }, body: body);
+        await http.post(Uri.parse(super.addEventEquipmentsChecklistPath),
+            headers: {
+              "X-Api-Key": "632F2EC9771B6C4C0BDF30BE21D9009B",
+              'x-token': token,
+            },
+            body: body);
 
     if (response.statusCode == 200) {
-      print(response.body);
       return response;
     } else {
       throw Exception('Failed auth');
@@ -136,49 +142,22 @@ class EventAPI extends BaseAPI {
   }
 
   Future<http.Response> deleteEvent(String id) async {
-   final String token = await SharedPrefrence().getToken();
+    final String token = await SharedPrefrence().getToken();
 
-   var body = jsonEncode({'id': id});
-   final http.Response response = await http.post(
-     Uri.parse(super.deleteEventsPath + id),
-     headers: <String, String>{
-       "X-Api-Key": "632F2EC9771B6C4C0BDF30BE21D9009B",
-       "Content-Type": "application/json",
-       'Accept': 'application/json',
-       'x-token': token,
-     },
-     body: body
-   );
-   if (response.statusCode == 200) {
-     print(' delete user: ${response.statusCode}');
-     return response;
-   } else {
-     throw Exception('Failed to delete Event.');
-   }
- }
-
-
-
-  Future<EventEquipmentChecklist> deleteEventEquipment(String id) async {
-   final String token = await SharedPrefrence().getToken();
     var body = jsonEncode({'id': id});
-   final http.Response response = await http.delete(
-     Uri.parse(super.deleteEventsEquipmentPath + id),
-     headers: <String, String>{
-       "X-Api-Key": "632F2EC9771B6C4C0BDF30BE21D9009B",
-       "Content-Type": "application/json",
-       'Accept': 'application/json',
-       'x-token': token,
-     },
-     body: body,
-   );
-   if (response.statusCode == 200) {
-     //print(' delete user: ${response.body}');
-     return EventEquipmentChecklist.fromJson(jsonDecode(response.body));
-   } else {
-     throw Exception('Failed to delete user.');
-   }
- }
-
-
+    final http.Response response =
+        await http.post(Uri.parse(super.deleteEventsPath + id),
+            headers: <String, String>{
+              "X-Api-Key": "632F2EC9771B6C4C0BDF30BE21D9009B",
+              "Content-Type": "application/json",
+              'Accept': 'application/json',
+              'x-token': token,
+            },
+            body: body);
+    if (response.statusCode == 200) {
+      return response;
+    } else {
+      throw Exception('Failed to delete Event.');
+    }
+  }
 }

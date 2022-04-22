@@ -4,8 +4,6 @@
 
 import 'dart:convert';
 
-import 'package:shared_preferences/shared_preferences.dart';
-
 AuthModel usersFromJson(String str) => AuthModel.fromJson(json.decode(str));
 
 String usersToJson(AuthModel data) => json.encode(data.toJson());
@@ -24,18 +22,18 @@ class AuthModel {
   String token;
 
   factory AuthModel.fromJson(Map<String, dynamic> json) => AuthModel(
-    status: json["status"],
-    message: json["message"],
-    data: Data.fromJson(json["data"]),
-    token: json["token"],
-  );
+        status: json["status"],
+        message: json["message"],
+        data: Data.fromJson(json["data"]),
+        token: json["token"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "status": status,
-    "message": message,
-    "data": data.toJson(),
-    "token": token,
-  };
+        "status": status,
+        "message": message,
+        "data": data.toJson(),
+        "token": token,
+      };
 }
 
 class Data {
@@ -88,52 +86,52 @@ class Data {
   DateTime? createdAt;
 
   factory Data.fromJson(Map<String?, dynamic> json) => Data(
-    id: json["id"],
-    email: json["email"],
-    oauthUid: json["oauth_uid"],
-    oauthProvider: json["oauth_provider"],
-    pass: json["pass"],
-    username: json["username"],
-    fullName: json["full_name"],
-    avatar: json["avatar"],
-    banned: json["banned"],
-    lastLogin: DateTime.parse(json["last_login"]),
-    lastActivity: json["last_activity"],
-    dateCreated: DateTime.parse(json["date_created"]),
-    forgotExp: json["forgot_exp"],
-    rememberTime: json["remember_time"],
-    rememberExp: json["remember_exp"],
-    verificationCode: json["verification_code"],
-    topSecret: json["top_secret"],
-    ipAddress: json["ip_address"],
-    createdBy: json["created_by"],
-    updatedBy: json["updated_by"],
-    updatedAt: json["updated_at"],
-    createdAt: DateTime.parse(json["created_at"]),
-  );
+        id: json["id"],
+        email: json["email"],
+        oauthUid: json["oauth_uid"],
+        oauthProvider: json["oauth_provider"],
+        pass: json["pass"],
+        username: json["username"],
+        fullName: json["full_name"],
+        avatar: json["avatar"],
+        banned: json["banned"],
+        lastLogin: DateTime.parse(json["last_login"]),
+        lastActivity: json["last_activity"],
+        dateCreated: DateTime.parse(json["date_created"]),
+        forgotExp: json["forgot_exp"],
+        rememberTime: json["remember_time"],
+        rememberExp: json["remember_exp"],
+        verificationCode: json["verification_code"],
+        topSecret: json["top_secret"],
+        ipAddress: json["ip_address"],
+        createdBy: json["created_by"],
+        updatedBy: json["updated_by"],
+        updatedAt: json["updated_at"],
+        createdAt: DateTime.parse(json["created_at"]),
+      );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "email": email,
-    "oauth_uid": oauthUid,
-    "oauth_provider": oauthProvider,
-    "pass": pass,
-    "username": username,
-    "full_name": fullName,
-    "avatar": avatar,
-    "banned": banned,
-    "last_login": lastLogin?.toIso8601String(),
-    "last_activity": lastActivity,
-    "date_created": dateCreated?.toIso8601String(),
-    "forgot_exp": forgotExp,
-    "remember_time": rememberTime,
-    "remember_exp": rememberExp,
-    "verification_code": verificationCode,
-    "top_secret": topSecret,
-    "ip_address": ipAddress,
-    "created_by": createdBy,
-    "updated_by": updatedBy,
-    "updated_at": updatedAt,
-    "created_at": createdAt?.toIso8601String(),
-  };
+        "id": id,
+        "email": email,
+        "oauth_uid": oauthUid,
+        "oauth_provider": oauthProvider,
+        "pass": pass,
+        "username": username,
+        "full_name": fullName,
+        "avatar": avatar,
+        "banned": banned,
+        "last_login": lastLogin?.toIso8601String(),
+        "last_activity": lastActivity,
+        "date_created": dateCreated?.toIso8601String(),
+        "forgot_exp": forgotExp,
+        "remember_time": rememberTime,
+        "remember_exp": rememberExp,
+        "verification_code": verificationCode,
+        "top_secret": topSecret,
+        "ip_address": ipAddress,
+        "created_by": createdBy,
+        "updated_by": updatedBy,
+        "updated_at": updatedAt,
+        "created_at": createdAt?.toIso8601String(),
+      };
 }

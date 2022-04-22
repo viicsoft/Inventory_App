@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
 import 'package:viicsoft_inventory_app/models/users.dart';
 import 'package:viicsoft_inventory_app/services/apis/user_api.dart';
-import 'package:viicsoft_inventory_app/ui/Menu/userprofile/admin/usedetail.dart';
+import 'package:viicsoft_inventory_app/ui/Menu/user_profile/admin/usedetail.dart';
 
 class UserList extends StatefulWidget {
   //final List<Users> users;
@@ -26,9 +26,8 @@ class _UserListState extends State<UserList> {
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               return Center(
-                                child: CircularProgressIndicator(
-                                    color: AppColor.gradientFirst),
-                              );
+                child: CircularProgressIndicator(color: AppColor.gradientFirst),
+              );
             } else if (snapshot.connectionState == ConnectionState.done) {
               var results = snapshot.data!;
               return Column(
@@ -126,7 +125,8 @@ class _UserListState extends State<UserList> {
                         results.length, //users.isEmpty ? 0 : users.length,
                     itemBuilder: (BuildContext context, int index) {
                       return Card(
-                        margin: const EdgeInsets.only(bottom: 15, right: 5, left: 5),
+                        margin: const EdgeInsets.only(
+                            bottom: 15, right: 5, left: 5),
                         elevation: 2,
                         color: AppColor.homePageContainerTextBig,
                         shape: RoundedRectangleBorder(
@@ -137,13 +137,17 @@ class _UserListState extends State<UserList> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => UserDetailsScreen(userdetail: results[index])),
+                                  builder: (context) => UserDetailsScreen(
+                                      userdetail: results[index])),
                             );
                           },
                           child: ListTile(
                             trailing: IconButton(
-                                onPressed: () async{
-                                  await _confirmDialog(context, results[index].id.toString(), results[index].fullName);
+                                onPressed: () async {
+                                  await _confirmDialog(
+                                      context,
+                                      results[index].id.toString(),
+                                      results[index].fullName);
                                   setState(() {});
                                 },
                                 icon: Icon(
@@ -156,9 +160,10 @@ class _UserListState extends State<UserList> {
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(60),
                                 image: DecorationImage(
-                                  image: NetworkImage(results[index].avatarThumbnail),
+                                  image: NetworkImage(
+                                      results[index].avatarThumbnail),
                                   fit: BoxFit.cover,
-                                 ),
+                                ),
                               ),
                             ),
                             title: Text(
@@ -216,12 +221,11 @@ class _UserListState extends State<UserList> {
                 if (res.statusCode == 200) {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       backgroundColor: Colors.green,
-                      content:
-                          Text("$userName successfully deleted")));
+                      content: Text("$userName successfully deleted")));
                   Navigator.of(context).pop();
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
-                     SnackBar(
+                    SnackBar(
                       backgroundColor: Colors.red,
                       content: Text('Are you sure want to delete $userName?'),
                     ),

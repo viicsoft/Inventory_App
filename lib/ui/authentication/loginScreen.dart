@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:viicsoft_inventory_app/models/users.dart';
+import 'package:viicsoft_inventory_app/component/colors.dart';
 import 'package:viicsoft_inventory_app/services/apis/auth_api.dart';
 import 'package:viicsoft_inventory_app/ui/bottom_navigationbar.dart';
 
@@ -14,7 +14,6 @@ TextEditingController _emailField = TextEditingController();
 TextEditingController _passwordField = TextEditingController();
 
 class _LoginState extends State<Login> {
-
   //Data requestModel = Data(email: 'input', pass: 'input');
   GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
   bool isLoading = false;
@@ -31,131 +30,152 @@ class _LoginState extends State<Login> {
             children: <Widget>[
               Form(
                 key: globalFormKey,
-              child: Column(
-                children: <Widget>[
-                  Row(
-                    children: [
-                      Container(
-                        padding:
-                            const EdgeInsets.fromLTRB(15.0, 110.0, 0.0, 0.0),
-                        child: const Text(
-                          'CRISP TV',
-                          style: TextStyle(
-                              fontSize: 40.0,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.redAccent),
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.fromLTRB(
-                            10.0, 120.0, 10.0, 10.0),
-                        child: const Icon(
-                          Icons.photo_camera_front,
-                          size: 45,
-                          color: Colors.lightBlueAccent,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Container(
-                    padding: const EdgeInsets.only(
-                        top: 50, left: 20.0, right: 20.0),
-                    child: Column(
-                      children: <Widget>[
-                        TextFormField(
-                          keyboardType: TextInputType.emailAddress,
-                          controller: _emailField,
-                          //onSaved: (input) => requestModel.email = input!,
-                          validator: (input) => !(input?.contains('@') ?? false)
-                          ? "Email id should be valid"
-                          : null,
-                          decoration: const InputDecoration(
-                            hintText: 'Email',
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Colors.redAccent,
-                              ),
-                            ),
-                            prefixIcon: Icon(
-                              Icons.email_outlined,
-                            ),
-                          ),
-                        ),
-
-
-                        const SizedBox(height: 20.0),
-                        TextFormField(
-                          obscureText: _isObscure,
-                          keyboardType: TextInputType.text,
-                          controller: _passwordField,
-                          //onSaved: (input) => requestModel.pass = input!,
-                          validator: (input) => (input != null && input.length < 6)
-                          ? "Password should be more than 5 characters"
-                          : null,
-                          decoration: InputDecoration(
-                            suffixIcon: IconButton(
-                                icon: Icon(_isObscure
-                                    ? Icons.visibility
-                                    : Icons.visibility_off),
-                                onPressed: () {
-                                  setState(() {
-                                    _isObscure = !_isObscure;
-                                  });
-                                }),
-                            hintText: 'Password',
-                            enabledBorder: const UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Colors.redAccent,
-                              ),
-                            ),
-                            prefixIcon: const Icon(
-                                Icons.lock_outline_rounded,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 6.0),
+                child: Column(
+                  children: <Widget>[
+                    Row(
+                      children: [
                         Container(
                           padding:
-                              const EdgeInsets.only(top: 15.0, left: 200.0),
-                          child: const InkWell(
-                            child: Text(
-                              'Forgot Password',
-                              style: TextStyle(
-                                  color: Colors.red,
-                                  fontWeight: FontWeight.bold,
-                                  decoration: TextDecoration.underline),
-                            ),
+                              const EdgeInsets.fromLTRB(15.0, 110.0, 0.0, 0.0),
+                          child: const Text(
+                            'CRISP TV',
+                            style: TextStyle(
+                                fontSize: 40.0,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.redAccent),
                           ),
                         ),
-                        const SizedBox(height: 100.0),
-                        SizedBox(
-                          height: 50.0,
-                          child: InkWell(
-                            onTap: () async {
-                      if (globalFormKey.currentState!.validate()) {
-                        var res = await _authAPI.login(
-                            _emailField.text.trim(), _passwordField.text.trim());
+                        Container(
+                          padding: const EdgeInsets.fromLTRB(
+                              10.0, 120.0, 10.0, 10.0),
+                          child: const Icon(
+                            Icons.photo_camera_front,
+                            size: 45,
+                            color: Colors.lightBlueAccent,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Container(
+                      padding: const EdgeInsets.only(
+                          top: 50, left: 20.0, right: 20.0),
+                      child: Column(
+                        children: <Widget>[
+                          TextFormField(
+                            keyboardType: TextInputType.emailAddress,
+                            controller: _emailField,
+                            //onSaved: (input) => requestModel.email = input!,
+                            validator: (input) =>
+                                !(input?.contains('@') ?? false)
+                                    ? "Email id should be valid"
+                                    : null,
+                            decoration: const InputDecoration(
+                              hintText: 'Email',
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.redAccent,
+                                ),
+                              ),
+                              prefixIcon: Icon(
+                                Icons.email_outlined,
+                              ),
+                            ),
+                          ),
 
-                            if (res.statusCode == 200) {
-                              
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(elevation: 4,
-                                      backgroundColor: Colors.green,
-                                        content:
-                                            Text("login Successful", textAlign: TextAlign.center)));
-                                            Navigator.pushReplacement(
-                                context, MaterialPageRoute(builder: (_)=>const BottomNavigationBarPage()));
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    backgroundColor: Colors.red,
-                                    content:
-                                        Text("Login failed, Wrong email or password !", textAlign: TextAlign.center),
-                                  ),
-                                );
-                              }
-                             } 
-                            },
+                          const SizedBox(height: 20.0),
+                          TextFormField(
+                            obscureText: _isObscure,
+                            keyboardType: TextInputType.text,
+                            controller: _passwordField,
+                            validator: (input) => (input != null &&
+                                    input.length < 6)
+                                ? "Password should be more than 5 characters"
+                                : null,
+                            decoration: InputDecoration(
+                              suffixIcon: IconButton(
+                                  icon: Icon(_isObscure
+                                      ? Icons.visibility
+                                      : Icons.visibility_off),
+                                  onPressed: () {
+                                    setState(() {
+                                      _isObscure = !_isObscure;
+                                    });
+                                  }),
+                              hintText: 'Password',
+                              enabledBorder: const UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.redAccent,
+                                ),
+                              ),
+                              prefixIcon: const Icon(
+                                Icons.lock_outline_rounded,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 6.0),
+                          Container(
+                            padding:
+                                const EdgeInsets.only(top: 15.0, left: 200.0),
+                            child: const InkWell(
+                              child: Text(
+                                'Forgot Password',
+                                style: TextStyle(
+                                    color: Colors.red,
+                                    fontWeight: FontWeight.bold,
+                                    decoration: TextDecoration.underline),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 100.0),
+                          SizedBox(
+                            height: 50.0,
+                            child: InkWell(
+                              onTap: () async {
+                                if (globalFormKey.currentState!.validate()) {
+                                  var res = await _authAPI
+                                      .login(_emailField.text.trim(),
+                                          _passwordField.text.trim())
+                                      .catchError(
+                                    (err) {
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: Text(
+                                              "${err.message}entication !",
+                                              style: TextStyle(
+                                                  color:
+                                                      AppColor.gradientFirst),
+                                            ),
+                                            content: const Text(
+                                              'Wrong Email or Password',
+                                            ),
+                                            actions: [
+                                              ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                    primary:
+                                                        AppColor.gradientFirst),
+                                                child: const Text("Ok"),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                              )
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    },
+                                  );
+
+                                  if (res.statusCode == 200) {
+                                    Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (_) =>
+                                                const BottomNavigationBarPage()));
+                                  }
+                                }
+                              },
                               child: Material(
                                 borderRadius: BorderRadius.circular(40.0),
                                 shadowColor: Colors.redAccent,
@@ -173,13 +193,13 @@ class _LoginState extends State<Login> {
                               ),
                             ),
                           ),
-                        //),
-                        const SizedBox(height: 20.0),
-                      ],
-                    ),
-                  )
-                ],
-              ),
+                          //),
+                          const SizedBox(height: 20.0),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
               ),
               const SizedBox(height: 30.0),
               Row(
@@ -207,13 +227,10 @@ class _LoginState extends State<Login> {
                   ),
                 ],
               )
-
             ],
           ),
         ],
       ),
-
-
     );
-    }
+  }
 }

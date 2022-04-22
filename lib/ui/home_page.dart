@@ -1,21 +1,24 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:viicsoft_inventory_app/models/avialable_equipment.dart';
+import 'package:viicsoft_inventory_app/models/equipment_not_avialable.dart';
 import 'package:viicsoft_inventory_app/models/equipmentcheckin.dart';
 import 'package:viicsoft_inventory_app/models/equipments.dart';
 import 'package:viicsoft_inventory_app/models/eventequipmentcheckout.dart';
 import 'package:viicsoft_inventory_app/services/apis/equipment_api.dart';
 import 'package:viicsoft_inventory_app/services/apis/equipment_checkin_api.dart';
 import 'package:viicsoft_inventory_app/services/apis/equipment_checkout_api.dart';
+import 'package:viicsoft_inventory_app/ui/Menu/user_profile/profile_page.dart';
 import 'package:viicsoft_inventory_app/ui/event/checkin_equipment.dart';
 import 'package:viicsoft_inventory_app/ui/event/checkout_equipment.dart';
 import 'package:viicsoft_inventory_app/ui/store/bad_equipment.dart';
+import 'package:viicsoft_inventory_app/ui/store/equipment_not_avialable.dart';
 import 'package:viicsoft_inventory_app/ui/store/fair_equipment.dart';
 import 'package:viicsoft_inventory_app/ui/store/good_equipment.dart';
 import '../component/colors.dart';
 import '../component/item_images.dart';
-import 'Menu/userprofile/profile_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -25,13 +28,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Future<List<EquipmentElement>>? _equipment;
-  Future<List<EquipmentsAvailable>>? _avialableequipment;
   final EquipmentAPI _equipmentApi = EquipmentAPI();
-  @override
-  void initState() {
-    _equipment = _equipmentApi.fetchAllEquipments();
-    super.initState();
+  final RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
+  void _onRefresh() async {
+    await Future.delayed(const Duration(milliseconds: 1000));
+    setState(() {});
+    _refreshController.refreshCompleted();
   }
 
   @override
@@ -58,29 +61,32 @@ class _HomePageState extends State<HomePage> {
         ),
         backgroundColor: AppColor.homePageBackground,
         body: FutureBuilder<List<EquipmentElement>>(
-            future: _equipment,
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                return Center(
-                  child:
-                      CircularProgressIndicator(color: AppColor.gradientFirst),
-                );
-              } else if (snapshot.connectionState == ConnectionState.done) {
-                final result = snapshot.data!;
-                var fairResult = result
-                    .where((item) => item.equipmentCondition == 'FAIR')
-                    .toList();
-                var badResult = result
-                    .where((item) => item.equipmentCondition == 'BAD')
-                    .toList();
-                var newResult = result
-                    .where((item) => item.equipmentCondition == 'NEW')
-                    .toList();
-                var oldResult = result
-                    .where((item) => item.equipmentCondition == 'OLD')
-                    .toList();
-                var goodResult = newResult + oldResult;
-                return ListView(
+          future: EquipmentAPI().fetchAllEquipments(),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Center(
+                child: CircularProgressIndicator(color: AppColor.gradientFirst),
+              );
+            } else if (snapshot.connectionState == ConnectionState.done) {
+              final result = snapshot.data!;
+              var fairResult = result
+                  .where((item) => item.equipmentCondition == 'FAIR')
+                  .toList();
+              var badResult = result
+                  .where((item) => item.equipmentCondition == 'BAD')
+                  .toList();
+              var newResult = result
+                  .where((item) => item.equipmentCondition == 'NEW')
+                  .toList();
+              var oldResult = result
+                  .where((item) => item.equipmentCondition == 'OLD')
+                  .toList();
+              var goodResult = newResult + oldResult;
+              return SmartRefresher(
+                enablePullDown: true,
+                controller: _refreshController,
+                onRefresh: _onRefresh,
+                child: ListView(
                   children: [
                     Container(
                       padding:
@@ -169,38 +175,51 @@ class _HomePageState extends State<HomePage> {
                                         MainAxisAlignment.spaceAround,
                                     children: [
                                       InkWell(
-                                        onTap: () =>Navigator.push(context, MaterialPageRoute(builder: (_)=> const FairEquipmentPage())),
+                                        onTap: () => Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (_) =>
+                                                    const FairEquipmentPage())),
                                         child: equipmentCondition(
-                                          qauntity: fairResult.isEmpty
-                                              ? '0'
-                                              : '${fairResult.length}',
-                                          condition: 'Fair'),
+                                            qauntity: fairResult.isEmpty
+                                                ? '0'
+                                                : '${fairResult.length}',
+                                            condition: 'Fair'),
                                       ),
-                                      
                                       const SizedBox(
                                           height: 50,
                                           child: VerticalDivider(
                                               color: Colors.white,
                                               thickness: 2)),
-                                              InkWell(
-                                        onTap: () =>Navigator.push(context, MaterialPageRoute(builder: (_)=> const BadEquipmentPage())),
-                                      child: equipmentCondition(
-                                          qauntity: badResult.isEmpty
-                                              ? '0'
-                                              : '${badResult.length}',
-                                          condition: 'Bad'),),
+                                      InkWell(
+                                        onTap: () => Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (_) =>
+                                                    const BadEquipmentPage())),
+                                        child: equipmentCondition(
+                                            qauntity: badResult.isEmpty
+                                                ? '0'
+                                                : '${badResult.length}',
+                                            condition: 'Bad'),
+                                      ),
                                       const SizedBox(
                                           height: 50,
                                           child: VerticalDivider(
                                               color: Colors.white,
                                               thickness: 2)),
-                                              InkWell(
-                                        onTap: () =>Navigator.push(context, MaterialPageRoute(builder: (_)=> const GoodEquipmentPage())),
-                                      child:equipmentCondition(
-                                          qauntity: goodResult.isEmpty
-                                              ? '0'
-                                              : '${goodResult.length}',
-                                          condition: 'Good'),),
+                                      InkWell(
+                                        onTap: () => Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (_) =>
+                                                    const GoodEquipmentPage())),
+                                        child: equipmentCondition(
+                                            qauntity: goodResult.isEmpty
+                                                ? '0'
+                                                : '${goodResult.length}',
+                                            condition: 'Good'),
+                                      ),
                                     ],
                                   ),
                                   SizedBox(
@@ -220,20 +239,24 @@ class _HomePageState extends State<HomePage> {
                                         child: Center(
                                           child: FutureBuilder<
                                                   List<EquipmentsAvailable>>(
-                                              future: _equipmentApi.fetchAvialableEquipments(),
+                                              future: _equipmentApi
+                                                  .fetchAvialableEquipments(),
                                               builder: (context, snapshot) {
-                                                if (snapshot.connectionState == ConnectionState.done) {
-                                                  var aviableEquipment =
-                                                      snapshot.data!;
-                                                  return Text(
-                                                    aviableEquipment.length
-                                                        .toString(),
-                                                    style: const TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 12,
-                                                        color: Colors.black),
-                                                  );
+                                                if (snapshot.connectionState ==
+                                                    ConnectionState.done) {
+                                                  if (snapshot.hasData) {
+                                                    var aviableEquipment =
+                                                        snapshot.data!;
+                                                    return Text(
+                                                      aviableEquipment.length
+                                                          .toString(),
+                                                      style: const TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 12,
+                                                          color: Colors.black),
+                                                    );
+                                                  }
                                                 }
                                                 return Center(
                                                   child:
@@ -279,72 +302,105 @@ class _HomePageState extends State<HomePage> {
                           SizedBox(
                             child: Column(
                               children: [
-                                homeactivities(context,
-                                    qauntity: '20',
-                                    title: 'Pending Return',
-                                    icon: Icons.pending, onpressed: () {
-                                  // Navigator.push(
-                                  //     context,
-                                  //     MaterialPageRoute(
-                                  //         builder: (context) => PendingReturnPage()));
-                                }),
-                                SizedBox(
-                                    height:
-                                        MediaQuery.of(context).size.width / 16),
-                                FutureBuilder<List<EquipmentCheckout>>(
-                                    future: EquipmentCheckOutAPI()
-                                        .fetchAllEquipmentCheckOut(),
-                                    builder: (context, snapshot) {
-                                      if (snapshot.hasData) {
-                                          return homeactivities(context,
-                                              qauntity: snapshot.data!.length
-                                                  .toString(),
-                                              title: 'CheckOut Equipment',
-                                              icon: Icons.collections,
-                                              onpressed: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        CheckOutEquipmentPage(
-                                                            equipmentCheckout: 
-                                                            snapshot.data!
-                                                            )
-                                                                ));
-                                          });
-                                        }
-                                      return Center(
-                                        child: CircularProgressIndicator(
-                                            color: AppColor.gradientFirst),
-                                      );
-                                    }),
-                                SizedBox(
-                                    height:
-                                        MediaQuery.of(context).size.width / 16),
-                                FutureBuilder<List<EquipmentCheckin>>(
-                                  future: EquipmentCheckInAPI().fetchAllEquipmentCheckIn(),
+                                FutureBuilder<
+                                    List<EquipmentsNotAvailableElement>>(
+                                  future: _equipmentApi
+                                      .fetchEquipmentsNotAvialable(),
                                   builder: (context, snapshot) {
-                                    if (snapshot.hasData){
-                                    return homeactivities(context,
-                                        qauntity: snapshot.data!.length.toString(),
-                                        title: 'CheckIn Equipment',
-                                        icon: Icons.not_interested, onpressed: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
+                                    if (snapshot.hasData) {
+                                      return homeactivities(
+                                        context,
+                                        qauntity:
+                                            snapshot.data!.length.toString(),
+                                        title: 'Equipment Not Avialable',
+                                        icon: Icons.pending,
+                                        onpressed: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
                                               builder: (context) =>
-                                                   CheckInEquipmentPage(equipmentCheckIn: snapshot.data!)));
-                                    });
-                                  }
-                                   return Center(
-                                        child: CircularProgressIndicator(
-                                            color: AppColor.gradientFirst),
+                                                  const EquipmentNotAvialablePage(),
+                                            ),
+                                          );
+                                        },
                                       );
-                                  }
+                                    }
+                                    return Center(
+                                      child: CircularProgressIndicator(
+                                          color: AppColor.gradientFirst),
+                                    );
+                                  },
                                 ),
                                 SizedBox(
                                     height:
                                         MediaQuery.of(context).size.width / 16),
+                                FutureBuilder<List<EventsEquipmentCheckout>>(
+                                  future: EquipmentCheckOutAPI()
+                                      .fetchAllEquipmentCheckOut(),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData) {
+                                      return homeactivities(
+                                        context,
+                                        qauntity:
+                                            snapshot.data!.length.toString(),
+                                        title: 'CheckOut Equipment',
+                                        icon: Icons.collections,
+                                        onpressed: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  CheckOutEquipmentPage(
+                                                equipmentCheckout:
+                                                    snapshot.data,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    }
+                                    return Center(
+                                      child: CircularProgressIndicator(
+                                          color: AppColor.gradientFirst),
+                                    );
+                                  },
+                                ),
+                                SizedBox(
+                                    height:
+                                        MediaQuery.of(context).size.width / 16),
+                                FutureBuilder<List<EquipmentsCheckin>>(
+                                  future: EquipmentCheckInAPI()
+                                      .fetchAllEquipmentCheckIn(),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData) {
+                                      return homeactivities(
+                                        context,
+                                        qauntity:
+                                            snapshot.data!.length.toString(),
+                                        title: 'CheckIn Equipment',
+                                        icon: Icons.not_interested,
+                                        onpressed: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const CheckInEquipmentPage(),
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    }
+                                    return Center(
+                                      child: CircularProgressIndicator(
+                                        color: AppColor.gradientFirst,
+                                      ),
+                                    );
+                                  },
+                                ),
+                                SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.width / 16,
+                                ),
                               ],
                             ),
                           )
@@ -352,14 +408,15 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                   ],
-                );
-              } else {
-                return Center(
-                  child:
-                      CircularProgressIndicator(color: AppColor.gradientFirst),
-                );
-              }
-            }),
+                ),
+              );
+            } else {
+              return Center(
+                child: CircularProgressIndicator(color: AppColor.gradientFirst),
+              );
+            }
+          },
+        ),
       ),
     );
   }
@@ -389,9 +446,10 @@ class _HomePageState extends State<HomePage> {
         Text(
           condition!,
           style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-              color: AppColor.homePageContainerTextBig),
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+            color: AppColor.homePageContainerTextBig,
+          ),
         ),
       ],
     );
@@ -433,7 +491,9 @@ class _HomePageState extends State<HomePage> {
                   Row(
                     children: [
                       Icon(icon, size: 40, color: Colors.white),
-                      Expanded(child: Container()),
+                      Expanded(
+                        child: Container(),
+                      ),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -448,9 +508,10 @@ class _HomePageState extends State<HomePage> {
                               child: Text(
                                 qauntity!,
                                 style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 12,
-                                    color: Colors.black),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12,
+                                  color: Colors.black,
+                                ),
                               ),
                             ),
                           ),
@@ -465,10 +526,13 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ],
                       ),
-                      Expanded(child: Container()),
+                      Expanded(
+                        child: Container(),
+                      ),
                       IconButton(
-                          onPressed: onpressed,
-                          icon: const Icon(Icons.arrow_forward_ios, size: 25)),
+                        onPressed: onpressed,
+                        icon: const Icon(Icons.arrow_forward_ios, size: 25),
+                      ),
                     ],
                   ),
                 ],

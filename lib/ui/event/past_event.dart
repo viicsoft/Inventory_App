@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
-import 'package:viicsoft_inventory_app/models/events.dart';
 import 'package:viicsoft_inventory_app/models/pastevent.dart';
 import 'package:viicsoft_inventory_app/services/apis/event_api.dart';
-import 'package:viicsoft_inventory_app/ui/event/events_detail_page.dart';
 import 'package:viicsoft_inventory_app/ui/event/pastevent_detail.dart';
 
 class PastEvent extends StatefulWidget {

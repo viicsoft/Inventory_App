@@ -1,14 +1,13 @@
-import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
-import 'package:provider/provider.dart';
 import 'package:viicsoft_inventory_app/models/events.dart';
 import 'package:viicsoft_inventory_app/services/apis/event_api.dart';
 
 class UpdateEventPage extends StatefulWidget {
-  Event eventDetail;
-  UpdateEventPage({Key? key, required this.eventDetail}) : super(key: key);
+  final Event eventDetail;
+  const UpdateEventPage({Key? key, required this.eventDetail})
+      : super(key: key);
 
   @override
   State<UpdateEventPage> createState() => _UpdateEventPageState();
@@ -18,7 +17,7 @@ class _UpdateEventPageState extends State<UpdateEventPage> {
   XFile? _eventImage;
   DateTime? selecteddate;
   DateTime startingDate = DateTime.now();
-    DateTime endingDate = DateTime.now();
+  DateTime endingDate = DateTime.now();
   bool hasData = false;
 
   final EventAPI _eventAPI = EventAPI();
@@ -150,15 +149,15 @@ class _UpdateEventPageState extends State<UpdateEventPage> {
                             ),
                             SizedBox(height: screenSize.width * 0.06),
                             ListTile(
-                                trailing: Text(
-                                    "${startingDate.day}/${startingDate.month}/${startingDate.year}"),
-                                leading: const Text(
-                                  'Event starting Date',
-                                  style: TextStyle(fontSize: 14),
-                                ),
-                                title: const Icon(Icons.arrow_drop_down),
-                                onTap: () => _startingDate(context),
-                                ),
+                              trailing: Text(
+                                  "${startingDate.day}/${startingDate.month}/${startingDate.year}"),
+                              leading: const Text(
+                                'Event starting Date',
+                                style: TextStyle(fontSize: 14),
+                              ),
+                              title: const Icon(Icons.arrow_drop_down),
+                              onTap: () => _startingDate(context),
+                            ),
                             ListTile(
                               trailing: Text(
                                   "${endingDate.day}/${endingDate.month}/${endingDate.year}"),
@@ -177,8 +176,6 @@ class _UpdateEventPageState extends State<UpdateEventPage> {
                                   style: ElevatedButton.styleFrom(
                                       primary: AppColor.gradientFirst),
                                   onPressed: () async {
-                                    print(startingDate);
-                                    print(endingDate);
                                     var res = await _eventAPI.updateEvent(
                                         _eventName.text,
                                         _eventType.text,

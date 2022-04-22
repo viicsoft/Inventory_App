@@ -2,10 +2,10 @@ import 'dart:convert';
 
 import 'package:image_picker/image_picker.dart';
 import 'package:viicsoft_inventory_app/models/avialable_equipment.dart';
+import 'package:viicsoft_inventory_app/models/equipment_not_avialable.dart';
 import 'package:viicsoft_inventory_app/models/equipments.dart';
 import 'package:viicsoft_inventory_app/services/api.dart';
 import 'package:http/http.dart' as http;
-import '../../models/users.dart';
 import '../sharedpref.dart';
 
 class EquipmentAPI extends BaseAPI {
@@ -34,7 +34,6 @@ class EquipmentAPI extends BaseAPI {
 
   Future<List<EquipmentsAvailable>> fetchAvialableEquipments() async {
     final String token = await SharedPrefrence().getToken();
-
     final response =
         await http.get(Uri.parse(super.avialableEquipmentsPath), headers: {
       "X-Api-Key": "632F2EC9771B6C4C0BDF30BE21D9009B",
@@ -45,9 +44,35 @@ class EquipmentAPI extends BaseAPI {
 
     if (response.statusCode == 200) {
       final _data = jsonDecode(response.body);
-      final List<EquipmentsAvailable> equipments = _data['data']['equipments_available']
+      final List<EquipmentsAvailable> avialableequipments = _data['data']
+              ['equipments_available']
           .map<EquipmentsAvailable>((model) =>
               EquipmentsAvailable.fromJson(model as Map<String, dynamic>))
+          .toList();
+      return avialableequipments;
+    } else {
+      throw Exception('Failed to load equipments available');
+    }
+  }
+
+  Future<List<EquipmentsNotAvailableElement>>
+      fetchEquipmentsNotAvialable() async {
+    final String token = await SharedPrefrence().getToken();
+
+    final response =
+        await http.get(Uri.parse(super.notAvialableEquipmentsPath), headers: {
+      "X-Api-Key": "632F2EC9771B6C4C0BDF30BE21D9009B",
+      "Content-Type": "application/json",
+      'Accept': 'application/json',
+      'x-token': token,
+    });
+    if (response.statusCode == 200) {
+      final _data = jsonDecode(response.body);
+      final List<EquipmentsNotAvailableElement> equipments = _data['data']
+              ['equipments_not_available']
+          .map<EquipmentsNotAvailableElement>((model) =>
+              EquipmentsNotAvailableElement.fromJson(
+                  model as Map<String, dynamic>))
           .toList();
       return equipments;
     } else {
@@ -69,8 +94,8 @@ class EquipmentAPI extends BaseAPI {
       'x-token': token,
     };
     //create multipart request for POST or PATCH method
-    var request = http.MultipartRequest(
-        "POST", Uri.parse(super.addEquipmentsPath));
+    var request =
+        http.MultipartRequest("POST", Uri.parse(super.addEquipmentsPath));
     //add header in http request
     request.headers.addAll(headers);
 
@@ -82,14 +107,15 @@ class EquipmentAPI extends BaseAPI {
     request.fields["equipment_barcode"] = newBarcode;
     request.fields["equipment_category_id"] = newCategoryId;
     //create multipart using filepath, string or bytes
-    var pic = await http.MultipartFile.fromPath("equipment_image", newImage.path);
+    var pic =
+        await http.MultipartFile.fromPath("equipment_image", newImage.path);
     //add multipart to request
     request.files.add(pic);
     var response = await request.send();
 
     //Get the response from the server
-    var responseData = await response.stream.toBytes();
-    var responseString = String.fromCharCodes(responseData);
+    // var responseData = await response.stream.toBytes();
+    // var responseString = String.fromCharCodes(responseData);
     return response;
   }
 
@@ -107,8 +133,8 @@ class EquipmentAPI extends BaseAPI {
       "X-Api-Key": "632F2EC9771B6C4C0BDF30BE21D9009B",
       'x-token': token,
     };
-    var request = http.MultipartRequest(
-        "POST", Uri.parse(super.updateEquipmentsPath));
+    var request =
+        http.MultipartRequest("POST", Uri.parse(super.updateEquipmentsPath));
     request.headers.addAll(headers);
     request.fields["equipment_name"] = equipmentName;
     request.fields["equipment_condition"] = condition;
@@ -124,25 +150,23 @@ class EquipmentAPI extends BaseAPI {
     return response;
   }
 
-
   Future<http.Response> deleteEquipment(String id) async {
-   final String token = await SharedPrefrence().getToken();
+    final String token = await SharedPrefrence().getToken();
 
-   var body = jsonEncode({'id': id});
-   final http.Response response = await http.post(
-     Uri.parse(super.deleteEquipmentsPath + id),
-     headers: <String, String>{
-       "X-Api-Key": "632F2EC9771B6C4C0BDF30BE21D9009B",
-       "Content-Type": "application/json",
-       'Accept': 'application/json',
-       'x-token': token,
-     },
-     body: body
-   );
-   if (response.statusCode == 200) {
-     return response;
-   } else {
-     throw Exception('Failed to delete Equipment.');
-   }
- }
+    var body = jsonEncode({'id': id});
+    final http.Response response =
+        await http.post(Uri.parse(super.deleteEquipmentsPath + id),
+            headers: <String, String>{
+              "X-Api-Key": "632F2EC9771B6C4C0BDF30BE21D9009B",
+              "Content-Type": "application/json",
+              'Accept': 'application/json',
+              'x-token': token,
+            },
+            body: body);
+    if (response.statusCode == 200) {
+      return response;
+    } else {
+      throw Exception('Failed to delete Equipment.');
+    }
+  }
 }

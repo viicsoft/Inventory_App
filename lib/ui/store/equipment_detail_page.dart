@@ -1,14 +1,14 @@
-import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
 import 'package:viicsoft_inventory_app/models/equipments.dart';
 import 'package:viicsoft_inventory_app/ui/store/update_equipment.dart';
 
 class EquipmentDetailPage extends StatefulWidget {
-  EquipmentElement equipmentElement;
-  EquipmentDetailPage(
-      {Key? key, required this.equipmentElement,})
-      : super(key: key);
+  final EquipmentElement equipmentElement;
+  const EquipmentDetailPage({
+    Key? key,
+    required this.equipmentElement,
+  }) : super(key: key);
 
   @override
   State<EquipmentDetailPage> createState() => _EquipmentDetailPageState();
@@ -78,7 +78,7 @@ class _EquipmentDetailPageState extends State<EquipmentDetailPage> {
                       children: [
                         Container(
                           margin: const EdgeInsets.only(right: 10, left: 10),
-                          width: MediaQuery.of(context).size.width*0.5,
+                          width: MediaQuery.of(context).size.width * 0.5,
                           height: screenSize * 0.21,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(30),
@@ -89,7 +89,7 @@ class _EquipmentDetailPageState extends State<EquipmentDetailPage> {
                             ),
                           ),
                         ),
-                         SizedBox(height: screenSize* 0.05),
+                        SizedBox(height: screenSize * 0.05),
                         Row(
                           children: [
                             Text(
@@ -110,7 +110,7 @@ class _EquipmentDetailPageState extends State<EquipmentDetailPage> {
                             )
                           ],
                         ),
-                        SizedBox(height: screenSize*0.035),
+                        SizedBox(height: screenSize * 0.035),
                         Row(
                           children: [
                             Text(
@@ -143,7 +143,7 @@ class _EquipmentDetailPageState extends State<EquipmentDetailPage> {
                             ),
                           ],
                         ),
-                        SizedBox(height: screenSize*0.035),
+                        SizedBox(height: screenSize * 0.035),
                         Row(
                           children: [
                             Text(
@@ -174,7 +174,7 @@ class _EquipmentDetailPageState extends State<EquipmentDetailPage> {
                             ),
                           ],
                         ),
-                        SizedBox(height: screenSize*0.035),
+                        SizedBox(height: screenSize * 0.035),
                         Row(
                           children: [
                             Text(
@@ -195,7 +195,7 @@ class _EquipmentDetailPageState extends State<EquipmentDetailPage> {
                             )
                           ],
                         ),
-                        SizedBox(height: screenSize*0.035),
+                        SizedBox(height: screenSize * 0.035),
                         Text(
                           'Description:',
                           style: TextStyle(
@@ -218,7 +218,7 @@ class _EquipmentDetailPageState extends State<EquipmentDetailPage> {
                             //labelText: 'Description',
                           ),
                         ),
-                        SizedBox(height: screenSize*0.05),
+                        SizedBox(height: screenSize * 0.05),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
@@ -247,7 +247,7 @@ class _EquipmentDetailPageState extends State<EquipmentDetailPage> {
                                                   .equipmentImage,
                                               size: widget.equipmentElement
                                                   .equipmentSize,
-                                                  id: widget.equipmentElement.id,
+                                              id: widget.equipmentElement.id,
                                             )));
                               },
                               child: const Text(

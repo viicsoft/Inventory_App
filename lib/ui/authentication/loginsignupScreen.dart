@@ -17,7 +17,7 @@ class _SignupLoginState extends State<SignupLogin> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Expanded(child: Container()),
-          Container(
+          SizedBox(
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -36,9 +36,9 @@ class _SignupLoginState extends State<SignupLogin> {
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        child: const Text(
+                    children: const [
+                      SizedBox(
+                        child: Text(
                           'CRISPTV',
                           style: TextStyle(
                             color: Colors.red,
@@ -48,14 +48,14 @@ class _SignupLoginState extends State<SignupLogin> {
                           ),
                         ),
                       ),
-                      const SizedBox(width: 10.0),
-                      Container(
-                          child: const Icon(
-                            Icons.photo_camera_front,
-                            size: 45,
-                            color: Colors.lightBlueAccent,
-                          ),
+                      SizedBox(width: 10.0),
+                      SizedBox(
+                        child: Icon(
+                          Icons.photo_camera_front,
+                          size: 45,
+                          color: Colors.lightBlueAccent,
                         ),
+                      ),
                     ],
                   ),
                   //SizedBox(height: 100.0),

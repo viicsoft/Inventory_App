@@ -7,7 +7,6 @@ import 'package:viicsoft_inventory_app/component/colors.dart';
 import 'package:viicsoft_inventory_app/models/category.dart';
 import 'package:viicsoft_inventory_app/services/apis/category_api.dart';
 import 'package:viicsoft_inventory_app/services/apis/equipment_api.dart';
-import 'package:viicsoft_inventory_app/ui/store/store_page.dart';
 
 class UpdateEquipmentPage extends StatefulWidget {
   String? equipmentName;
@@ -54,6 +53,7 @@ class _UpdateEquipmentPageState extends State<UpdateEquipmentPage> {
   EquipmentCategory? selectedCategory;
   final CategoryAPI _categoryApi = CategoryAPI();
   final EquipmentAPI _equipmentApi = EquipmentAPI();
+  bool _categoryNotSelected = false;
 
   @override
   void initState() {
@@ -90,6 +90,8 @@ class _UpdateEquipmentPageState extends State<UpdateEquipmentPage> {
           builder: (context, snapshot) {
             final category = snapshot.data;
             if (category != null) {
+              final index = category
+                  .indexWhere((element) => element.id == widget.categoryId);
               return Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
@@ -156,183 +158,196 @@ class _UpdateEquipmentPageState extends State<UpdateEquipmentPage> {
                         child: Column(
                           children: [
                             Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 20),
-                                child: ListView(
-                                  children: [
-                                    itemImages(context),
-                                    const SizedBox(height: 20),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          'Category*',
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w500,
-                                            color: AppColor.homePageTitle,
-                                          ),
+                              child: ListView(
+                                children: [
+                                  itemImages(context),
+                                  const SizedBox(height: 15),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        'Category*',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                          color: AppColor.homePageTitle,
                                         ),
-                                        Expanded(child: Container()),
-                                        DropdownButton<EquipmentCategory>(
-                                          value:
-                                              selectedCategory,
-                                          elevation: 16,
-                                          style: TextStyle(
-                                              color: Colors.grey[600]),
-                                          onChanged: (newValue) {
-                                            setState(() {
-                                              selectedCategory = newValue!;
-                                            });
-                                          },
-                                          items: category
-                                              .map((EquipmentCategory value) {
-                                            return DropdownMenuItem<
-                                                EquipmentCategory>(
-                                              value: value,
-                                              child: Text(
-                                                value.name,
-                                                style: TextStyle(
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.w500,
-                                                  color: AppColor.gradientFirst,
+                                      ),
+                                      Expanded(child: Container()),
+                                      Column(
+                                        children: [
+                                          DropdownButton<EquipmentCategory>(
+                                            value: selectedCategory ??
+                                                category[index],
+                                            elevation: 16,
+                                            style: TextStyle(
+                                                color: Colors.grey[600]),
+                                            onChanged: (newValue) {
+                                              setState(() {
+                                                selectedCategory = newValue!;
+                                              });
+                                            },
+                                            items: category
+                                                .map((EquipmentCategory value) {
+                                              return DropdownMenuItem<
+                                                  EquipmentCategory>(
+                                                value: value,
+                                                child: Text(
+                                                  value.name,
+                                                  style: TextStyle(
+                                                    fontSize: 15,
+                                                    fontWeight: FontWeight.w500,
+                                                    color:
+                                                        AppColor.gradientFirst,
+                                                  ),
                                                 ),
-                                              ),
-                                            );
-                                          }).toList(),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 10),
-                                    TextField(
-                                      controller: equipmentNameController,
-                                      decoration: InputDecoration(
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                                vertical: 8.0,
-                                                horizontal: 10.0),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                        ),
-                                        labelText: 'Equipment Name',
-                                      ),
-                                    ),
-                                    const SizedBox(height: 10),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          'Condition*',
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w500,
-                                            color: AppColor.homePageTitle,
+                                              );
+                                            }).toList(),
                                           ),
-                                        ),
-                                        Expanded(child: Container()),
-                                        DropdownButton<String>(
-                                          value: widget.condition,
-                                          elevation: 16,
-                                          style: TextStyle(
-                                              color: Colors.grey[600]),
-                                          onChanged: (String? newValue) {
-                                            setState(() {
-                                              widget.condition = newValue!;
-                                            });
-                                          },
-                                          items: <String>[
-                                            'NEW',
-                                            'OLD',
-                                            'BAD',
-                                            'FAIR',
-                                          ].map<DropdownMenuItem<String>>(
-                                              (String value) {
-                                            return DropdownMenuItem<String>(
-                                              value: value,
-                                              child: Text(value),
-                                            );
-                                          }).toList(),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 10),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          'Size*',
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w500,
-                                            color: AppColor.homePageTitle,
+                                          Text(
+                                            _categoryNotSelected
+                                                ? 'Category not Selected !'
+                                                : '',
+                                            style: const TextStyle(
+                                              color: Colors.red,
+                                              fontSize: 10,
+                                            ),
                                           ),
-                                        ),
-                                        Expanded(child: Container()),
-                                        DropdownButton<String>(
-                                          value: widget.size,
-                                          elevation: 16,
-                                          style: TextStyle(
-                                              color: Colors.grey[600]),
-                                          onChanged: (String? newValue) {
-                                            setState(() {
-                                              widget.size = newValue!;
-                                            });
-                                          },
-                                          items: <String>[
-                                            'NORMAL',
-                                            'LONG',
-                                            'VERY LONG',
-                                            'SHORT',
-                                            'VERY SHORT',
-                                          ].map<DropdownMenuItem<String>>(
-                                              (String value) {
-                                            return DropdownMenuItem<String>(
-                                              value: value,
-                                              child: Text(value),
-                                            );
-                                          }).toList(),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 10),
-                                    TextField(
-                                      controller: descriptionController,
-                                      keyboardType: TextInputType.multiline,
-                                      maxLines: null,
-                                      decoration: const InputDecoration(
-                                        contentPadding: EdgeInsets.symmetric(
-                                            vertical: 25.0, horizontal: 10.0),
-                                        border: OutlineInputBorder(),
-                                        labelText: 'Description',
+                                        ],
                                       ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 10),
+                                  TextField(
+                                    controller: equipmentNameController,
+                                    decoration: InputDecoration(
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                              vertical: 8.0, horizontal: 10.0),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      labelText: 'Equipment Name',
                                     ),
-                                    const SizedBox(height: 20),
-                                    Row(
-                                      children: [
-                                        ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                              primary: AppColor.homePageTitle),
-                                          onPressed: () => scanBarcodeNormal(),
-                                          child: const Text('Scan Barcode'),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        'Condition*',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                          color: AppColor.homePageTitle,
                                         ),
-                                        Expanded(child: Container()),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 15),
-                                          child: Text(
-                                              'Barcode : ${widget.barcode}\n',
-                                              style: const TextStyle(
-                                                  fontSize: 16)),
+                                      ),
+                                      Expanded(child: Container()),
+                                      DropdownButton<String>(
+                                        value: widget.condition,
+                                        elevation: 16,
+                                        style:
+                                            TextStyle(color: Colors.grey[600]),
+                                        onChanged: (String? newValue) {
+                                          setState(() {
+                                            widget.condition = newValue!;
+                                          });
+                                        },
+                                        items: <String>[
+                                          'NEW',
+                                          'OLD',
+                                          'BAD',
+                                          'FAIR',
+                                        ].map<DropdownMenuItem<String>>(
+                                            (String value) {
+                                          return DropdownMenuItem<String>(
+                                            value: value,
+                                            child: Text(value),
+                                          );
+                                        }).toList(),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        'Size*',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                          color: AppColor.homePageTitle,
                                         ),
-                                      ],
+                                      ),
+                                      Expanded(child: Container()),
+                                      DropdownButton<String>(
+                                        value: widget.size,
+                                        elevation: 16,
+                                        style:
+                                            TextStyle(color: Colors.grey[600]),
+                                        onChanged: (String? newValue) {
+                                          setState(() {
+                                            widget.size = newValue!;
+                                          });
+                                        },
+                                        items: <String>[
+                                          'LONG',
+                                          'VERY LONG',
+                                          'SHORT',
+                                          'VERY SHORT',
+                                        ].map<DropdownMenuItem<String>>(
+                                            (String value) {
+                                          return DropdownMenuItem<String>(
+                                            value: value,
+                                            child: Text(value),
+                                          );
+                                        }).toList(),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 10),
+                                  TextField(
+                                    controller: descriptionController,
+                                    keyboardType: TextInputType.multiline,
+                                    maxLines: null,
+                                    decoration: const InputDecoration(
+                                      contentPadding: EdgeInsets.symmetric(
+                                          vertical: 25.0, horizontal: 10.0),
+                                      border: OutlineInputBorder(),
+                                      labelText: 'Description',
                                     ),
-                                    const SizedBox(height: 40),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.stretch,
-                                      children: [
-                                        ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                              primary: AppColor.gradientFirst),
-                                          onPressed: () async {
+                                  ),
+                                  const SizedBox(height: 20),
+                                  Row(
+                                    children: [
+                                      ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                            primary: AppColor.homePageTitle),
+                                        onPressed: () => scanBarcodeNormal(),
+                                        child: const Text('Scan Barcode'),
+                                      ),
+                                      Expanded(child: Container()),
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 15),
+                                        child: Text(
+                                            'Barcode : ${widget.barcode}\n',
+                                            style:
+                                                const TextStyle(fontSize: 16)),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 40),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
+                                    children: [
+                                      ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                            primary: AppColor.gradientFirst),
+                                        onPressed: () async {
+                                          if (selectedCategory == null) {
+                                            setState(() {
+                                              _categoryNotSelected = true;
+                                            });
+                                          } else {
                                             var res = await _equipmentApi
                                                 .updateEquipment(
                                                     equipmentNameController
@@ -344,8 +359,7 @@ class _UpdateEquipmentPageState extends State<UpdateEquipmentPage> {
                                                     descriptionController.text,
                                                     widget.barcode,
                                                     widget.id);
-                                            if (res.statusCode == 200 ||
-                                                res.statusCode == 201) {
+                                            if (res.statusCode == 200) {
                                               ScaffoldMessenger.of(context)
                                                   .showSnackBar(const SnackBar(
                                                       backgroundColor:
@@ -363,16 +377,16 @@ class _UpdateEquipmentPageState extends State<UpdateEquipmentPage> {
                                                 ),
                                               );
                                             }
-                                          },
-                                          child: const Text(
-                                            'Update Equipment',
-                                            style: TextStyle(fontSize: 16),
-                                          ),
+                                          }
+                                        },
+                                        child: const Text(
+                                          'Update Equipment',
+                                          style: TextStyle(fontSize: 16),
                                         ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
                             ),
                           ],

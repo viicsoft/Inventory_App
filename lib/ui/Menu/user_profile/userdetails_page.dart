@@ -3,8 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
-import 'package:viicsoft_inventory_app/component/textform.dart';
-//import 'package:inventory/handburger/reset_password_page.dart';
 
 class UserDetailsPage extends StatefulWidget {
   const UserDetailsPage({Key? key}) : super(key: key);
@@ -15,11 +13,10 @@ class UserDetailsPage extends StatefulWidget {
 
 class _UserDetailsPageState extends State<UserDetailsPage> {
   final globalkey = GlobalKey<FormState>();
-  TextEditingController _full_name = TextEditingController();
-  TextEditingController _username = TextEditingController();
-  TextEditingController _email = TextEditingController();
-  TextEditingController _password = TextEditingController();
-
+  // final TextEditingController _fullname = TextEditingController();
+  // final TextEditingController _username = TextEditingController();
+  final TextEditingController _email = TextEditingController();
+  final TextEditingController _password = TextEditingController();
 
   bool _isObscure = true;
   XFile? _profileimage;
@@ -76,7 +73,8 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
                               child: InkWell(
                                 onTap: () => showDialog<String>(
                                   context: context,
-                                  builder: (BuildContext context) => AlertDialog(
+                                  builder: (BuildContext context) =>
+                                      AlertDialog(
                                     title: const Text('Select Image'),
                                     content: const Text(
                                         'Select image from device gallery or use device camera'),
@@ -138,63 +136,40 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
                           ),
                         ),
                         const SizedBox(height: 30),
-                        // TextFormField(
-                        //   controller: _full_name,
-                        //   keyboardType: TextInputType.text,
-                        //     decoration: InputDecoration(
-                        //         prefixIcon: Icon(
-                        //           Icons.person,
-                        //         ),
-                        //     hintText: 'Full Name'
-                        // ),
-                        // ),
-                        // const SizedBox(height: 20),
-                        // TextFormField(
-                        //   controller: _username,
-                        //   keyboardType: TextInputType.text,
-                        //   decoration: InputDecoration(
-                        //       prefixIcon: Icon(
-                        //         Icons.person,
-                        //       ),
-                        //       hintText: 'Username'
-                        //   ),
-                        // ),
-                        // const SizedBox(height: 20),
                         TextFormField(
                           controller: _email,
                           keyboardType: TextInputType.text,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                               prefixIcon: Icon(
                                 Icons.email,
                               ),
-                              hintText: 'Email'
-                          ),
+                              hintText: 'Email'),
                         ),
                         const SizedBox(height: 10),
                         TextFormField(
                           controller: _password,
-                            keyboardType: TextInputType.text,
-                            obscureText: _isObscure,
-                            decoration: InputDecoration(
-                            suffixIcon: IconButton(
-                              icon: Icon(_isObscure
-                                  ? Icons.visibility
-                                  : Icons.visibility_off),
-                              onPressed: () {
-                                setState(() {
-                                  _isObscure = !_isObscure;
-                                });
-                              },
-                            ),
-                            prefixIcon: Icon(Icons.security),
-                            hintText: 'Password'
-                        ),
+                          keyboardType: TextInputType.text,
+                          obscureText: _isObscure,
+                          decoration: InputDecoration(
+                              suffixIcon: IconButton(
+                                icon: Icon(_isObscure
+                                    ? Icons.visibility
+                                    : Icons.visibility_off),
+                                onPressed: () {
+                                  setState(() {
+                                    _isObscure = !_isObscure;
+                                  });
+                                },
+                              ),
+                              prefixIcon: const Icon(Icons.security),
+                              hintText: 'Password'),
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
-                          children:  [
+                          children: [
                             TextButton(
-                              onPressed: () => Navigator.pushNamed(context, '/resetpassword'),
+                              onPressed: () => Navigator.pushNamed(
+                                  context, '/resetpassword'),
                               child: const Text('Change  Password  ?'),
                             ),
                           ],

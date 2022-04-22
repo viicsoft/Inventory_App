@@ -1,20 +1,18 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
+import 'package:viicsoft_inventory_app/models/avialable_equipment.dart';
 import 'package:viicsoft_inventory_app/models/category.dart';
-import 'package:viicsoft_inventory_app/models/equipments.dart';
-import 'package:viicsoft_inventory_app/models/events.dart';
 import 'package:viicsoft_inventory_app/services/apis/category_api.dart';
 import 'package:viicsoft_inventory_app/services/apis/equipment_api.dart';
 import 'package:viicsoft_inventory_app/services/apis/event_api.dart';
-import 'package:viicsoft_inventory_app/ui/store/equipment_detail_page.dart';
 
 // ignore: must_be_immutable
 class AddEventEquipmentPage extends StatefulWidget {
   String eventId;
- String eventName;
-  AddEventEquipmentPage({Key? key, required this.eventId, required this.eventName}) : super(key: key);
+  String eventName;
+  AddEventEquipmentPage(
+      {Key? key, required this.eventId, required this.eventName})
+      : super(key: key);
 
   @override
   State<AddEventEquipmentPage> createState() => _AddEventEquipmentPageState();
@@ -24,7 +22,6 @@ class _AddEventEquipmentPageState extends State<AddEventEquipmentPage> {
   EquipmentCategory? selectedCategory;
   final CategoryAPI _categoryApi = CategoryAPI();
   final EquipmentAPI _equipmentAPI = EquipmentAPI();
-  late Future<List<EquipmentElement>> _equipmentsList;
   late Future<List<EquipmentCategory>> _category;
   late Future equipmentFuture;
   int? selectedIndex;
@@ -33,7 +30,6 @@ class _AddEventEquipmentPageState extends State<AddEventEquipmentPage> {
   @override
   void initState() {
     super.initState();
-    _equipmentsList = _equipmentAPI.fetchAllEquipments();
     _category = _categoryApi.fetchAllCategory();
   }
 
@@ -63,7 +59,7 @@ class _AddEventEquipmentPageState extends State<AddEventEquipmentPage> {
                         ),
                         Expanded(child: Container()),
                         Text(
-                           widget.eventName,
+                          widget.eventName,
                           style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.w500,
@@ -111,8 +107,8 @@ class _AddEventEquipmentPageState extends State<AddEventEquipmentPage> {
                       ),
                     ),
                     Expanded(
-                      child: FutureBuilder<List<EquipmentElement>>(
-                          future: _equipmentsList,
+                      child: FutureBuilder<List<EquipmentsAvailable>>(
+                          future: _equipmentAPI.fetchAvialableEquipments(),
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.done) {
@@ -121,9 +117,8 @@ class _AddEventEquipmentPageState extends State<AddEventEquipmentPage> {
                               } else {
                                 final results = snapshot.data!;
                                 var result = results
-                                    .where((item) =>
-                                        item.equipmentCategoryId ==
-                                        selectedCategory!.id)
+                                    .where((item) => selectedCategory!.id
+                                        .contains(item.equipmentCategoryId))
                                     .toList();
                                 return ListView.builder(
                                   itemCount: result.length,
@@ -241,32 +236,21 @@ class _AddEventEquipmentPageState extends State<AddEventEquipmentPage> {
                                                                     IconButton(
                                                                         onPressed:
                                                                             () async {
-                                                                              var res = await EventAPI().addEventEquipment(widget.eventId, result[index].id);
-                                                                          if (res.statusCode ==200 &&  selectedEquipment.contains(result[index].id)) {
-                                                                            
+                                                                          var res = await EventAPI().addEventEquipment(
+                                                                              widget.eventId,
+                                                                              result[index].equipmentId);
+                                                                          if (res.statusCode == 200 &&
+                                                                              selectedEquipment.contains(result[index].equipmentId)) {
                                                                             setState(() {
-                                                                              selectedEquipment.remove(result[index].id);
-                                                                            });   
-                                                                          }else{
-                                                                            //await EventAPI().deleteEventEquipment(id);
+                                                                              selectedEquipment.remove(result[index].equipmentId);
+                                                                            });
+                                                                          } else {
                                                                             setState(() {
-                                                                              selectedEquipment.add(result[index].id);
+                                                                              selectedEquipment.add(result[index].equipmentId);
                                                                             });
                                                                           }
-
-                                                                          // if (selectedEquipment.contains(result[index].id)) {
-                                                                          //   setState(() {
-                                                                          //     selectedEquipment.remove(result[index].id);
-                                                                          //   });   
-                                                                          // }else{
-                                                                          //   setState(() {
-                                                                          //     selectedEquipment.add(result[index].id);
-                                                                          //   });
-                                                                          // }
-
                                                                         },
-                                                                        icon: selectedEquipment.contains(result[index].id)
-                                                                        //selectedIndex ==index
+                                                                        icon: selectedEquipment.contains(result[index].equipmentId)
                                                                             ? const Icon(Icons.check_box_outlined,
                                                                                 color: Colors.green)
                                                                             : const Icon(Icons.cancel_presentation, color: Colors.red)),
@@ -283,12 +267,12 @@ class _AddEventEquipmentPageState extends State<AddEventEquipmentPage> {
                                                                     .width,
                                                             child: Text(
                                                               result[index]
-                                                                      .equipmentDescription!
+                                                                      .equipmentName
                                                                       .isEmpty
                                                                   ? 'No description'
                                                                   : result[
                                                                           index]
-                                                                      .equipmentDescription!,
+                                                                      .equipmentName,
                                                               maxLines: 2,
                                                               style: const TextStyle(
                                                                   fontSize: 12,

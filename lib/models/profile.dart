@@ -1,104 +1,108 @@
+// To parse this JSON data, do
+//
+//     final userProfile = userProfileFromJson(jsonString);
+
 import 'dart:convert';
 
-UserProfile userProfileFromJson(String str) => UserProfile.fromJson(json.decode(str));
+UserProfile userProfileFromJson(String str) =>
+    UserProfile.fromJson(json.decode(str));
 
 String userProfileToJson(UserProfile data) => json.encode(data.toJson());
 
 class UserProfile {
-    UserProfile({
-        required this.status,
-        required this.message,
-        required this.data,
-    });
+  UserProfile({
+    required this.status,
+    required this.message,
+    required this.data,
+  });
 
-    bool status;
-    String message;
-    Data data;
+  bool status;
+  String message;
+  Data data;
 
-    factory UserProfile.fromJson(Map<String, dynamic> json) => UserProfile(
+  factory UserProfile.fromJson(Map<String, dynamic> json) => UserProfile(
         status: json["status"],
         message: json["message"],
         data: Data.fromJson(json["data"]),
-    );
+      );
 
-    Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => {
         "status": status,
         "message": message,
         "data": data.toJson(),
-    };
+      };
 }
 
 class Data {
-    Data({
-        required this.user,
-    });
+  Data({
+    required this.user,
+  });
 
-    ProfileUser user;
+  ProfileUser user;
 
-    factory Data.fromJson(Map<String, dynamic> json) => Data(
+  factory Data.fromJson(Map<String, dynamic> json) => Data(
         user: ProfileUser.fromJson(json["user"]),
-    );
+      );
 
-    Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => {
         "user": user.toJson(),
-    };
+      };
 }
 
 class ProfileUser {
-    ProfileUser({
-        required this.id,
-        required this.email,
-         this.oauthUid,
-         this.oauthProvider,
-        required this.pass,
-        required this.username,
-        required this.fullName,
-        required this.avatar,
-        required this.banned,
-        required this.lastLogin,
-        this.lastActivity,
-        required this.dateCreated,
-         this.forgotExp,
-         this.rememberTime,
-         this.rememberExp,
-         this.verificationCode,
-         this.topSecret,
-        required this.ipAddress,
-        this.createdBy,
-         this.updatedBy,
-         this.updatedAt,
-        required this.createdAt,
-    });
+  ProfileUser({
+    required this.id,
+    required this.email,
+    required this.oauthUid,
+    required this.oauthProvider,
+    required this.username,
+    required this.fullName,
+    required this.avatar,
+    required this.banned,
+    required this.lastLogin,
+    required this.lastActivity,
+    required this.dateCreated,
+    required this.forgotExp,
+    required this.rememberTime,
+    required this.rememberExp,
+    required this.verificationCode,
+    required this.topSecret,
+    required this.ipAddress,
+    required this.createdBy,
+    required this.updatedBy,
+    required this.updatedAt,
+    required this.createdAt,
+    required this.avatarThumbnail,
+  });
 
-    String id;
-    String email;
-    dynamic oauthUid;
-    dynamic oauthProvider;
-    String pass;
-    String username;
-    String fullName;
-    String avatar;
-    String banned;
-    DateTime lastLogin;
-    dynamic lastActivity;
-    DateTime dateCreated;
-    dynamic forgotExp;
-    dynamic rememberTime;
-    dynamic rememberExp;
-    dynamic verificationCode;
-    dynamic topSecret;
-    String ipAddress;
-    dynamic createdBy;
-    dynamic updatedBy;
-    dynamic updatedAt;
-    DateTime createdAt;
+  String id;
+  String email;
+  dynamic oauthUid;
+  dynamic oauthProvider;
+  String username;
+  String fullName;
+  String avatar;
+  String banned;
+  DateTime lastLogin;
+  dynamic lastActivity;
+  DateTime dateCreated;
+  dynamic forgotExp;
+  dynamic rememberTime;
+  dynamic rememberExp;
+  dynamic verificationCode;
+  dynamic topSecret;
+  String ipAddress;
+  dynamic createdBy;
+  dynamic updatedBy;
+  dynamic updatedAt;
+  DateTime createdAt;
+  String avatarThumbnail;
 
-    factory ProfileUser.fromJson(Map<String, dynamic> json) => ProfileUser(
+  factory ProfileUser.fromJson(Map<String, dynamic> json) => ProfileUser(
         id: json["id"],
         email: json["email"],
         oauthUid: json["oauth_uid"],
         oauthProvider: json["oauth_provider"],
-        pass: json["pass"],
         username: json["username"],
         fullName: json["full_name"],
         avatar: json["avatar"],
@@ -116,14 +120,14 @@ class ProfileUser {
         updatedBy: json["updated_by"],
         updatedAt: json["updated_at"],
         createdAt: DateTime.parse(json["created_at"]),
-    );
+        avatarThumbnail: json["avatar_thumbnail"],
+      );
 
-    Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => {
         "id": id,
         "email": email,
         "oauth_uid": oauthUid,
         "oauth_provider": oauthProvider,
-        "pass": pass,
         "username": username,
         "full_name": fullName,
         "avatar": avatar,
@@ -141,5 +145,6 @@ class ProfileUser {
         "updated_by": updatedBy,
         "updated_at": updatedAt,
         "created_at": createdAt.toIso8601String(),
-    };
+        "avatar_thumbnail": avatarThumbnail,
+      };
 }

@@ -1,6 +1,4 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
 import 'package:viicsoft_inventory_app/models/category.dart';
 import 'package:viicsoft_inventory_app/models/equipments.dart';
@@ -12,7 +10,7 @@ class EquipmentPage extends StatefulWidget {
   EquipmentCategory equipmentCategory;
   String categoryId;
   EquipmentPage(
-      {Key? key,  required this.equipmentCategory, required this.categoryId})
+      {Key? key, required this.equipmentCategory, required this.categoryId})
       : super(key: key);
 
   @override
@@ -70,24 +68,25 @@ class _EquipmentPageState extends State<EquipmentPage> {
                 width: MediaQuery.of(context).size.width,
                 height: 150,
                 decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: NetworkImage(widget.equipmentCategory.image),
-                      fit: BoxFit.fill,
-                    ),
-                    color: Colors.white,
-                    borderRadius: const BorderRadius.only(
-                      topRight: Radius.circular(20),
-                      topLeft: Radius.circular(20),
-                      bottomLeft: Radius.circular(20),
-                      bottomRight: Radius.circular(20),
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        offset: const Offset(2, 5),
-                        blurRadius: 4,
-                        color: AppColor.gradientSecond.withOpacity(0.2),
-                      )
-                    ]),
+                  image: DecorationImage(
+                    image: NetworkImage(widget.equipmentCategory.image),
+                    fit: BoxFit.fill,
+                  ),
+                  color: Colors.white,
+                  borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(20),
+                    topLeft: Radius.circular(20),
+                    bottomLeft: Radius.circular(20),
+                    bottomRight: Radius.circular(20),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      offset: const Offset(2, 5),
+                      blurRadius: 4,
+                      color: AppColor.gradientSecond.withOpacity(0.2),
+                    )
+                  ],
+                ),
               ),
             ),
             Expanded(
@@ -101,19 +100,25 @@ class _EquipmentPageState extends State<EquipmentPage> {
                     } else if (snapshot.connectionState ==
                         ConnectionState.done) {
                       final results = snapshot.data!;
-                      var result = results.where((item) => widget.categoryId.contains(item.equipmentCategoryId)).toList();
+                      var result = results
+                          .where((item) => widget.categoryId
+                              .contains(item.equipmentCategoryId))
+                          .toList();
                       return ListView.builder(
                         itemCount: result.length,
                         itemBuilder: (_, int index) {
                           return Padding(
                             padding: const EdgeInsets.only(right: 5, left: 5),
                             child: Container(
-                              height: 105,
+                              height: 106,
                               padding:
                                   const EdgeInsets.only(bottom: 3, right: 3),
                               child: InkWell(
-                                onLongPress: () async{
-                                 await _confirmDialog(context, result[index].id, result[index].equipmentName);
+                                onLongPress: () async {
+                                  await _confirmDialog(
+                                      context,
+                                      result[index].id,
+                                      result[index].equipmentName);
                                   setState(() {});
                                 },
                                 child: Card(
@@ -138,11 +143,12 @@ class _EquipmentPageState extends State<EquipmentPage> {
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 Container(
-                                                  width: 65,
-                                                  height: 75,
+                                                  width: 75,
+                                                  height: 80,
                                                   decoration: BoxDecoration(
                                                     borderRadius:
-                                                        BorderRadius.circular(10),
+                                                        BorderRadius.circular(
+                                                            10),
                                                     image: DecorationImage(
                                                       image: NetworkImage(
                                                           result[index]
@@ -160,9 +166,10 @@ class _EquipmentPageState extends State<EquipmentPage> {
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   SizedBox(
-                                                    width: MediaQuery.of(context)
-                                                        .size
-                                                        .width,
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                            .size
+                                                            .width,
                                                     child: Column(
                                                       crossAxisAlignment:
                                                           CrossAxisAlignment
@@ -220,10 +227,13 @@ class _EquipmentPageState extends State<EquipmentPage> {
                                                                 Navigator.push(
                                                                   context,
                                                                   MaterialPageRoute(
-                                                                    builder: (context) => EquipmentDetailPage(
-                                                                        equipmentElement:
-                                                                            result[
-                                                                                index],),
+                                                                    builder:
+                                                                        (context) =>
+                                                                            EquipmentDetailPage(
+                                                                      equipmentElement:
+                                                                          result[
+                                                                              index],
+                                                                    ),
                                                                   ),
                                                                 );
                                                               },
@@ -236,9 +246,10 @@ class _EquipmentPageState extends State<EquipmentPage> {
                                                     ),
                                                   ),
                                                   SizedBox(
-                                                    width: MediaQuery.of(context)
-                                                        .size
-                                                        .width,
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                            .size
+                                                            .width,
                                                     child: Text(
                                                       result[index]
                                                               .equipmentDescription!
@@ -292,6 +303,7 @@ class _EquipmentPageState extends State<EquipmentPage> {
       return Colors.red;
     }
   }
+
   Future _confirmDialog(
       BuildContext context, String equipmentId, String equipmentName) async {
     return showDialog<void>(
@@ -316,8 +328,8 @@ class _EquipmentPageState extends State<EquipmentPage> {
                 if (res.statusCode == 200) {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       backgroundColor: Colors.green,
-                      content:
-                          Text("$equipmentName Equipment successfully deleted")));
+                      content: Text(
+                          "$equipmentName Equipment successfully deleted")));
                   Navigator.of(context).pop();
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(

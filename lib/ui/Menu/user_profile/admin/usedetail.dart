@@ -1,24 +1,22 @@
-
-import 'dart:io';
-import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
 import 'package:viicsoft_inventory_app/models/users.dart';
 
 class UserDetailsScreen extends StatefulWidget {
-  User userdetail;
-  UserDetailsScreen({Key? key, required this.userdetail}) : super(key: key);
+  final User userdetail;
+  const UserDetailsScreen({Key? key, required this.userdetail})
+      : super(key: key);
 
   @override
   State<UserDetailsScreen> createState() => _UserDetailsScreenState();
 }
 
 class _UserDetailsScreenState extends State<UserDetailsScreen> {
-  XFile? _itemimage;
   @override
   void initState() {
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,8 +78,9 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                               height: 100,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(100),
-                                image:  DecorationImage(
-                                  image: NetworkImage(widget.userdetail.avatarThumbnail),
+                                image: DecorationImage(
+                                  image: NetworkImage(
+                                      widget.userdetail.avatarThumbnail),
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -94,13 +93,12 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                             Text(
                               'Name:',
                               style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: AppColor.gradientSecond
-                              ),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColor.gradientSecond),
                             ),
                             Expanded(child: Container()),
-                             Text(
+                            Text(
                               widget.userdetail.fullName,
                               style: TextStyle(
                                 color: AppColor.homePageSubtitle,
@@ -116,10 +114,9 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                             Text(
                               'User Name:',
                               style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: AppColor.gradientSecond
-                              ),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColor.gradientSecond),
                             ),
                             Expanded(child: Container()),
                             Text(
@@ -138,10 +135,9 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                             Text(
                               'Email:',
                               style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: AppColor.gradientSecond
-                              ),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColor.gradientSecond),
                             ),
                             Expanded(child: Container()),
                             Text(
@@ -202,5 +198,4 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
       ),
     );
   }
-
 }

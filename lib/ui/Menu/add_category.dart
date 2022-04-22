@@ -13,13 +13,16 @@ class AddCategory extends StatefulWidget {
 }
 
 class _AddCategoryState extends State<AddCategory> {
-  final TextEditingController categoryName = TextEditingController();
+  final TextEditingController _categoryName = TextEditingController();
+  GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
 
   XFile? _categoryimage;
   final picker = ImagePicker();
+  bool noImage = false;
 
   Future getImage(ImageSource source) async {
-    final pickedFile = await picker.pickImage(source: source, imageQuality: 50, maxHeight: 700, maxWidth: 650);
+    final pickedFile = await picker.pickImage(
+        source: source, imageQuality: 50, maxHeight: 700, maxWidth: 650);
 
     setState(() {
       _categoryimage = pickedFile;
@@ -59,58 +62,75 @@ class _AddCategoryState extends State<AddCategory> {
                 topLeft: Radius.circular(70),
               ),
             ),
-            child: Column(
-              children: [
-                Expanded(
-                  child: ListView(
-                    children: [
-                      categoryImages(context),
-                      SizedBox(height: MediaQuery.of(context).size.height/8),
-                      TextField(
-                        controller: categoryName,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Category name',
-                        ),
-                      ),
-                       SizedBox(height: MediaQuery.of(context).size.height/8),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                primary: AppColor.gradientFirst),
-                            onPressed: () async{
-                              var res = await CategoryAPI().addCategory(categoryName.text.trim(), _categoryimage!);
-
-                              if (res.statusCode == 200 || res.statusCode == 201) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        backgroundColor: Colors.green,
-                                        content:
-                                        Text("Category added")));
-                                        Navigator.pop(context);
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    backgroundColor: Colors.red,
-                                    content:
-                                    Text("Image file too large"),
-                                  ),
-                                );
-                              }
-                            },
-                            child: const Text(
-                              'Create Category',
-                              style: TextStyle(fontSize: 14),
-                            ),
+            child: Form(
+              key: globalFormKey,
+              child: Column(
+                children: [
+                  Expanded(
+                    child: ListView(
+                      children: [
+                        categoryImages(context),
+                        Center(
+                          child: Text(
+                            noImage ? 'No image selected !' : '',
+                            style: TextStyle(color: AppColor.gradientFirst),
                           ),
-                        ],
-                      ),
-                    ],
+                        ),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height / 8),
+                        TextFormField(
+                          controller: _categoryName,
+                          validator: (input) =>
+                              (input!.isEmpty) ? "Add Category Name" : null,
+                          decoration: const InputDecoration(
+                            //border: OutlineInputBorder(),
+                            labelText: 'Category name',
+                          ),
+                        ),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height / 8),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  primary: AppColor.gradientFirst),
+                              onPressed: () async {
+                                if (globalFormKey.currentState!.validate()) {
+                                  if (_categoryimage == null) {
+                                    setState(() {
+                                      noImage = true;
+                                    });
+                                  } else {
+                                    setState(() {
+                                      noImage = false;
+                                    });
+                                  }
+                                  var res = await CategoryAPI().addCategory(
+                                      _categoryName.text.trim(),
+                                      _categoryimage!);
+
+                                  if (res.statusCode == 200) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                            backgroundColor: Colors.green,
+                                            content: Text("Category added")));
+                                    Navigator.pop(context);
+                                  }
+                                }
+                              },
+                              child: const Text(
+                                'Create Category',
+                                style: TextStyle(fontSize: 14),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           )),
         ]),

@@ -1,84 +1,79 @@
 import 'dart:convert';
 import 'package:image_picker/image_picker.dart';
-import 'package:viicsoft_inventory_app/models/userProfile.dart';
+import 'package:viicsoft_inventory_app/models/profile.dart';
 import 'package:viicsoft_inventory_app/models/users.dart';
 import 'package:viicsoft_inventory_app/services/api.dart';
 import 'package:http/http.dart' as http;
 import '../sharedpref.dart';
 
 class UserAPI extends BaseAPI {
-
- Future<List<User>> fetchAllUser () async {
+  Future<List<User>> fetchAllUser() async {
     final String token = await SharedPrefrence().getToken();
-    final response = await http
-        .get(Uri.parse(super.allUsersPath),
-        headers: {
-          "X-Api-Key": "632F2EC9771B6C4C0BDF30BE21D9009B",
-          "Content-Type": "application/json",
-          'Accept': 'application/json',
-          'x-token': token,
-        });
+    final response = await http.get(Uri.parse(super.allUsersPath), headers: {
+      "X-Api-Key": "632F2EC9771B6C4C0BDF30BE21D9009B",
+      "Content-Type": "application/json",
+      'Accept': 'application/json',
+      'x-token': token,
+    });
     if (response.statusCode == 200) {
-      final  _data = jsonDecode(response.body);
-      final List<User> users = _data['data']['user'].map<User>((model) => User.fromJson(model as Map<String, dynamic>)).toList();
+      final _data = jsonDecode(response.body);
+      final List<User> users = _data['data']['user']
+          .map<User>((model) => User.fromJson(model as Map<String, dynamic>))
+          .toList();
       return users;
     } else {
       throw Exception('Failed to load Users');
     }
- }
+  }
 
- Future<http.Response> deleteUser(String id) async {
-   final String token = await SharedPrefrence().getToken();
-
-   var body = jsonEncode({'id': id});
-   final http.Response response = await http.post(
-     Uri.parse(super.deleteUserPath + id),
-     headers: <String, String>{
-       "X-Api-Key": "632F2EC9771B6C4C0BDF30BE21D9009B",
-       "Content-Type": "application/json",
-       'Accept': 'application/json',
-       'x-token': token,
-     },
-     body: body
-   );
-   if (response.statusCode == 200) {
-     //print(' delete user: ${response.body}');
-     return response;
-   } else {
-     throw Exception('Failed to delete user.');
-   }
- }
-
-
- Future<ProfileUser> fetchProfileUser () async {
+  Future<http.Response> deleteUser(String id) async {
     final String token = await SharedPrefrence().getToken();
-    final response = await http
-        .get(Uri.parse(super.profileUserPath),
-        headers: {
-          "X-Api-Key": "632F2EC9771B6C4C0BDF30BE21D9009B",
-          "Content-Type": "application/json",
-          'Accept': 'application/json',
-          'x-token': token,
-        });
+
+    var body = jsonEncode({'id': id});
+    final http.Response response =
+        await http.post(Uri.parse(super.deleteUserPath + id),
+            headers: <String, String>{
+              "X-Api-Key": "632F2EC9771B6C4C0BDF30BE21D9009B",
+              "Content-Type": "application/json",
+              'Accept': 'application/json',
+              'x-token': token,
+            },
+            body: body);
     if (response.statusCode == 200) {
-      final  _data = jsonDecode(response.body);
-       final userResponse = ProfileUser.fromJson(_data['data']['user']);
+      //print(' delete user: ${response.body}');
+      return response;
+    } else {
+      throw Exception('Failed to delete user.');
+    }
+  }
+
+  Future<ProfileUser> fetchProfileUser() async {
+    final String token = await SharedPrefrence().getToken();
+    final response = await http.get(Uri.parse(super.profileUserPath), headers: {
+      "X-Api-Key": "632F2EC9771B6C4C0BDF30BE21D9009B",
+      "Content-Type": "application/json",
+      'Accept': 'application/json',
+      'x-token': token,
+    });
+    if (response.statusCode == 200) {
+      final _data = jsonDecode(response.body);
+      final userResponse = ProfileUser.fromJson(_data['data']['user']);
       return userResponse;
     } else {
       throw Exception('Failed to load Users');
     }
- }
+  }
 
-
- Future<http.StreamedResponse> updateUserProfile(String email,String password, String id, XFile avatar, String fullname) async {
+  Future<http.StreamedResponse> updateUserProfile(String email, String password,
+      String id, XFile avatar, String fullname) async {
     final String token = await SharedPrefrence().getToken();
     Map<String, String> headers = {
       "X-Api-Key": "632F2EC9771B6C4C0BDF30BE21D9009B",
       'x-token': token,
     };
     //create multipart request for POST or PATCH method
-    var request = http.MultipartRequest(
-        "POST", Uri.parse(super.updateprofileUserPath));
+    var request =
+        http.MultipartRequest("POST", Uri.parse(super.updateprofileUserPath));
     //add header in http request
     request.headers.addAll(headers);
     request.fields["email"] = email;
@@ -90,8 +85,6 @@ class UserAPI extends BaseAPI {
     var response = await request.send();
     var responseData = await response.stream.toBytes();
     var responseString = String.fromCharCodes(responseData);
-    print(responseString);
     return response;
   }
-
 }
