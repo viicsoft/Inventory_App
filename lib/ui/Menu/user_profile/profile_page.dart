@@ -38,7 +38,11 @@ class _ProfilePageState extends State<ProfilePage> {
                       accountName: Text(result.fullName),
                       accountEmail: Text(result.email),
                       currentAccountPicture: CircleAvatar(
-                        backgroundImage: NetworkImage(result.avatarThumbnail),
+                        backgroundColor: Colors.white,
+                        backgroundImage: result.avatarThumbnail.isEmpty
+                            ? const AssetImage('assets/No_image.png')
+                            : NetworkImage(result.avatarThumbnail)
+                                as ImageProvider,
 
                         // Image.network(
                         //   result.avatarThumbnail,

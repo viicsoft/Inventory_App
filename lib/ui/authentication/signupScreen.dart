@@ -64,16 +64,12 @@ class _SignupPageState extends State<SignupPage> {
                                 ),
                               ),
                             ),
-                            validator: (input) =>
-                                !(input!.isNotEmpty && input.contains('@'))
-                                    ? "Please enter valid Email"
-                                    : null,
-                            // validator: (value) {
-                            //   if (value == null || value.isEmpty) {
-                            //     return 'Please enter Full Name*';
-                            //   }
-                            //   return null;
-                            // },
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter Full Name*';
+                              }
+                              return null;
+                            },
                           ),
                           SizedBox(height: screensize.height * 0.03),
                           TextFormField(
@@ -90,12 +86,10 @@ class _SignupPageState extends State<SignupPage> {
                                 ),
                               ),
                             ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter Email*';
-                              }
-                              return null;
-                            },
+                            validator: (input) =>
+                                !(input!.isNotEmpty && input.contains('@'))
+                                    ? "Please enter valid Email"
+                                    : null,
                           ),
                           SizedBox(height: screensize.height * 0.03),
                           TextFormField(
