@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:viicsoft_inventory_app/ui/authentication/loginScreen.dart';
 import '../../services/apis/auth_api.dart';
 
@@ -23,6 +22,7 @@ class _SignupPageState extends State<SignupPage> {
 
   @override
   Widget build(BuildContext context) {
+    var screensize = MediaQuery.of(context).size;
     return Scaffold(
       key: _scaffoldKey,
       body: ListView(
@@ -45,6 +45,7 @@ class _SignupPageState extends State<SignupPage> {
                         ),
                       ),
                     ),
+                    SizedBox(height: screensize.height * 0.03),
                     Container(
                       padding: const EdgeInsets.only(
                           top: 30.0, left: 20.0, right: 20.0),
@@ -57,15 +58,24 @@ class _SignupPageState extends State<SignupPage> {
                               labelStyle: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.grey),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.redAccent,
+                                ),
+                              ),
                             ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter Full Name*';
-                              }
-                              return null;
-                            },
+                            validator: (input) =>
+                                !(input!.isNotEmpty && input.contains('@'))
+                                    ? "Please enter valid Email"
+                                    : null,
+                            // validator: (value) {
+                            //   if (value == null || value.isEmpty) {
+                            //     return 'Please enter Full Name*';
+                            //   }
+                            //   return null;
+                            // },
                           ),
-                          const SizedBox(height: 10.0),
+                          SizedBox(height: screensize.height * 0.03),
                           TextFormField(
                             keyboardType: TextInputType.emailAddress,
                             controller: _emailField,
@@ -74,6 +84,11 @@ class _SignupPageState extends State<SignupPage> {
                               labelStyle: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.grey),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.redAccent,
+                                ),
+                              ),
                             ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
@@ -82,7 +97,7 @@ class _SignupPageState extends State<SignupPage> {
                               return null;
                             },
                           ),
-                          const SizedBox(height: 10.0),
+                          SizedBox(height: screensize.height * 0.03),
                           TextFormField(
                             obscureText: _isObscurePassword,
                             controller: _passwordField,
@@ -100,6 +115,11 @@ class _SignupPageState extends State<SignupPage> {
                               labelStyle: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.grey),
+                              enabledBorder: const UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.redAccent,
+                                ),
+                              ),
                             ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
@@ -111,7 +131,7 @@ class _SignupPageState extends State<SignupPage> {
                               return null;
                             },
                           ),
-                          const SizedBox(height: 10.0),
+                          SizedBox(height: screensize.height * 0.03),
                           TextFormField(
                             obscureText: _isObscureConfirmPassword,
                             controller: _confirmPasswordField,
@@ -130,6 +150,11 @@ class _SignupPageState extends State<SignupPage> {
                               labelStyle: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.grey),
+                              enabledBorder: const UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.redAccent,
+                                ),
+                              ),
                             ),
                             validator: (value) {
                               if (_passwordField.text !=
@@ -139,7 +164,7 @@ class _SignupPageState extends State<SignupPage> {
                               return null;
                             },
                           ),
-                          const SizedBox(height: 80.0),
+                          SizedBox(height: screensize.height * 0.13),
                           InkWell(
                             onTap: () async {
                               if (_formkey.currentState!.validate()) {
@@ -188,37 +213,40 @@ class _SignupPageState extends State<SignupPage> {
                               ),
                             ),
                           ),
-                          const SizedBox(height: 50.0),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              const Text(
-                                'Already have an account?',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(width: 5.0),
-                              InkWell(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          const Login(),
-                                    ),
-                                  );
-                                },
-                                child: const Text(
-                                  'Login',
+                          SizedBox(height: screensize.height * 0.02),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 20),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: <Widget>[
+                                const Text(
+                                  'Already have an account?',
                                   style: TextStyle(
-                                      color: Colors.red,
-                                      fontWeight: FontWeight.bold,
-                                      decoration: TextDecoration.underline),
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                              ),
-                            ],
+                                const SizedBox(width: 5.0),
+                                InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            const Login(),
+                                      ),
+                                    );
+                                  },
+                                  child: const Text(
+                                    'Login',
+                                    style: TextStyle(
+                                        color: Colors.red,
+                                        fontWeight: FontWeight.bold,
+                                        decoration: TextDecoration.underline),
+                                  ),
+                                ),
+                              ],
+                            ),
                           )
                         ],
                       ),

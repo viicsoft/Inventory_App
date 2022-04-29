@@ -39,21 +39,20 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    var screensize = MediaQuery.of(context).size;
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
         drawer: const ProfilePage(),
         appBar: AppBar(
-          toolbarHeight: 80,
-          iconTheme: const IconThemeData(
-            color: Colors.black,
-          ),
+          toolbarHeight: screensize.height * 0.082,
+          iconTheme: const IconThemeData(color: Colors.black, size: 40),
           elevation: 0,
           backgroundColor: AppColor.homePageBackground,
           title: Text(
             'Dashboard',
             style: TextStyle(
-              fontSize: 30,
+              fontSize: 35,
               color: AppColor.homePageTitle,
               fontWeight: FontWeight.w700,
             ),
@@ -90,12 +89,12 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     Container(
                       padding:
-                          const EdgeInsets.only(top: 20, left: 20, right: 20),
+                          const EdgeInsets.only(top: 10, left: 15, right: 15),
                       child: Column(
                         children: [
                           Container(
                             width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.width / 1.45,
+                            height: screensize.height * 0.35,
                             decoration: BoxDecoration(
                                 gradient: LinearGradient(
                                   colors: [
@@ -125,18 +124,23 @@ class _HomePageState extends State<HomePage> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    'Inventory Summary',
-                                    style: TextStyle(
-                                        fontSize: 25,
-                                        color:
-                                            AppColor.homePageContainerTextBig),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        'Inventory Summary',
+                                        style: TextStyle(
+                                            fontSize: 30,
+                                            color: AppColor
+                                                .homePageContainerTextBig),
+                                      ),
+                                    ],
                                   ),
                                   SizedBox(
-                                      height:
-                                          MediaQuery.of(context).size.width /
-                                              15),
+                                    height: screensize.height * 0.03,
+                                  ),
                                   Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Container(
                                         decoration: BoxDecoration(
@@ -145,31 +149,28 @@ class _HomePageState extends State<HomePage> {
                                           color: Colors.white,
                                         ),
                                         padding: const EdgeInsets.all(5),
-                                        height: 25,
+                                        height: 30,
                                         child: Center(
                                           child: Text(
                                             result.length.toString(),
                                             style: const TextStyle(
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: 12,
+                                                fontSize: 16,
                                                 color: Colors.black),
                                           ),
                                         ),
                                       ),
-                                      const SizedBox(width: 10),
+                                      const SizedBox(width: 15),
                                       Text(
                                         'Total Equipments Recorded',
                                         style: TextStyle(
-                                            fontSize: 16,
+                                            fontSize: 18,
                                             color: AppColor
                                                 .homePageContainerTextBig),
                                       ),
                                     ],
                                   ),
-                                  SizedBox(
-                                      height:
-                                          MediaQuery.of(context).size.width /
-                                              15),
+                                  SizedBox(height: screensize.width / 15),
                                   Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceAround,
@@ -227,6 +228,7 @@ class _HomePageState extends State<HomePage> {
                                           MediaQuery.of(context).size.width /
                                               16),
                                   Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Container(
                                         decoration: BoxDecoration(
@@ -235,7 +237,7 @@ class _HomePageState extends State<HomePage> {
                                           color: Colors.white,
                                         ),
                                         padding: const EdgeInsets.all(5),
-                                        height: 25,
+                                        height: 30,
                                         child: Center(
                                           child: FutureBuilder<
                                                   List<EquipmentsAvailable>>(
@@ -253,7 +255,7 @@ class _HomePageState extends State<HomePage> {
                                                       style: const TextStyle(
                                                           fontWeight:
                                                               FontWeight.bold,
-                                                          fontSize: 12,
+                                                          fontSize: 16,
                                                           color: Colors.black),
                                                     );
                                                   }
@@ -267,11 +269,11 @@ class _HomePageState extends State<HomePage> {
                                               }),
                                         ),
                                       ),
-                                      const SizedBox(width: 10),
+                                      const SizedBox(width: 15),
                                       Text(
-                                        'Equipments Available in Stock',
+                                        'Equipments Available ',
                                         style: TextStyle(
-                                          fontSize: 16,
+                                          fontSize: 18,
                                           color:
                                               AppColor.homePageContainerTextBig,
                                         ),
@@ -290,7 +292,7 @@ class _HomePageState extends State<HomePage> {
                                 'Activities',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                  fontSize: 20,
+                                  fontSize: 25,
                                   fontWeight: FontWeight.w500,
                                   color: AppColor.homePageTitle,
                                 ),
@@ -430,13 +432,13 @@ class _HomePageState extends State<HomePage> {
             color: Colors.white,
           ),
           padding: const EdgeInsets.all(5),
-          height: 25,
+          height: 30,
           child: Center(
             child: Text(
               qauntity!,
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 12,
+                fontSize: 16,
                 color: Colors.black,
               ),
             ),
@@ -447,7 +449,7 @@ class _HomePageState extends State<HomePage> {
           condition!,
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 16,
+            fontSize: 18,
             color: AppColor.homePageContainerTextBig,
           ),
         ),
@@ -461,7 +463,7 @@ class _HomePageState extends State<HomePage> {
       Function()? onpressed,
       IconData? icon}) {
     return SizedBox(
-      height: MediaQuery.of(context).size.width / 5.5,
+      height: MediaQuery.of(context).size.height * 0.08,
       width: MediaQuery.of(context).size.width,
       child: Stack(
         children: [
@@ -485,46 +487,40 @@ class _HomePageState extends State<HomePage> {
                   )
                 ]),
             child: Padding(
-              padding: const EdgeInsets.only(top: 10, right: 10, left: 10),
+              padding: const EdgeInsets.only(top: 5, right: 10, left: 10),
               child: Column(
                 children: [
                   Row(
                     children: [
-                      Icon(icon, size: 40, color: Colors.white),
+                      //Icon(icon, size: 30, color: Colors.white),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.white,
+                        ),
+                        padding: const EdgeInsets.all(5),
+                        height: 30,
+                        child: Center(
+                          child: Text(
+                            qauntity!,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ),
                       Expanded(
                         child: Container(),
                       ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.white,
-                            ),
-                            padding: const EdgeInsets.all(5),
-                            height: 25,
-                            child: Center(
-                              child: Text(
-                                qauntity!,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 12,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 5),
-                          Text(
-                            title!,
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: AppColor.homePageContainerTextBig,
-                            ),
-                          ),
-                        ],
+                      Text(
+                        title!,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: AppColor.homePageContainerTextBig,
+                        ),
                       ),
                       Expanded(
                         child: Container(),

@@ -12,6 +12,7 @@ class SignupLogin extends StatefulWidget {
 class _SignupLoginState extends State<SignupLogin> {
   @override
   Widget build(BuildContext context) {
+    var screensize = MediaQuery.of(context).size;
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -65,7 +66,9 @@ class _SignupLoginState extends State<SignupLogin> {
               ),
             ),
           ),
-          Expanded(flex: 2, child: Container()),
+          SizedBox(
+            height: screensize.height * 0.4,
+          ),
           GestureDetector(
             onTap: () {
               Navigator.push(context,

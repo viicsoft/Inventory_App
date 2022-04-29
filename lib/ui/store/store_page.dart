@@ -20,9 +20,9 @@ class _StorePageState extends State<StorePage> {
 
   @override
   Widget build(BuildContext context) {
-    //var provider = Provider.of<InventoryData>(context);
+    var screensize = MediaQuery.of(context).size;
     return WillPopScope(
-      onWillPop: () async =>  false,
+      onWillPop: () async => false,
       child: Scaffold(
         backgroundColor: AppColor.homePageBackground,
         body: RefreshIndicator(
@@ -49,7 +49,7 @@ class _StorePageState extends State<StorePage> {
                       topLeft: Radius.circular(10),
                     ),
                   ),
-                  height: 100,
+                  height: screensize.height * 0.12,
                   width: MediaQuery.of(context).size.width,
                   child: Text(
                     'Inventory Category',
@@ -60,10 +60,10 @@ class _StorePageState extends State<StorePage> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: screensize.height * 0.06),
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.only(left: 25, right: 25),
+                    padding: const EdgeInsets.only(left: 35, right: 35),
                     child: FutureBuilder<List<EquipmentCategory>>(
                         future: CategoryAPI().fetchAllCategory(),
                         builder: (context, snapshot) {
@@ -84,9 +84,9 @@ class _StorePageState extends State<StorePage> {
                                             Orientation.landscape
                                         ? 3
                                         : 2,
-                                crossAxisSpacing: 40,
-                                mainAxisSpacing: 50,
-                                childAspectRatio: (1.5 / 1.0),
+                                crossAxisSpacing: screensize.width * 0.18,
+                                mainAxisSpacing: screensize.width * 0.1,
+                                childAspectRatio: (1.0 / 0.68),
                               ),
                               itemBuilder: (
                                 context,
@@ -94,10 +94,10 @@ class _StorePageState extends State<StorePage> {
                               ) {
                                 return InkWell(
                                   hoverColor: Colors.black,
-                                  onLongPress: () async{
-                                   await _confirmDialog(context, results[index].id,
-                                        results[index].name);
-                                        setState(() {});
+                                  onLongPress: () async {
+                                    await _confirmDialog(context,
+                                        results[index].id, results[index].name);
+                                    setState(() {});
                                   },
                                   onTap: () {
                                     Navigator.push(
@@ -136,13 +136,13 @@ class _StorePageState extends State<StorePage> {
                                             width: MediaQuery.of(context)
                                                     .size
                                                     .width /
-                                                4,
+                                                2,
                                             height: MediaQuery.of(context)
                                                     .size
                                                     .width /
-                                                6,
-                                            padding:
-                                                const EdgeInsets.only(bottom: 5),
+                                                7,
+                                            padding: const EdgeInsets.only(
+                                                bottom: 5),
                                             decoration: BoxDecoration(
                                               color: Colors.white,
                                               borderRadius:
@@ -161,7 +161,8 @@ class _StorePageState extends State<StorePage> {
                                                 child: Container(
                                                   decoration: BoxDecoration(
                                                     borderRadius:
-                                                        BorderRadius.circular(10),
+                                                        BorderRadius.circular(
+                                                            10),
                                                   ),
                                                   width: MediaQuery.of(context)
                                                       .size
@@ -173,7 +174,7 @@ class _StorePageState extends State<StorePage> {
                                                       style: TextStyle(
                                                         fontWeight:
                                                             FontWeight.bold,
-                                                        fontSize: 16,
+                                                        fontSize: 12,
                                                         color: AppColor
                                                             .homePageContainerTextBig,
                                                       ),

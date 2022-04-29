@@ -31,6 +31,7 @@ class _EquipmentPageState extends State<EquipmentPage> {
 
   @override
   Widget build(BuildContext context) {
+    var screensize = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: AppColor.homePageBackground,
       body: Container(
@@ -66,7 +67,7 @@ class _EquipmentPageState extends State<EquipmentPage> {
               padding: const EdgeInsets.only(left: 15, right: 15),
               child: Container(
                 width: MediaQuery.of(context).size.width,
-                height: 150,
+                height: screensize.height * 0.2,
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image: NetworkImage(widget.equipmentCategory.image),
@@ -108,9 +109,13 @@ class _EquipmentPageState extends State<EquipmentPage> {
                         itemCount: result.length,
                         itemBuilder: (_, int index) {
                           return Padding(
-                            padding: const EdgeInsets.only(right: 5, left: 5),
+                            padding: const EdgeInsets.only(
+                              right: 5,
+                              left: 5,
+                              bottom: 5,
+                            ),
                             child: Container(
-                              height: 106,
+                              height: screensize.height * 0.12,
                               padding:
                                   const EdgeInsets.only(bottom: 3, right: 3),
                               child: InkWell(
@@ -125,7 +130,7 @@ class _EquipmentPageState extends State<EquipmentPage> {
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10),
                                   ),
-                                  elevation: 3,
+                                  elevation: 2,
                                   shadowColor: AppColor.gradientSecond,
                                   child: Padding(
                                     padding: const EdgeInsets.only(
@@ -143,8 +148,10 @@ class _EquipmentPageState extends State<EquipmentPage> {
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 Container(
-                                                  width: 75,
-                                                  height: 80,
+                                                  width:
+                                                      screensize.height * 0.08,
+                                                  height:
+                                                      screensize.height * 0.09,
                                                   decoration: BoxDecoration(
                                                     borderRadius:
                                                         BorderRadius.circular(
@@ -175,20 +182,23 @@ class _EquipmentPageState extends State<EquipmentPage> {
                                                           CrossAxisAlignment
                                                               .start,
                                                       children: [
-                                                        Text(
-                                                          result[index]
-                                                              .equipmentName,
-                                                          maxLines: 1,
-                                                          style: TextStyle(
-                                                              color: AppColor
-                                                                  .homePageTitle,
-                                                              fontSize: 13,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500),
-                                                        ),
                                                         Row(
                                                           children: [
+                                                            Text(
+                                                              result[index]
+                                                                  .equipmentName,
+                                                              maxLines: 1,
+                                                              style: TextStyle(
+                                                                  color: AppColor
+                                                                      .homePageTitle,
+                                                                  fontSize: 13,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500),
+                                                            ),
+                                                            Expanded(
+                                                                child:
+                                                                    Container()),
                                                             Container(
                                                               decoration: BoxDecoration(
                                                                   borderRadius:
@@ -214,9 +224,8 @@ class _EquipmentPageState extends State<EquipmentPage> {
                                                                         .homePageContainerTextBig),
                                                               ),
                                                             ),
-                                                            Expanded(
-                                                                child:
-                                                                    Container()),
+                                                            const SizedBox(
+                                                                width: 20),
                                                             TextButton(
                                                               style: TextButton
                                                                   .styleFrom(

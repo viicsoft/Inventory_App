@@ -196,8 +196,8 @@ class _AddEventPageState extends State<AddEventPage> {
                                             _eventImage!,
                                             _eventType.text,
                                             _eventLocation.text,
-                                            "${endingDate.day}/${endingDate.month}/${endingDate.year}",
-                                            "${startingDate.day}/${startingDate.month}/${startingDate.year}");
+                                            endingDate.toString(),
+                                            startingDate.toString());
 
                                         if (res.statusCode == 200) {
                                           ScaffoldMessenger.of(context)

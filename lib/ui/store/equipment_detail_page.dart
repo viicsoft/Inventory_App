@@ -29,7 +29,7 @@ class _EquipmentDetailPageState extends State<EquipmentDetailPage> {
       body: Column(
         children: [
           Container(
-            padding: const EdgeInsets.only(top: 40, left: 10, right: 30),
+            padding: const EdgeInsets.only(top: 50, left: 10, right: 30),
             width: MediaQuery.of(context).size.width,
             height: 100,
             child: Row(
@@ -41,7 +41,7 @@ class _EquipmentDetailPageState extends State<EquipmentDetailPage> {
                   },
                   icon: Icon(
                     Icons.arrow_back_ios_new,
-                    size: 25,
+                    size: 30,
                     color: AppColor.gradientSecond,
                   ),
                 ),
@@ -52,7 +52,7 @@ class _EquipmentDetailPageState extends State<EquipmentDetailPage> {
                     widget.equipmentElement.equipmentName,
                     style: const TextStyle(
                       fontWeight: FontWeight.w500,
-                      fontSize: 20,
+                      fontSize: 25,
                     ),
                   ),
                 ),
@@ -62,7 +62,7 @@ class _EquipmentDetailPageState extends State<EquipmentDetailPage> {
           ),
           Expanded(
             child: Container(
-              padding: const EdgeInsets.only(left: 20, right: 20),
+              padding: const EdgeInsets.only(left: 20, right: 20, top: 30),
               width: MediaQuery.of(context).size.width,
               decoration: const BoxDecoration(
                 color: Colors.white,
@@ -89,7 +89,7 @@ class _EquipmentDetailPageState extends State<EquipmentDetailPage> {
                             ),
                           ),
                         ),
-                        SizedBox(height: screenSize * 0.05),
+                        SizedBox(height: screenSize * 0.08),
                         Row(
                           children: [
                             Text(
@@ -110,7 +110,7 @@ class _EquipmentDetailPageState extends State<EquipmentDetailPage> {
                             )
                           ],
                         ),
-                        SizedBox(height: screenSize * 0.035),
+                        SizedBox(height: screenSize * 0.04),
                         Row(
                           children: [
                             Text(
@@ -143,7 +143,7 @@ class _EquipmentDetailPageState extends State<EquipmentDetailPage> {
                             ),
                           ],
                         ),
-                        SizedBox(height: screenSize * 0.035),
+                        SizedBox(height: screenSize * 0.04),
                         Row(
                           children: [
                             Text(
@@ -174,7 +174,7 @@ class _EquipmentDetailPageState extends State<EquipmentDetailPage> {
                             ),
                           ],
                         ),
-                        SizedBox(height: screenSize * 0.035),
+                        SizedBox(height: screenSize * 0.04),
                         Row(
                           children: [
                             Text(
@@ -195,7 +195,7 @@ class _EquipmentDetailPageState extends State<EquipmentDetailPage> {
                             )
                           ],
                         ),
-                        SizedBox(height: screenSize * 0.035),
+                        SizedBox(height: screenSize * 0.04),
                         Text(
                           'Description:',
                           style: TextStyle(
@@ -218,7 +218,7 @@ class _EquipmentDetailPageState extends State<EquipmentDetailPage> {
                             //labelText: 'Description',
                           ),
                         ),
-                        SizedBox(height: screenSize * 0.05),
+                        SizedBox(height: screenSize * 0.1),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [

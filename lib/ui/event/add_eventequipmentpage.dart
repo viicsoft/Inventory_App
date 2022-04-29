@@ -35,6 +35,7 @@ class _AddEventEquipmentPageState extends State<AddEventEquipmentPage> {
 
   @override
   Widget build(BuildContext context) {
+    var screensize = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: AppColor.homePageBackground,
       body: FutureBuilder<List<EquipmentCategory>>(
@@ -125,9 +126,9 @@ class _AddEventEquipmentPageState extends State<AddEventEquipmentPage> {
                                   itemBuilder: (_, int index) {
                                     return Padding(
                                       padding: const EdgeInsets.only(
-                                          right: 5, left: 5),
+                                          right: 5, left: 5, bottom: 5),
                                       child: Container(
-                                        height: 105,
+                                        height: screensize.height * 0.12,
                                         padding: const EdgeInsets.only(
                                             bottom: 2, right: 3),
                                         child: Card(
@@ -154,8 +155,12 @@ class _AddEventEquipmentPageState extends State<AddEventEquipmentPage> {
                                                               .start,
                                                       children: [
                                                         Container(
-                                                          width: 65,
-                                                          height: 80,
+                                                          width: screensize
+                                                                  .height *
+                                                              0.08,
+                                                          height: screensize
+                                                                  .height *
+                                                              0.09,
                                                           decoration:
                                                               BoxDecoration(
                                                             borderRadius:
@@ -191,21 +196,26 @@ class _AddEventEquipmentPageState extends State<AddEventEquipmentPage> {
                                                                   CrossAxisAlignment
                                                                       .start,
                                                               children: [
-                                                                Text(
-                                                                  result[index]
-                                                                      .equipmentName,
-                                                                  maxLines: 1,
-                                                                  style: TextStyle(
-                                                                      color: AppColor
-                                                                          .homePageTitle,
-                                                                      fontSize:
-                                                                          14,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w500),
-                                                                ),
                                                                 Row(
                                                                   children: [
+                                                                    Text(
+                                                                      result[index]
+                                                                          .equipmentName,
+                                                                      maxLines:
+                                                                          1,
+                                                                      style:
+                                                                          TextStyle(
+                                                                        color: AppColor
+                                                                            .homePageTitle,
+                                                                        fontSize:
+                                                                            14,
+                                                                        fontWeight:
+                                                                            FontWeight.w500,
+                                                                      ),
+                                                                    ),
+                                                                    Expanded(
+                                                                        child:
+                                                                            Container()),
                                                                     Container(
                                                                       decoration: BoxDecoration(
                                                                           borderRadius: BorderRadius.circular(
@@ -230,9 +240,9 @@ class _AddEventEquipmentPageState extends State<AddEventEquipmentPage> {
                                                                                 AppColor.homePageContainerTextBig),
                                                                       ),
                                                                     ),
-                                                                    Expanded(
-                                                                        child:
-                                                                            Container()),
+                                                                    const SizedBox(
+                                                                        width:
+                                                                            20),
                                                                     IconButton(
                                                                         onPressed:
                                                                             () async {

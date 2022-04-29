@@ -22,6 +22,7 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
+    var screensize = MediaQuery.of(context).size;
     return Scaffold(
       body: ListView(
         children: [
@@ -32,29 +33,33 @@ class _LoginState extends State<Login> {
                 key: globalFormKey,
                 child: Column(
                   children: <Widget>[
-                    Row(
-                      children: [
-                        Container(
-                          padding:
-                              const EdgeInsets.fromLTRB(15.0, 110.0, 0.0, 0.0),
-                          child: const Text(
-                            'CRISP TV',
-                            style: TextStyle(
-                                fontSize: 40.0,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.redAccent),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 80),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          SizedBox(
+                            child: Text(
+                              'CRISP TV',
+                              style: TextStyle(
+                                  fontSize: 40.0,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.redAccent),
+                            ),
                           ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.fromLTRB(
-                              10.0, 120.0, 10.0, 10.0),
-                          child: const Icon(
-                            Icons.photo_camera_front,
-                            size: 45,
-                            color: Colors.lightBlueAccent,
+                          SizedBox(width: 10),
+                          SizedBox(
+                            child: Icon(
+                              Icons.photo_camera_front,
+                              size: 45,
+                              color: Colors.lightBlueAccent,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: screensize.height * 0.1,
                     ),
                     Container(
                       padding: const EdgeInsets.only(
@@ -67,7 +72,7 @@ class _LoginState extends State<Login> {
                             //onSaved: (input) => requestModel.email = input!,
                             validator: (input) =>
                                 !(input?.contains('@') ?? false)
-                                    ? "Email id should be valid"
+                                    ? "Please enter valid Email"
                                     : null,
                             decoration: const InputDecoration(
                               hintText: 'Email',
@@ -82,7 +87,7 @@ class _LoginState extends State<Login> {
                             ),
                           ),
 
-                          const SizedBox(height: 20.0),
+                          SizedBox(height: screensize.height * 0.05),
                           TextFormField(
                             obscureText: _isObscure,
                             keyboardType: TextInputType.text,
@@ -112,21 +117,26 @@ class _LoginState extends State<Login> {
                               ),
                             ),
                           ),
-                          const SizedBox(height: 6.0),
-                          Container(
-                            padding:
-                                const EdgeInsets.only(top: 15.0, left: 200.0),
-                            child: const InkWell(
-                              child: Text(
-                                'Forgot Password',
-                                style: TextStyle(
-                                    color: Colors.red,
-                                    fontWeight: FontWeight.bold,
-                                    decoration: TextDecoration.underline),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 100.0),
+                          // const SizedBox(height: 6.0),
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.end,
+                          //   children: [
+                          //     Container(
+                          //       padding: const EdgeInsets.only(
+                          //           top: 15.0, left: 200.0),
+                          //       child: const InkWell(
+                          //         child: Text(
+                          //           'Forgot Password',
+                          //           style: TextStyle(
+                          //               color: Colors.red,
+                          //               fontWeight: FontWeight.bold,
+                          //               decoration: TextDecoration.underline),
+                          //         ),
+                          //       ),
+                          //     ),
+                          //   ],
+                          // ),
+                          SizedBox(height: screensize.height * 0.18),
                           SizedBox(
                             height: 50.0,
                             child: InkWell(
@@ -142,7 +152,7 @@ class _LoginState extends State<Login> {
                                         builder: (BuildContext context) {
                                           return AlertDialog(
                                             title: Text(
-                                              "${err.message}entication !",
+                                              "${err.message} !",
                                               style: TextStyle(
                                                   color:
                                                       AppColor.gradientFirst),
@@ -193,39 +203,40 @@ class _LoginState extends State<Login> {
                               ),
                             ),
                           ),
-                          //),
-                          const SizedBox(height: 20.0),
                         ],
                       ),
                     )
                   ],
                 ),
               ),
-              const SizedBox(height: 30.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  const Text(
-                    'New to Crisp Tv?',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(width: 5.0),
-                  InkWell(
-                    onTap: () async {
-                      Navigator.pushNamed(context, '/signup');
-                    },
-                    child: const Text(
-                      'Register',
+              SizedBox(height: screensize.height * 0.02),
+              Padding(
+                padding: const EdgeInsets.only(right: 40),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    const Text(
+                      'New to Crisp Tv?',
                       style: TextStyle(
-                          color: Colors.red,
-                          fontWeight: FontWeight.bold,
-                          decoration: TextDecoration.underline),
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                ],
+                    const SizedBox(width: 5.0),
+                    InkWell(
+                      onTap: () async {
+                        Navigator.pushNamed(context, '/signup');
+                      },
+                      child: const Text(
+                        'Register',
+                        style: TextStyle(
+                            color: Colors.red,
+                            fontWeight: FontWeight.bold,
+                            decoration: TextDecoration.underline),
+                      ),
+                    ),
+                  ],
+                ),
               )
             ],
           ),

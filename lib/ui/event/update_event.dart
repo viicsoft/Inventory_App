@@ -15,9 +15,11 @@ class UpdateEventPage extends StatefulWidget {
 
 class _UpdateEventPageState extends State<UpdateEventPage> {
   XFile? _eventImage;
-  DateTime? selecteddate;
-  DateTime startingDate = DateTime.now();
+  //DateTime? selecteddate;
+
   DateTime endingDate = DateTime.now();
+  DateTime startingDate = DateTime.now();
+
   bool hasData = false;
 
   final EventAPI _eventAPI = EventAPI();
@@ -31,11 +33,6 @@ class _UpdateEventPageState extends State<UpdateEventPage> {
     setState(() {
       _eventImage = pickedFile;
     });
-  }
-
-  @override
-  void initState() {
-    super.initState();
   }
 
   @override
@@ -176,16 +173,23 @@ class _UpdateEventPageState extends State<UpdateEventPage> {
                                   style: ElevatedButton.styleFrom(
                                       primary: AppColor.gradientFirst),
                                   onPressed: () async {
+                                    if (startingDate == DateTime.now() &&
+                                        endingDate == DateTime.now()) {
+                                      startingDate =
+                                          widget.eventDetail.checkOutDate;
+                                      endingDate =
+                                          widget.eventDetail.checkInDate;
+                                    }
                                     var res = await _eventAPI.updateEvent(
                                         _eventName.text,
                                         _eventType.text,
                                         _eventLocation.text,
-                                        "${endingDate.day}/${endingDate.month}/${endingDate.year}",
-                                        "${startingDate.day}/${startingDate.month}/${startingDate.year}",
+                                        endingDate.toString(),
+                                        startingDate.toString(),
                                         widget.eventDetail.id);
 
-                                    if (res.statusCode == 200 ||
-                                        res.statusCode == 201) {
+                                    if (res.statusCode == 200) {
+                                      setState(() {});
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(const SnackBar(
                                               backgroundColor: Colors.green,
@@ -244,53 +248,53 @@ class _UpdateEventPageState extends State<UpdateEventPage> {
                 ),
               ),
             ),
-            Positioned(
-              bottom: 0,
-              right: 0,
-              child: InkWell(
-                onTap: () => showDialog<String>(
-                  context: context,
-                  builder: (BuildContext context) => AlertDialog(
-                    title: const Text('Select Image'),
-                    content: const Text(
-                        'Select image from device gallery or use device camera'),
-                    actions: <Widget>[
-                      TextButton(
-                        onPressed: () {
-                          getImage(ImageSource.camera);
-                          Navigator.pop(context);
-                        },
-                        child: const Text('Camera'),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          getImage(ImageSource.gallery);
-                          Navigator.pop(context);
-                        },
-                        child: const Text('Gallery'),
-                      ),
-                    ],
-                  ),
-                ),
-                child: Container(
-                  height: 25,
-                  width: 25,
-                  decoration: BoxDecoration(
-                    color: AppColor.homePageTitle,
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      width: 1.5,
-                      color: Colors.white,
-                    ),
-                  ),
-                  child: const Icon(
-                    Icons.edit,
-                    size: 15,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
+            // Positioned(
+            //   bottom: 0,
+            //   right: 0,
+            //   child: InkWell(
+            //     onTap: () => showDialog<String>(
+            //       context: context,
+            //       builder: (BuildContext context) => AlertDialog(
+            //         title: const Text('Select Image'),
+            //         content: const Text(
+            //             'Select image from device gallery or use device camera'),
+            //         actions: <Widget>[
+            //           TextButton(
+            //             onPressed: () {
+            //               getImage(ImageSource.camera);
+            //               Navigator.pop(context);
+            //             },
+            //             child: const Text('Camera'),
+            //           ),
+            //           TextButton(
+            //             onPressed: () {
+            //               getImage(ImageSource.gallery);
+            //               Navigator.pop(context);
+            //             },
+            //             child: const Text('Gallery'),
+            //           ),
+            //         ],
+            //       ),
+            //     ),
+            //     child: Container(
+            //       height: 25,
+            //       width: 25,
+            //       decoration: BoxDecoration(
+            //         color: AppColor.homePageTitle,
+            //         shape: BoxShape.circle,
+            //         border: Border.all(
+            //           width: 1.5,
+            //           color: Colors.white,
+            //         ),
+            //       ),
+            //       child: const Icon(
+            //         Icons.edit,
+            //         size: 15,
+            //         color: Colors.white,
+            //       ),
+            //     ),
+            //   ),
+            // ),
           ],
         ),
       ],
@@ -298,30 +302,31 @@ class _UpdateEventPageState extends State<UpdateEventPage> {
   }
 
   _startingDate(BuildContext context) async {
+    startingDate = widget.eventDetail.checkOutDate;
     final DateTime? selected = await showDatePicker(
       context: context,
       initialDate: startingDate,
-      firstDate: DateTime(2016),
-      lastDate: DateTime(2030),
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2100),
     );
     if (selected != null && selected != startingDate) {
       setState(() {
-        //widget.eventDetail.checkOutDate = selected;
         startingDate = selected;
       });
     }
   }
 
   _endingDate(BuildContext context) async {
+    endingDate = widget.eventDetail.checkInDate;
     final DateTime? selected = await showDatePicker(
       context: context,
       initialDate: endingDate,
-      firstDate: DateTime(2016),
-      lastDate: DateTime(2030),
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2100),
     );
     if (selected != null && selected != endingDate) {
       setState(() {
-        //widget.eventDetail.checkInDate = selected;
+        widget.eventDetail.checkInDate = endingDate;
         endingDate = selected;
       });
     }
