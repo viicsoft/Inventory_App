@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:viicsoft_inventory_app/component/colors.dart';
 import 'package:viicsoft_inventory_app/ui/authentication/loginScreen.dart';
 import '../../services/apis/auth_api.dart';
 
@@ -162,10 +163,39 @@ class _SignupPageState extends State<SignupPage> {
                           InkWell(
                             onTap: () async {
                               if (_formkey.currentState!.validate()) {
-                                var res = await _authAPI.signUp(
-                                    _fullNameField.text,
-                                    _emailField.text,
-                                    _passwordField.text);
+                                var res = await _authAPI
+                                    .signUp(_fullNameField.text,
+                                        _emailField.text, _passwordField.text)
+                                    .catchError(
+                                  (err) {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: Text(
+                                            "${err.message} !",
+                                            style: TextStyle(
+                                                color: AppColor.gradientFirst),
+                                          ),
+                                          content: const Text(
+                                            'Check your network connection and try Again',
+                                          ),
+                                          actions: [
+                                            ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                  primary:
+                                                      AppColor.gradientFirst),
+                                              child: const Text("Ok"),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            )
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  },
+                                );
                                 if (res.statusCode == 200) {
                                   //setState(() {});
                                   _formkey.currentState!.reset();
