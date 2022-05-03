@@ -5,7 +5,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
 import 'package:viicsoft_inventory_app/models/eventequipmentchecklist.dart';
 import 'package:viicsoft_inventory_app/models/eventequipmentcheckout.dart';
-import 'package:viicsoft_inventory_app/models/events.dart';
+import 'package:viicsoft_inventory_app/models/futureevent.dart';
 import 'package:viicsoft_inventory_app/services/apis/equipment_checkin_api.dart';
 import 'package:viicsoft_inventory_app/services/apis/equipment_checklist_api.dart';
 import 'package:viicsoft_inventory_app/services/apis/equipment_checkout_api.dart';
@@ -13,7 +13,7 @@ import 'package:viicsoft_inventory_app/ui/event/add_eventequipmentpage.dart';
 import 'package:viicsoft_inventory_app/ui/event/update_event.dart';
 
 class EventsDetailPage extends StatefulWidget {
-  final Event eventDetail;
+  final EventsFuture eventDetail;
   const EventsDetailPage({Key? key, required this.eventDetail})
       : super(key: key);
 

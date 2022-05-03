@@ -5,7 +5,8 @@ class ProfileChangeSuccessPage extends StatefulWidget {
   const ProfileChangeSuccessPage({Key? key}) : super(key: key);
 
   @override
-  State<ProfileChangeSuccessPage> createState() => _ProfileChangeSuccessPageState();
+  State<ProfileChangeSuccessPage> createState() =>
+      _ProfileChangeSuccessPageState();
 }
 
 class _ProfileChangeSuccessPageState extends State<ProfileChangeSuccessPage> {
@@ -51,7 +52,8 @@ class _ProfileChangeSuccessPageState extends State<ProfileChangeSuccessPage> {
                     Navigator.pop(context);
                   },
                   child: const Text('Continue'),
-                  style: ElevatedButton.styleFrom(primary: AppColor.gradientFirst),
+                  style:
+                      ElevatedButton.styleFrom(primary: AppColor.gradientFirst),
                 ),
               ],
             ),

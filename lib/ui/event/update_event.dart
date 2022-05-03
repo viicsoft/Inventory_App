@@ -1,11 +1,11 @@
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
-import 'package:viicsoft_inventory_app/models/events.dart';
+import 'package:viicsoft_inventory_app/models/futureevent.dart';
 import 'package:viicsoft_inventory_app/services/apis/event_api.dart';
 
 class UpdateEventPage extends StatefulWidget {
-  final Event eventDetail;
+  final EventsFuture eventDetail;
   const UpdateEventPage({Key? key, required this.eventDetail})
       : super(key: key);
 

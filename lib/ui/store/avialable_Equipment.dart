@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
+import 'package:viicsoft_inventory_app/models/avialable_equipment.dart';
 import 'package:viicsoft_inventory_app/models/category.dart';
-import 'package:viicsoft_inventory_app/models/equipments.dart';
 import 'package:viicsoft_inventory_app/services/apis/category_api.dart';
 import 'package:viicsoft_inventory_app/services/apis/equipment_api.dart';
 
 // ignore: must_be_immutable
-class GoodEquipmentPage extends StatefulWidget {
-  const GoodEquipmentPage({Key? key}) : super(key: key);
+class AvialableEquipmentPage extends StatefulWidget {
+  const AvialableEquipmentPage({Key? key}) : super(key: key);
 
   @override
-  State<GoodEquipmentPage> createState() => _GoodEquipmentPageState();
+  State<AvialableEquipmentPage> createState() => _AvialableEquipmentPageState();
 }
 
-class _GoodEquipmentPageState extends State<GoodEquipmentPage> {
+class _AvialableEquipmentPageState extends State<AvialableEquipmentPage> {
   EquipmentCategory? selectedCategory;
   final CategoryAPI _categoryApi = CategoryAPI();
   late Future<List<EquipmentCategory>> _category;
@@ -54,7 +54,7 @@ class _GoodEquipmentPageState extends State<GoodEquipmentPage> {
                             ),
                             Expanded(child: Container()),
                             Text(
-                              'Good Equipments',
+                              'Avialable Equipments',
                               style: TextStyle(
                                 fontSize: 22,
                                 fontWeight: FontWeight.w500,
@@ -104,18 +104,13 @@ class _GoodEquipmentPageState extends State<GoodEquipmentPage> {
                           ),
                         ),
                         Expanded(
-                          child: FutureBuilder<List<EquipmentElement>>(
-                              future: EquipmentAPI().fetchAllEquipments(),
+                          child: FutureBuilder<List<EquipmentsAvailable>>(
+                              future: EquipmentAPI().fetchAvialableEquipments(),
                               builder: (context, snapshot) {
                                 if (snapshot.connectionState ==
                                     ConnectionState.done) {
                                   if (selectedCategory == null) {
-                                    final results = snapshot.data!;
-                                    var result = results
-                                        .where((item) =>
-                                            item.equipmentCondition == 'NEW' ||
-                                            item.equipmentCondition == 'OLD')
-                                        .toList();
+                                    final result = snapshot.data!;
                                     return SizedBox(
                                       child: ListView.builder(
                                         itemCount: result.length,
@@ -127,12 +122,7 @@ class _GoodEquipmentPageState extends State<GoodEquipmentPage> {
                                     );
                                   } else {
                                     final results = snapshot.data!;
-                                    var newResult = results
-                                        .where((item) =>
-                                            item.equipmentCondition == 'NEW' ||
-                                            item.equipmentCondition == 'OLD')
-                                        .toList();
-                                    var result = newResult
+                                    var result = results
                                         .where((item) => selectedCategory!.id
                                             .contains(item.equipmentCategoryId))
                                         .toList();
@@ -171,7 +161,7 @@ class _GoodEquipmentPageState extends State<GoodEquipmentPage> {
   }
 
   Padding equipmentCard(
-      List<EquipmentElement> result, int index, BuildContext context) {
+      List<EquipmentsAvailable> result, int index, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(right: 5, left: 5),
       child: Container(
@@ -252,7 +242,7 @@ class _GoodEquipmentPageState extends State<GoodEquipmentPage> {
                           SizedBox(
                             width: MediaQuery.of(context).size.width,
                             child: Text(
-                              result[index].equipmentDescription!,
+                              result[index].equipmentName,
                               maxLines: 2,
                               style: const TextStyle(
                                   fontSize: 12, fontWeight: FontWeight.w500),

@@ -19,13 +19,11 @@ class _EquipmentNotAvialablePageState extends State<EquipmentNotAvialablePage> {
   final CategoryAPI _categoryApi = CategoryAPI();
   late Future<List<EquipmentCategory>> _category;
   late Future equipmentFuture;
-  //int? selectedIndex;
   List selectedEquipment = [];
 
   @override
   void initState() {
     super.initState();
-    //_equipmentsList = _equipmentAPI.fetchAllEquipments();
     _category = _categoryApi.fetchAllCategory();
   }
 
@@ -226,7 +224,7 @@ class _EquipmentNotAvialablePageState extends State<EquipmentNotAvialablePage> {
                                                                               padding: const EdgeInsets.only(right: 10),
                                                                               child: Column(
                                                                                 children: [
-                                                                                   Text(
+                                                                                  Text(
                                                                                     'CheckOut Date',
                                                                                     style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: AppColor.homePageSubtitle),
                                                                                   ),
@@ -237,14 +235,13 @@ class _EquipmentNotAvialablePageState extends State<EquipmentNotAvialablePage> {
                                                                                   )
                                                                                 ],
                                                                               ),
-                                                                              
                                                                             ),
                                                                           ],
                                                                         ),
                                                                       ],
                                                                     ),
                                                                   ),
-                                                                 const Divider(),
+                                                                  const Divider(),
                                                                   SizedBox(
                                                                     width: MediaQuery.of(
                                                                             context)

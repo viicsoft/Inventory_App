@@ -268,7 +268,12 @@ class _AddEventPageState extends State<AddEventPage> {
                 onTap: () => showDialog<String>(
                   context: context,
                   builder: (BuildContext context) => AlertDialog(
-                    title: const Text('Select Image'),
+                    title: Text(
+                      'Select Image',
+                      style: TextStyle(
+                        color: AppColor.homePageSubtitle,
+                      ),
+                    ),
                     content: const Text(
                         'Select image from device gallery or use device camera'),
                     actions: <Widget>[
@@ -277,14 +282,24 @@ class _AddEventPageState extends State<AddEventPage> {
                           getImage(ImageSource.camera);
                           Navigator.pop(context);
                         },
-                        child: const Text('Camera'),
+                        child: Text(
+                          'Camera',
+                          style: TextStyle(
+                            color: AppColor.gradientFirst,
+                          ),
+                        ),
                       ),
                       TextButton(
                         onPressed: () {
                           getImage(ImageSource.gallery);
                           Navigator.pop(context);
                         },
-                        child: const Text('Gallery'),
+                        child: Text(
+                          'Gallery',
+                          style: TextStyle(
+                            color: AppColor.gradientFirst,
+                          ),
+                        ),
                       ),
                     ],
                   ),

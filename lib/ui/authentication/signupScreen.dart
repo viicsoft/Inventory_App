@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
 import 'package:viicsoft_inventory_app/ui/authentication/loginScreen.dart';
+import 'package:viicsoft_inventory_app/ui/bottom_navigationbar.dart';
 import '../../services/apis/auth_api.dart';
 
 class SignupPage extends StatefulWidget {
@@ -54,14 +55,20 @@ class _SignupPageState extends State<SignupPage> {
                         children: <Widget>[
                           TextFormField(
                             controller: _fullNameField,
-                            decoration: const InputDecoration(
+                            cursorColor: Colors.black54,
+                            decoration: InputDecoration(
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: AppColor.gradientFirst,
+                                ),
+                              ),
                               labelText: 'Full Name',
-                              labelStyle: TextStyle(
+                              labelStyle: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.grey),
-                              enabledBorder: UnderlineInputBorder(
+                              enabledBorder: const UnderlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: Colors.redAccent,
+                                  color: Colors.grey,
                                 ),
                               ),
                             ),
@@ -76,14 +83,20 @@ class _SignupPageState extends State<SignupPage> {
                           TextFormField(
                             keyboardType: TextInputType.emailAddress,
                             controller: _emailField,
-                            decoration: const InputDecoration(
+                            cursorColor: Colors.black54,
+                            decoration: InputDecoration(
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: AppColor.gradientFirst,
+                                ),
+                              ),
                               labelText: 'Email',
-                              labelStyle: TextStyle(
+                              labelStyle: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.grey),
-                              enabledBorder: UnderlineInputBorder(
+                              enabledBorder: const UnderlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: Colors.redAccent,
+                                  color: Colors.grey,
                                 ),
                               ),
                             ),
@@ -96,29 +109,45 @@ class _SignupPageState extends State<SignupPage> {
                           TextFormField(
                             obscureText: _isObscurePassword,
                             controller: _passwordField,
+                            cursorColor: Colors.black54,
                             decoration: InputDecoration(
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: AppColor.gradientFirst,
+                                ),
+                              ),
                               suffixIcon: IconButton(
-                                  icon: Icon(_isObscurePassword
-                                      ? Icons.visibility
-                                      : Icons.visibility_off),
+                                  icon: Icon(
+                                    _isObscurePassword
+                                        ? Icons.visibility
+                                        : Icons.visibility_off,
+                                    color: Colors.grey,
+                                  ),
                                   onPressed: () {
                                     setState(() {
                                       _isObscurePassword = !_isObscurePassword;
                                     });
                                   }),
+                              hintText:
+                                  'password must contain Upper case and lowercase',
+                              hintStyle: const TextStyle(
+                                  fontSize: 12, color: Colors.red),
                               labelText: 'Pasword',
                               labelStyle: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.grey),
                               enabledBorder: const UnderlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: Colors.redAccent,
+                                  color: Colors.grey,
                                 ),
                               ),
                             ),
                             validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter Pasword*';
+                              bool passValid =
+                                  RegExp("^(?=.*[A-Z])(?=.*[a-z]).*")
+                                      .hasMatch(value!);
+                              if (value.isEmpty || !passValid) {
+                                return 'Please enter Valid Pasword*';
                               }
                               if (value.length < 6) {
                                 return 'Pasword Must be more than 5 charater*';
@@ -130,11 +159,20 @@ class _SignupPageState extends State<SignupPage> {
                           TextFormField(
                             obscureText: _isObscureConfirmPassword,
                             controller: _confirmPasswordField,
+                            cursorColor: Colors.black54,
                             decoration: InputDecoration(
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: AppColor.gradientFirst,
+                                ),
+                              ),
                               suffixIcon: IconButton(
-                                  icon: Icon(_isObscureConfirmPassword
-                                      ? Icons.visibility
-                                      : Icons.visibility_off),
+                                  icon: Icon(
+                                    _isObscureConfirmPassword
+                                        ? Icons.visibility
+                                        : Icons.visibility_off,
+                                    color: Colors.grey,
+                                  ),
                                   onPressed: () {
                                     setState(() {
                                       _isObscureConfirmPassword =
@@ -147,7 +185,7 @@ class _SignupPageState extends State<SignupPage> {
                                   color: Colors.grey),
                               enabledBorder: const UnderlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: Colors.redAccent,
+                                  color: Colors.grey,
                                 ),
                               ),
                             ),
@@ -197,7 +235,6 @@ class _SignupPageState extends State<SignupPage> {
                                   },
                                 );
                                 if (res.statusCode == 200) {
-                                  //setState(() {});
                                   _formkey.currentState!.reset();
                                   ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
@@ -206,14 +243,36 @@ class _SignupPageState extends State<SignupPage> {
                                   Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (_) => const Login()));
+                                          builder: (_) =>
+                                              const BottomNavigationBarPage()));
                                 } else {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      backgroundColor: Colors.red,
-                                      content:
-                                          Text("Wrong email or password !"),
-                                    ),
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: Center(
+                                          child: Text(
+                                            "Error !",
+                                            style: TextStyle(
+                                                color: AppColor.gradientFirst),
+                                          ),
+                                        ),
+                                        content: const Text(
+                                          'Email already in Use change email and try Again.',
+                                        ),
+                                        actions: [
+                                          ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                                primary:
+                                                    AppColor.gradientFirst),
+                                            child: const Text("Ok"),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          )
+                                        ],
+                                      );
+                                    },
                                   );
                                 }
                               }

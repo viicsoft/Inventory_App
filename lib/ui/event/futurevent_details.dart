@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
-import 'package:viicsoft_inventory_app/models/futureevent.dart';
-import 'package:viicsoft_inventory_app/models/pastevent.dart';
+import 'package:viicsoft_inventory_app/models/events.dart';
 
-class FutureEventDetailPage extends StatefulWidget {
-  EventsFuture futureEvent;
-  FutureEventDetailPage(
-      {Key? key, required this.futureEvent,})
-      : super(key: key);
+class AllEventDetailPage extends StatefulWidget {
+  Event futureEvent;
+  AllEventDetailPage({
+    Key? key,
+    required this.futureEvent,
+  }) : super(key: key);
 
   @override
-  State<FutureEventDetailPage> createState() => _FutureEventDetailPageState();
+  State<AllEventDetailPage> createState() => _AllEventDetailPageState();
 }
 
-class _FutureEventDetailPageState extends State<FutureEventDetailPage> {
+class _AllEventDetailPageState extends State<AllEventDetailPage> {
   //XFile? _itemimage;
   @override
   void initState() {
@@ -77,18 +77,18 @@ class _FutureEventDetailPageState extends State<FutureEventDetailPage> {
                       children: [
                         Container(
                           margin: const EdgeInsets.only(right: 30, left: 30),
-                          width: MediaQuery.of(context).size.width*0.5,
+                          width: MediaQuery.of(context).size.width * 0.5,
                           height: screenSize * 0.21,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(30),
                             image: DecorationImage(
-                              image: NetworkImage(
-                                  widget.futureEvent.eventImage),
+                              image:
+                                  NetworkImage(widget.futureEvent.eventImage),
                               fit: BoxFit.fill,
                             ),
                           ),
                         ),
-                         SizedBox(height: screenSize* 0.08),
+                        SizedBox(height: screenSize * 0.08),
                         Row(
                           children: [
                             Text(
@@ -109,7 +109,7 @@ class _FutureEventDetailPageState extends State<FutureEventDetailPage> {
                             )
                           ],
                         ),
-                        SizedBox(height: screenSize*0.06),
+                        SizedBox(height: screenSize * 0.06),
                         Row(
                           children: [
                             Text(
@@ -130,7 +130,7 @@ class _FutureEventDetailPageState extends State<FutureEventDetailPage> {
                             ),
                           ],
                         ),
-                        SizedBox(height: screenSize*0.06),
+                        SizedBox(height: screenSize * 0.06),
                         Row(
                           children: [
                             Text(
@@ -151,7 +151,7 @@ class _FutureEventDetailPageState extends State<FutureEventDetailPage> {
                             ),
                           ],
                         ),
-                        SizedBox(height: screenSize*0.06),
+                        SizedBox(height: screenSize * 0.06),
                         Row(
                           children: [
                             Text(
@@ -172,7 +172,7 @@ class _FutureEventDetailPageState extends State<FutureEventDetailPage> {
                             )
                           ],
                         ),
-                        SizedBox(height: screenSize*0.06),
+                        SizedBox(height: screenSize * 0.06),
                         Row(
                           children: [
                             Text(
@@ -184,7 +184,7 @@ class _FutureEventDetailPageState extends State<FutureEventDetailPage> {
                               ),
                             ),
                             Expanded(child: Container()),
-                        Text(
+                            Text(
                               widget.futureEvent.eventLocation,
                               style: const TextStyle(
                                 fontSize: 14,
@@ -193,12 +193,20 @@ class _FutureEventDetailPageState extends State<FutureEventDetailPage> {
                             ),
                           ],
                         ),
-                        SizedBox(height: screenSize*0.06),
+                        SizedBox(height: screenSize * 0.06),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.arrow_circle_left, color: AppColor.gradientFirst),
-                            TextButton(onPressed: ()=>Navigator.pop(context), child:  Text('Back', style: TextStyle(fontSize: 20, color: AppColor.gradientFirst),)),
+                            Icon(Icons.arrow_circle_left,
+                                color: AppColor.gradientFirst),
+                            TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: Text(
+                                  'Back',
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      color: AppColor.gradientFirst),
+                                )),
                           ],
                         )
                       ],
@@ -211,5 +219,5 @@ class _FutureEventDetailPageState extends State<FutureEventDetailPage> {
         ],
       ),
     );
-  } 
+  }
 }

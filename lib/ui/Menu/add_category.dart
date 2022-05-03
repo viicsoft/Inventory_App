@@ -33,7 +33,7 @@ class _AddCategoryState extends State<AddCategory> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        padding: const EdgeInsets.only(top: 70),
+        padding: const EdgeInsets.only(top: 50),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
@@ -45,10 +45,25 @@ class _AddCategoryState extends State<AddCategory> {
           ),
         ),
         child: Column(children: [
-          Text(
-            'Create New Category',
-            style: TextStyle(
-                fontSize: 25, color: AppColor.homePageContainerTextBig),
+          Row(
+            children: [
+              IconButton(
+                padding: const EdgeInsets.only(left: 20),
+                onPressed: () => Navigator.pop(context),
+                icon: const Icon(
+                  Icons.arrow_back_ios,
+                  size: 30,
+                  color: Colors.white,
+                ),
+              ),
+              Expanded(child: Container()),
+              Text(
+                'Create New Category',
+                style: TextStyle(
+                    fontSize: 25, color: AppColor.homePageContainerTextBig),
+              ),
+              Expanded(child: Container()),
+            ],
           ),
           const SizedBox(height: 10),
           Expanded(
@@ -83,7 +98,6 @@ class _AddCategoryState extends State<AddCategory> {
                           validator: (input) =>
                               (input!.isEmpty) ? "Add Category Name" : null,
                           decoration: const InputDecoration(
-                            //border: OutlineInputBorder(),
                             labelText: 'Category name',
                           ),
                         ),
@@ -165,7 +179,12 @@ class _AddCategoryState extends State<AddCategory> {
                 onTap: () => showDialog<String>(
                   context: context,
                   builder: (BuildContext context) => AlertDialog(
-                    title: const Text('Select Image'),
+                    title: Text(
+                      'Select Image',
+                      style: TextStyle(
+                        color: AppColor.homePageSubtitle,
+                      ),
+                    ),
                     content: const Text(
                         'Select image from device gallery or use device camera'),
                     actions: <Widget>[
@@ -174,14 +193,24 @@ class _AddCategoryState extends State<AddCategory> {
                           getImage(ImageSource.camera);
                           Navigator.pop(context);
                         },
-                        child: const Text('Camera'),
+                        child: Text(
+                          'Camera',
+                          style: TextStyle(
+                            color: AppColor.gradientFirst,
+                          ),
+                        ),
                       ),
                       TextButton(
                         onPressed: () {
                           getImage(ImageSource.gallery);
                           Navigator.pop(context);
                         },
-                        child: const Text('Gallery'),
+                        child: Text(
+                          'Gallery',
+                          style: TextStyle(
+                            color: AppColor.gradientFirst,
+                          ),
+                        ),
                       ),
                     ],
                   ),

@@ -13,6 +13,7 @@ import 'package:viicsoft_inventory_app/services/apis/equipment_checkout_api.dart
 import 'package:viicsoft_inventory_app/ui/Menu/user_profile/profile_page.dart';
 import 'package:viicsoft_inventory_app/ui/event/checkin_equipment.dart';
 import 'package:viicsoft_inventory_app/ui/event/checkout_equipment.dart';
+import 'package:viicsoft_inventory_app/ui/store/avialable_Equipment.dart';
 import 'package:viicsoft_inventory_app/ui/store/bad_equipment.dart';
 import 'package:viicsoft_inventory_app/ui/store/equipment_not_avialable.dart';
 import 'package:viicsoft_inventory_app/ui/store/fair_equipment.dart';
@@ -230,43 +231,52 @@ class _HomePageState extends State<HomePage> {
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          color: Colors.white,
-                                        ),
-                                        padding: const EdgeInsets.all(5),
-                                        height: 30,
-                                        child: Center(
-                                          child: FutureBuilder<
-                                                  List<EquipmentsAvailable>>(
-                                              future: _equipmentApi
-                                                  .fetchAvialableEquipments(),
-                                              builder: (context, snapshot) {
-                                                if (snapshot.connectionState ==
-                                                    ConnectionState.done) {
-                                                  if (snapshot.hasData) {
-                                                    var aviableEquipment =
-                                                        snapshot.data!;
-                                                    return Text(
-                                                      aviableEquipment.length
-                                                          .toString(),
-                                                      style: const TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 16,
-                                                          color: Colors.black),
-                                                    );
+                                      InkWell(
+                                        onTap: () => Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (_) =>
+                                                    const AvialableEquipmentPage())),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            color: Colors.white,
+                                          ),
+                                          padding: const EdgeInsets.all(5),
+                                          height: 30,
+                                          child: Center(
+                                            child: FutureBuilder<
+                                                    List<EquipmentsAvailable>>(
+                                                future: _equipmentApi
+                                                    .fetchAvialableEquipments(),
+                                                builder: (context, snapshot) {
+                                                  if (snapshot
+                                                          .connectionState ==
+                                                      ConnectionState.done) {
+                                                    if (snapshot.hasData) {
+                                                      var aviableEquipment =
+                                                          snapshot.data!;
+                                                      return Text(
+                                                        aviableEquipment.length
+                                                            .toString(),
+                                                        style: const TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 16,
+                                                            color:
+                                                                Colors.black),
+                                                      );
+                                                    }
                                                   }
-                                                }
-                                                return Center(
-                                                  child:
-                                                      CircularProgressIndicator(
-                                                          color: AppColor
-                                                              .gradientFirst),
-                                                );
-                                              }),
+                                                  return Center(
+                                                    child:
+                                                        CircularProgressIndicator(
+                                                            color: AppColor
+                                                                .gradientFirst),
+                                                  );
+                                                }),
+                                          ),
                                         ),
                                       ),
                                       const SizedBox(width: 15),

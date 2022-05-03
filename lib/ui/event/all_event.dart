@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
 import 'package:viicsoft_inventory_app/models/events.dart';
 import 'package:viicsoft_inventory_app/services/apis/event_api.dart';
-import 'package:viicsoft_inventory_app/ui/event/events_detail_page.dart';
+import 'package:viicsoft_inventory_app/ui/event/futurevent_details.dart';
 
 class AllEvent extends StatefulWidget {
   const AllEvent({Key? key}) : super(key: key);
@@ -61,10 +61,11 @@ class _AllEventState extends State<AllEvent> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) =>
-                                              EventsDetailPage(
-                                                eventDetail: results[index],
-                                              )),
+                                        builder: (context) =>
+                                            AllEventDetailPage(
+                                          futureEvent: results[index],
+                                        ),
+                                      ),
                                     );
                                   },
                                   child: Container(
@@ -161,12 +162,12 @@ class _AllEventState extends State<AllEvent> {
                                                   Navigator.push(
                                                     context,
                                                     MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            EventsDetailPage(
-                                                              eventDetail:
-                                                                  results[
-                                                                      index],
-                                                            )),
+                                                      builder: (context) =>
+                                                          AllEventDetailPage(
+                                                        futureEvent:
+                                                            results[index],
+                                                      ),
+                                                    ),
                                                   );
                                                 },
                                                 icon: Icon(

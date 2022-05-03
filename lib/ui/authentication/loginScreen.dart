@@ -67,28 +67,35 @@ class _LoginState extends State<Login> {
                       child: Column(
                         children: <Widget>[
                           TextFormField(
+                            cursorColor: Colors.black54,
                             keyboardType: TextInputType.emailAddress,
                             controller: _emailField,
-                            //onSaved: (input) => requestModel.email = input!,
                             validator: (input) =>
                                 !(input?.contains('@') ?? false)
                                     ? "Please enter valid Email"
                                     : null,
-                            decoration: const InputDecoration(
-                              hintText: 'Email',
-                              enabledBorder: UnderlineInputBorder(
+                            decoration: InputDecoration(
+                              focusedBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: Colors.redAccent,
+                                  color: AppColor.gradientFirst,
                                 ),
                               ),
-                              prefixIcon: Icon(
+                              hintText: 'Email',
+                              enabledBorder: const UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              prefixIcon: const Icon(
                                 Icons.email_outlined,
+                                color: Colors.grey,
                               ),
                             ),
                           ),
 
                           SizedBox(height: screensize.height * 0.05),
                           TextFormField(
+                            cursorColor: Colors.black54,
                             obscureText: _isObscure,
                             keyboardType: TextInputType.text,
                             controller: _passwordField,
@@ -97,10 +104,19 @@ class _LoginState extends State<Login> {
                                 ? "Password should be more than 5 characters"
                                 : null,
                             decoration: InputDecoration(
+                              hoverColor: Colors.red,
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: AppColor.gradientFirst,
+                                ),
+                              ),
                               suffixIcon: IconButton(
-                                  icon: Icon(_isObscure
-                                      ? Icons.visibility
-                                      : Icons.visibility_off),
+                                  icon: Icon(
+                                    _isObscure
+                                        ? Icons.visibility
+                                        : Icons.visibility_off,
+                                    color: Colors.grey,
+                                  ),
                                   onPressed: () {
                                     setState(() {
                                       _isObscure = !_isObscure;
@@ -109,11 +125,12 @@ class _LoginState extends State<Login> {
                               hintText: 'Password',
                               enabledBorder: const UnderlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: Colors.redAccent,
+                                  color: Colors.grey,
                                 ),
                               ),
                               prefixIcon: const Icon(
                                 Icons.lock_outline_rounded,
+                                color: Colors.grey,
                               ),
                             ),
                           ),
