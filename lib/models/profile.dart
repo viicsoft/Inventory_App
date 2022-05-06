@@ -1,7 +1,6 @@
 // To parse this JSON data, do
 //
 //     final userProfile = userProfileFromJson(jsonString);
-
 import 'dart:convert';
 
 UserProfile userProfileFromJson(String str) =>
@@ -36,16 +35,56 @@ class UserProfile {
 class Data {
   Data({
     required this.user,
+    required this.group,
   });
 
   ProfileUser user;
+  List<Groups> group;
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
         user: ProfileUser.fromJson(json["user"]),
+        group: List<Groups>.from(json["group"].map((x) => Groups.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
         "user": user.toJson(),
+        "group": List<dynamic>.from(group.map((x) => x.toJson())),
+      };
+}
+
+class Groups {
+  Groups({
+    required this.userId,
+    required this.groupId,
+    required this.id,
+    required this.name,
+    required this.priority,
+    required this.definition,
+  });
+
+  String userId;
+  String groupId;
+  String id;
+  String name;
+  String priority;
+  String definition;
+
+  factory Groups.fromJson(Map<String, dynamic> json) => Groups(
+        userId: json["user_id"],
+        groupId: json["group_id"],
+        id: json["id"],
+        name: json["name"],
+        priority: json["priority"],
+        definition: json["definition"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "user_id": userId,
+        "group_id": groupId,
+        "id": id,
+        "name": name,
+        "priority": priority,
+        "definition": definition,
       };
 }
 
@@ -53,24 +92,24 @@ class ProfileUser {
   ProfileUser({
     required this.id,
     required this.email,
-    required this.oauthUid,
-    required this.oauthProvider,
+    this.oauthUid,
+    this.oauthProvider,
     required this.username,
     required this.fullName,
     required this.avatar,
     required this.banned,
     required this.lastLogin,
-    required this.lastActivity,
+    this.lastActivity,
     required this.dateCreated,
-    required this.forgotExp,
-    required this.rememberTime,
-    required this.rememberExp,
-    required this.verificationCode,
-    required this.topSecret,
+    this.forgotExp,
+    this.rememberTime,
+    this.rememberExp,
+    this.verificationCode,
+    this.topSecret,
     required this.ipAddress,
-    required this.createdBy,
-    required this.updatedBy,
-    required this.updatedAt,
+    this.createdBy,
+    this.updatedBy,
+    this.updatedAt,
     required this.createdAt,
     required this.avatarThumbnail,
   });

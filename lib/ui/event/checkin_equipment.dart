@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
 import 'package:viicsoft_inventory_app/models/equipmentcheckin.dart';
+import 'package:viicsoft_inventory_app/models/profile.dart';
 import 'package:viicsoft_inventory_app/services/apis/equipment_checkin_api.dart';
+import 'package:viicsoft_inventory_app/services/apis/user_api.dart';
 
 // ignore: must_be_immutable
 class CheckInEquipmentPage extends StatefulWidget {
@@ -63,185 +65,213 @@ class _CheckInEquipmentPageState extends State<CheckInEquipmentPage> {
                         itemBuilder: (_, int index) {
                           return Padding(
                             padding: const EdgeInsets.only(right: 5, left: 5),
-                            child: InkWell(
-                              onLongPress: () async => await _confirmDialog(
-                                  context,
-                                  result[index].id,
-                                  result[index].equipment.equipmentName),
-                              child: Container(
-                                height: 98,
-                                padding:
-                                    const EdgeInsets.only(bottom: 2, right: 3),
-                                child: Card(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  elevation: 3,
-                                  shadowColor: AppColor.gradientSecond,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                      top: 3,
-                                      left: 3,
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Column(
-                                              children: [
-                                                Container(
-                                                    decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(3),
-                                                        color: AppColor
-                                                            .homePageSubtitle),
-                                                    padding:
-                                                        const EdgeInsets.all(2),
-                                                    height: 14,
-                                                    child: Center(
-                                                      child: Text(
-                                                        result[index]
-                                                            .equipment
-                                                            .category
-                                                            .name,
-                                                        style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize: 8,
-                                                            color: AppColor
-                                                                .homePageContainerTextBig),
-                                                      ),
-                                                    )),
-                                                const SizedBox(height: 4),
-                                                Container(
-                                                  width: 60,
-                                                  height: 65,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                    image: DecorationImage(
-                                                      image: NetworkImage(
-                                                          result[index]
-                                                              .equipment
-                                                              .equipmentImage),
-                                                      fit: BoxFit.cover,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
+                            child: FutureBuilder<List<Groups>>(
+                              future: UserAPI().fetchUserGroup(),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.done) {
+                                  if (snapshot.hasError) {
+                                    return Center(
+                                        child: CircularProgressIndicator(
+                                      color: AppColor.gradientFirst,
+                                    ));
+                                  } else {
+                                    var userGroup = snapshot.data!;
+                                    for (var i = 0; i < userGroup.length; i++) {
+                                      return InkWell(
+                                        onLongPress: () async => {
+                                          if (userGroup[i].id == '22')
+                                            {
+                                              await _confirmDialog(
+                                                context,
+                                                result[index].id,
+                                                result[index]
+                                                    .equipment
+                                                    .equipmentName,
+                                              ),
+                                            }
+                                        },
+                                        child: Container(
+                                          height: 98,
+                                          padding: const EdgeInsets.only(
+                                              bottom: 2, right: 3),
+                                          child: Card(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
                                             ),
-                                            const SizedBox(width: 15),
-                                            Expanded(
+                                            elevation: 3,
+                                            shadowColor:
+                                                AppColor.gradientSecond,
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                top: 3,
+                                                left: 3,
+                                              ),
                                               child: Column(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
                                                 children: [
-                                                  SizedBox(
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                            .size
-                                                            .width,
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Text(
-                                                          result[index]
-                                                              .equipment
-                                                              .equipmentName,
-                                                          maxLines: 1,
-                                                          style: TextStyle(
-                                                              color: AppColor
-                                                                  .homePageTitle,
-                                                              fontSize: 14,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500),
-                                                        ),
-                                                        const SizedBox(
-                                                            height: 5),
-                                                        Row(
-                                                          children: [
-                                                            Container(
+                                                  Row(
+                                                    children: [
+                                                      Column(
+                                                        children: [
+                                                          Container(
                                                               decoration: BoxDecoration(
                                                                   borderRadius:
                                                                       BorderRadius
                                                                           .circular(
-                                                                              5),
-                                                                  color: colorscondition(result[
-                                                                          index]
-                                                                      .equipment
-                                                                      .equipmentCondition)),
+                                                                              3),
+                                                                  color: AppColor
+                                                                      .homePageSubtitle),
                                                               padding:
                                                                   const EdgeInsets
-                                                                      .all(5),
-                                                              height: 17,
-                                                              child: Text(
-                                                                result[index]
-                                                                    .equipment
-                                                                    .equipmentCondition,
-                                                                style: TextStyle(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                    fontSize: 8,
-                                                                    color: AppColor
-                                                                        .homePageContainerTextBig),
+                                                                      .all(2),
+                                                              height: 14,
+                                                              child: Center(
+                                                                child: Text(
+                                                                  result[index]
+                                                                      .equipment
+                                                                      .category
+                                                                      .name,
+                                                                  style: TextStyle(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      fontSize:
+                                                                          8,
+                                                                      color: AppColor
+                                                                          .homePageContainerTextBig),
+                                                                ),
+                                                              )),
+                                                          const SizedBox(
+                                                              height: 4),
+                                                          Container(
+                                                            width: 60,
+                                                            height: 65,
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10),
+                                                              image:
+                                                                  DecorationImage(
+                                                                image: NetworkImage(
+                                                                    result[index]
+                                                                        .equipment
+                                                                        .equipmentImage),
+                                                                fit: BoxFit
+                                                                    .cover,
                                                               ),
                                                             ),
-                                                            Expanded(
-                                                                child:
-                                                                    Container()),
-                                                            Column(
-                                                              children: [
-                                                                Text(
-                                                                  'CheckIn Date',
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                          12,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w500,
-                                                                      color: AppColor
-                                                                          .homePageSubtitle),
-                                                                ),
-                                                                const SizedBox(
-                                                                    height: 5),
-                                                                Text(
-                                                                  '${result[index].equipmentInDatetime.day}-${result[index].equipmentInDatetime.month}-${result[index].equipmentInDatetime.year}',
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                          12,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w500,
-                                                                      color: AppColor
-                                                                          .gradientFirst),
-                                                                )
-                                                              ],
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      const SizedBox(width: 15),
+                                                      Expanded(
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            SizedBox(
+                                                              width:
+                                                                  MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width,
+                                                              child: Column(
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start,
+                                                                children: [
+                                                                  Text(
+                                                                    result[index]
+                                                                        .equipment
+                                                                        .equipmentName,
+                                                                    maxLines: 1,
+                                                                    style: TextStyle(
+                                                                        color: AppColor
+                                                                            .homePageTitle,
+                                                                        fontSize:
+                                                                            14,
+                                                                        fontWeight:
+                                                                            FontWeight.w500),
+                                                                  ),
+                                                                  const SizedBox(
+                                                                      height:
+                                                                          5),
+                                                                  Row(
+                                                                    children: [
+                                                                      Container(
+                                                                        decoration: BoxDecoration(
+                                                                            borderRadius:
+                                                                                BorderRadius.circular(5),
+                                                                            color: colorscondition(result[index].equipment.equipmentCondition)),
+                                                                        padding:
+                                                                            const EdgeInsets.all(5),
+                                                                        height:
+                                                                            17,
+                                                                        child:
+                                                                            Text(
+                                                                          result[index]
+                                                                              .equipment
+                                                                              .equipmentCondition,
+                                                                          style: TextStyle(
+                                                                              fontWeight: FontWeight.bold,
+                                                                              fontSize: 8,
+                                                                              color: AppColor.homePageContainerTextBig),
+                                                                        ),
+                                                                      ),
+                                                                      Expanded(
+                                                                          child:
+                                                                              Container()),
+                                                                      Column(
+                                                                        children: [
+                                                                          Text(
+                                                                            'CheckIn Date',
+                                                                            style: TextStyle(
+                                                                                fontSize: 12,
+                                                                                fontWeight: FontWeight.w500,
+                                                                                color: AppColor.homePageSubtitle),
+                                                                          ),
+                                                                          const SizedBox(
+                                                                              height: 5),
+                                                                          Text(
+                                                                            '${result[index].equipmentInDatetime.day}-${result[index].equipmentInDatetime.month}-${result[index].equipmentInDatetime.year}',
+                                                                            style: TextStyle(
+                                                                                fontSize: 12,
+                                                                                fontWeight: FontWeight.w500,
+                                                                                color: AppColor.gradientFirst),
+                                                                          )
+                                                                        ],
+                                                                      ),
+                                                                      const SizedBox(
+                                                                        width:
+                                                                            10,
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ],
+                                                              ),
                                                             ),
-                                                            const SizedBox(
-                                                                width: 10),
                                                           ],
                                                         ),
-                                                      ],
-                                                    ),
+                                                      )
+                                                    ],
                                                   ),
                                                 ],
                                               ),
-                                            )
-                                          ],
+                                            ),
+                                          ),
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
+                                      );
+                                    }
+                                  }
+                                }
+                                return Container();
+                              },
                             ),
                           );
                         },

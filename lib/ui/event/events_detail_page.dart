@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
@@ -6,9 +8,11 @@ import 'package:viicsoft_inventory_app/component/colors.dart';
 import 'package:viicsoft_inventory_app/models/eventequipmentchecklist.dart';
 import 'package:viicsoft_inventory_app/models/eventequipmentcheckout.dart';
 import 'package:viicsoft_inventory_app/models/futureevent.dart';
+import 'package:viicsoft_inventory_app/models/profile.dart';
 import 'package:viicsoft_inventory_app/services/apis/equipment_checkin_api.dart';
 import 'package:viicsoft_inventory_app/services/apis/equipment_checklist_api.dart';
 import 'package:viicsoft_inventory_app/services/apis/equipment_checkout_api.dart';
+import 'package:viicsoft_inventory_app/services/apis/user_api.dart';
 import 'package:viicsoft_inventory_app/ui/event/add_eventequipmentpage.dart';
 import 'package:viicsoft_inventory_app/ui/event/update_event.dart';
 
@@ -31,13 +35,6 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
   final RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   List scanedEquipment = [];
-
-  // @override
-  // void initState() {
-  //   //_equipment = _equipmentApi.fetchAllEquipments();
-  //   _eventEquipment = _eventEquipmentAPI.fetchAllEquipmentCheckList();
-  //   super.initState();
-  // }
 
   Future scanInBarcode() async {
     String barcodescanIn;
@@ -77,8 +74,6 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    //var startingdate = DateTime.parse("${widget.eventDetail.checkOutDate}");
-    //var endingdate = DateTime.parse("${widget.eventDetail.checkInDate}");
     return Scaffold(
         key: scaffoldKey,
         backgroundColor: AppColor.homePageBackground,
@@ -104,353 +99,418 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
                     return Container(
                       padding:
                           const EdgeInsets.only(top: 40, right: 10, left: 10),
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              IconButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                icon: const Icon(
-                                  Icons.arrow_back_ios_new,
-                                  size: 25,
+                      child: FutureBuilder<List<Groups>>(
+                        future: UserAPI().fetchUserGroup(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.done) {
+                            if (snapshot.hasError) {
+                              return Center(
+                                child: CircularProgressIndicator(
+                                  color: AppColor.gradientFirst,
                                 ),
-                              ),
-                              Expanded(child: Container()),
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    primary: AppColor.gradientFirst),
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => UpdateEventPage(
-                                        eventDetail: widget.eventDetail,
-                                      ),
-                                    ),
-                                  );
-                                },
-                                child: const Text('Edit'),
-                              ),
-                              const SizedBox(width: 10),
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    primary: AppColor.homePageSubtitle),
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (_) => AddEventEquipmentPage(
-                                                eventId: widget.eventDetail.id,
-                                                eventName: widget
-                                                    .eventDetail.eventName,
-                                              )));
-
-                                  scaffoldKey.currentState!;
-                                },
-                                child: const Text('Add Equipment'),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                          Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: 250,
-                            decoration: BoxDecoration(
-                                color: AppColor.homePageContainerTextBig,
-                                borderRadius: const BorderRadius.only(
-                                  topRight: Radius.circular(80),
-                                  topLeft: Radius.circular(10),
-                                  bottomLeft: Radius.circular(70),
-                                  bottomRight: Radius.circular(10),
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    offset: const Offset(2, 5),
-                                    blurRadius: 4,
-                                    color: AppColor.gradientSecond
-                                        .withOpacity(0.2),
-                                  )
-                                ]),
-                            child: Column(
-                              children: [
-                                Container(
-                                  width: MediaQuery.of(context).size.width * 1,
-                                  height: 125,
-                                  decoration: BoxDecoration(
-                                    borderRadius: const BorderRadius.only(
-                                        topRight: Radius.circular(80),
-                                        topLeft: Radius.circular(10),
-                                        bottomLeft: Radius.circular(10),
-                                        bottomRight: Radius.circular(10)),
-                                    image: DecorationImage(
-                                      image: NetworkImage(
-                                          widget.eventDetail.eventImage),
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  padding: const EdgeInsets.only(
-                                      top: 10, left: 30, right: 10, bottom: 10),
-                                  child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Event Name:   ${widget.eventDetail.eventName}',
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            color: AppColor.homePageSubtitle),
-                                      ),
-                                      const SizedBox(height: 10),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            'Event Type:  ${widget.eventDetail.eventType}',
-                                            style: TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w500,
-                                              color: AppColor.homePageSubtitle,
-                                            ),
+                              );
+                            } else {
+                              var userGroup = snapshot.data!;
+                              for (var i = 0; i < userGroup.length; i++) {
+                                return Column(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        IconButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          icon: const Icon(
+                                            Icons.arrow_back_ios_new,
+                                            size: 25,
                                           ),
-                                          const SizedBox(height: 8),
-                                          Text(
-                                            'Location:  ${widget.eventDetail.eventLocation}',
-                                            style: TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w500,
-                                              color: AppColor.homePageSubtitle,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 8),
-                                          Row(
-                                            children: [
-                                              Center(
-                                                child: Text(
-                                                  'Date:',
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 14,
-                                                    color: AppColor
-                                                        .homePageSubtitle,
-                                                  ),
-                                                ),
-                                              ),
-                                              const SizedBox(width: 10),
-                                              Text(
-                                                '${widget.eventDetail.checkOutDate.day}-${widget.eventDetail.checkOutDate.month}-${widget.eventDetail.checkOutDate.year}',
-                                                style: TextStyle(
-                                                    fontSize: 12,
-                                                    color:
-                                                        AppColor.gradientFirst,
-                                                    fontWeight:
-                                                        FontWeight.w500),
-                                              ),
-                                              const SizedBox(width: 10),
-                                              const Text(
-                                                'To',
-                                                style: TextStyle(
-                                                    fontSize: 12,
+                                        ),
+                                        Expanded(child: Container()),
+                                        userGroup[i].id == '22'
+                                            ? ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                    primary:
+                                                        AppColor.gradientFirst),
+                                                onPressed: () {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (_) =>
+                                                          UpdateEventPage(
+                                                        eventDetail:
+                                                            widget.eventDetail,
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
+                                                child: const Text('Edit'),
+                                              )
+                                            : Text(
+                                                widget.eventDetail.eventName,
+                                                style: const TextStyle(
+                                                    fontSize: 20,
                                                     fontWeight:
                                                         FontWeight.bold),
                                               ),
-                                              const SizedBox(width: 10),
-                                              Text(
-                                                '${widget.eventDetail.checkInDate.day}-${widget.eventDetail.checkInDate.month}-${widget.eventDetail.checkInDate.year}',
-                                                style: TextStyle(
-                                                    fontSize: 12,
-                                                    color:
-                                                        AppColor.gradientFirst,
-                                                    fontWeight:
-                                                        FontWeight.w500),
+                                        Expanded(child: Container()),
+                                        userGroup[i].id == '22'
+                                            ? ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                    primary: AppColor
+                                                        .homePageSubtitle),
+                                                onPressed: () {
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (_) =>
+                                                              AddEventEquipmentPage(
+                                                                eventId: widget
+                                                                    .eventDetail
+                                                                    .id,
+                                                                eventName: widget
+                                                                    .eventDetail
+                                                                    .eventName,
+                                                              )));
+
+                                                  scaffoldKey.currentState!;
+                                                },
+                                                child:
+                                                    const Text('Add Equipment'),
+                                              )
+                                            : Container(),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      height: 250,
+                                      decoration: BoxDecoration(
+                                          color:
+                                              AppColor.homePageContainerTextBig,
+                                          borderRadius: const BorderRadius.only(
+                                            topRight: Radius.circular(80),
+                                            topLeft: Radius.circular(10),
+                                            bottomLeft: Radius.circular(70),
+                                            bottomRight: Radius.circular(10),
+                                          ),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              offset: const Offset(2, 5),
+                                              blurRadius: 4,
+                                              color: AppColor.gradientSecond
+                                                  .withOpacity(0.2),
+                                            )
+                                          ]),
+                                      child: Column(
+                                        children: [
+                                          Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                1,
+                                            height: 125,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  const BorderRadius.only(
+                                                      topRight:
+                                                          Radius.circular(80),
+                                                      topLeft:
+                                                          Radius.circular(10),
+                                                      bottomLeft:
+                                                          Radius.circular(10),
+                                                      bottomRight:
+                                                          Radius.circular(10)),
+                                              image: DecorationImage(
+                                                image: NetworkImage(widget
+                                                    .eventDetail.eventImage),
+                                                fit: BoxFit.cover,
                                               ),
-                                            ],
+                                            ),
+                                          ),
+                                          Container(
+                                            padding: const EdgeInsets.only(
+                                                top: 10,
+                                                left: 30,
+                                                right: 10,
+                                                bottom: 10),
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  'Event Name:   ${widget.eventDetail.eventName}',
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: AppColor
+                                                          .homePageSubtitle),
+                                                ),
+                                                const SizedBox(height: 10),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      'Event Type:  ${widget.eventDetail.eventType}',
+                                                      style: TextStyle(
+                                                        fontSize: 12,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        color: AppColor
+                                                            .homePageSubtitle,
+                                                      ),
+                                                    ),
+                                                    const SizedBox(height: 8),
+                                                    Text(
+                                                      'Location:  ${widget.eventDetail.eventLocation}',
+                                                      style: TextStyle(
+                                                        fontSize: 12,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        color: AppColor
+                                                            .homePageSubtitle,
+                                                      ),
+                                                    ),
+                                                    const SizedBox(height: 8),
+                                                    Row(
+                                                      children: [
+                                                        Center(
+                                                          child: Text(
+                                                            'Date:',
+                                                            style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontSize: 14,
+                                                              color: AppColor
+                                                                  .homePageSubtitle,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        const SizedBox(
+                                                            width: 10),
+                                                        Text(
+                                                          '${widget.eventDetail.checkOutDate.day}-${widget.eventDetail.checkOutDate.month}-${widget.eventDetail.checkOutDate.year}',
+                                                          style: TextStyle(
+                                                              fontSize: 12,
+                                                              color: AppColor
+                                                                  .gradientFirst,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500),
+                                                        ),
+                                                        const SizedBox(
+                                                            width: 10),
+                                                        const Text(
+                                                          'To',
+                                                          style: TextStyle(
+                                                              fontSize: 12,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                        ),
+                                                        const SizedBox(
+                                                            width: 10),
+                                                        Text(
+                                                          '${widget.eventDetail.checkInDate.day}-${widget.eventDetail.checkInDate.month}-${widget.eventDetail.checkInDate.year}',
+                                                          style: TextStyle(
+                                                              fontSize: 12,
+                                                              color: AppColor
+                                                                  .gradientFirst,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                )
+                                              ],
+                                            ),
                                           ),
                                         ],
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'Equipments  Needed',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w500,
-                                  color: AppColor.homePageIcons,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 5),
-                          Expanded(
-                              child: ListView.builder(
-                            itemCount: result.length,
-                            itemBuilder: (_, int index) {
-                              return Container(
-                                  height: 99,
-                                  padding: const EdgeInsets.only(
-                                      bottom: 3, right: 3),
-                                  child:
-                                      FutureBuilder<
-                                              List<EventsEquipmentCheckout>>(
-                                          future: EquipmentCheckOutAPI()
-                                              .fetchAllEquipmentCheckOut(),
-                                          builder: (context, snapshot) {
-                                            if (snapshot.connectionState ==
-                                                ConnectionState.done) {
-                                              var checkoutequipment =
-                                                  snapshot.data;
-                                              var checkOutequipmentid =
-                                                  List<String>.generate(
-                                                      checkoutequipment!.length,
-                                                      (i) =>
-                                                          checkoutequipment[i]
-                                                              .equipmentId);
-                                              return Card(
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                ),
-                                                elevation: 3,
-                                                shadowColor:
-                                                    AppColor.gradientSecond,
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                    top: 3,
-                                                    left: 3,
-                                                  ),
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Row(
-                                                        children: [
-                                                          Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              Column(
-                                                                children: [
-                                                                  Container(
-                                                                      decoration: BoxDecoration(
-                                                                          borderRadius: BorderRadius.circular(
-                                                                              3),
-                                                                          color: AppColor
-                                                                              .homePageSubtitle),
-                                                                      padding:
-                                                                          const EdgeInsets.all(
-                                                                              2),
-                                                                      height:
-                                                                          14,
-                                                                      child:
-                                                                          Center(
-                                                                        child:
-                                                                            Text(
-                                                                          result[index]
-                                                                              .equipment
-                                                                              .category
-                                                                              .name,
-                                                                          style: TextStyle(
-                                                                              fontWeight: FontWeight.bold,
-                                                                              fontSize: 8,
-                                                                              color: AppColor.homePageContainerTextBig),
-                                                                        ),
-                                                                      )),
-                                                                  const SizedBox(
-                                                                      height:
-                                                                          3),
-                                                                  Container(
-                                                                    width: 60,
-                                                                    height: 65,
-                                                                    decoration:
-                                                                        BoxDecoration(
+                                      ),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'Equipments  Needed',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w500,
+                                            color: AppColor.homePageIcons,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 5),
+                                    Expanded(
+                                        child: ListView.builder(
+                                      itemCount: result.length,
+                                      itemBuilder: (_, int index) {
+                                        return Container(
+                                            height: 95,
+                                            padding: const EdgeInsets.only(
+                                                bottom: 3, right: 3),
+                                            child: FutureBuilder<
+                                                    List<
+                                                        EventsEquipmentCheckout>>(
+                                                future: EquipmentCheckOutAPI()
+                                                    .fetchAllEquipmentCheckOut(),
+                                                builder: (context, snapshot) {
+                                                  if (snapshot
+                                                          .connectionState ==
+                                                      ConnectionState.done) {
+                                                    var checkoutequipment =
+                                                        snapshot.data;
+                                                    var checkOutequipmentid = List<
+                                                            String>.generate(
+                                                        checkoutequipment!
+                                                            .length,
+                                                        (i) =>
+                                                            checkoutequipment[i]
+                                                                .equipmentId);
+                                                    return Card(
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                      ),
+                                                      elevation: 3,
+                                                      shadowColor: AppColor
+                                                          .gradientSecond,
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(
+                                                          top: 3,
+                                                          left: 3,
+                                                        ),
+                                                        child: Column(
+                                                          children: [
+                                                            Row(
+                                                              children: [
+                                                                Container(
+                                                                  decoration: BoxDecoration(
                                                                       borderRadius:
                                                                           BorderRadius.circular(
-                                                                              10),
-                                                                      image:
-                                                                          DecorationImage(
-                                                                        image: NetworkImage(result[index]
-                                                                            .equipment
-                                                                            .equipmentImage),
-                                                                        fit: BoxFit
-                                                                            .cover,
-                                                                      ),
+                                                                              3),
+                                                                      color: AppColor
+                                                                          .homePageSubtitle),
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                          .all(2),
+                                                                  height: 14,
+                                                                  child: Center(
+                                                                    child: Text(
+                                                                      result[index]
+                                                                          .equipment
+                                                                          .category
+                                                                          .name,
+                                                                      style: TextStyle(
+                                                                          fontWeight: FontWeight
+                                                                              .bold,
+                                                                          fontSize:
+                                                                              8,
+                                                                          color:
+                                                                              AppColor.homePageContainerTextBig),
                                                                     ),
                                                                   ),
-                                                                ],
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          const SizedBox(
-                                                              width: 15),
-                                                          Expanded(
-                                                            child: Column(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
-                                                              children: [
-                                                                SizedBox(
-                                                                  width: MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .width,
-                                                                  child: Column(
-                                                                    crossAxisAlignment:
-                                                                        CrossAxisAlignment
-                                                                            .start,
-                                                                    children: [
-                                                                      Text(
-                                                                        result[index]
-                                                                            .equipment
-                                                                            .equipmentName,
-                                                                        maxLines:
-                                                                            1,
-                                                                        style: TextStyle(
-                                                                            color: AppColor
-                                                                                .homePageTitle,
-                                                                            fontSize:
-                                                                                13,
-                                                                            fontWeight:
-                                                                                FontWeight.w600),
-                                                                      ),
-                                                                      Row(
-                                                                        children: [
-                                                                          Container(
-                                                                            decoration:
-                                                                                BoxDecoration(borderRadius: BorderRadius.circular(5), color: colorscondition(result[index].equipment.equipmentCondition)),
-                                                                            padding:
-                                                                                const EdgeInsets.all(5),
-                                                                            height:
-                                                                                17,
-                                                                            child:
-                                                                                Text(
-                                                                              result[index].equipment.equipmentCondition,
-                                                                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 8, color: AppColor.homePageContainerTextBig),
+                                                                ),
+                                                                Expanded(
+                                                                    child:
+                                                                        Container()),
+                                                                Text(
+                                                                  result[index]
+                                                                      .equipment
+                                                                      .equipmentName,
+                                                                  maxLines: 1,
+                                                                  style: TextStyle(
+                                                                      color: AppColor
+                                                                          .homePageTitle,
+                                                                      fontSize:
+                                                                          13,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w600),
+                                                                ),
+                                                                Expanded(
+                                                                    child:
+                                                                        Container()),
+                                                              ],
+                                                            ),
+                                                            const SizedBox(
+                                                                height: 3),
+                                                            const SizedBox(
+                                                                width: 15),
+                                                            Expanded(
+                                                              child: SizedBox(
+                                                                width: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width,
+                                                                child: Column(
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .start,
+                                                                  children: [
+                                                                    Row(
+                                                                      children: [
+                                                                        Container(
+                                                                          width:
+                                                                              60,
+                                                                          height:
+                                                                              60,
+                                                                          decoration:
+                                                                              BoxDecoration(
+                                                                            borderRadius:
+                                                                                BorderRadius.circular(10),
+                                                                            image:
+                                                                                DecorationImage(
+                                                                              image: NetworkImage(result[index].equipment.equipmentImage),
+                                                                              fit: BoxFit.cover,
                                                                             ),
                                                                           ),
-                                                                          Expanded(
-                                                                              child: Container()),
-                                                                          InkWell(
-                                                                            onTap:
-                                                                                () async {
+                                                                        ),
+                                                                        const SizedBox(
+                                                                          width:
+                                                                              15,
+                                                                        ),
+                                                                        Container(
+                                                                          decoration: BoxDecoration(
+                                                                              borderRadius: BorderRadius.circular(5),
+                                                                              color: colorscondition(result[index].equipment.equipmentCondition)),
+                                                                          padding:
+                                                                              const EdgeInsets.all(5),
+                                                                          height:
+                                                                              17,
+                                                                          child:
+                                                                              Text(
+                                                                            result[index].equipment.equipmentCondition,
+                                                                            style: TextStyle(
+                                                                                fontWeight: FontWeight.bold,
+                                                                                fontSize: 8,
+                                                                                color: AppColor.homePageContainerTextBig),
+                                                                          ),
+                                                                        ),
+                                                                        Expanded(
+                                                                            child:
+                                                                                Container()),
+                                                                        InkWell(
+                                                                          onTap:
+                                                                              () async {
+                                                                            if (userGroup[i].id ==
+                                                                                '22') {
                                                                               if (checkOutequipmentid.contains(result[index].equipmentId)) {
                                                                                 await _checkIn(result[index].equipment.equipmentBarcode, result[index].equipmentId);
                                                                                 setState(() {});
@@ -458,95 +518,87 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
                                                                                 _checkOut(result[index].equipment.equipmentBarcode, result[index].equipmentId, widget.eventDetail.id);
                                                                                 setState(() {});
                                                                               }
-                                                                            },
-                                                                            child:
-                                                                                Container(
-                                                                              decoration: BoxDecoration(
-                                                                                borderRadius: BorderRadius.circular(5),
-                                                                                color: checkOutequipmentid.contains(result[index].equipmentId) ? Colors.red : Colors.green,
-                                                                                //checkcolors(checkId: result[index].eventId, eventId: checkoutequipment[index].eventId)
-                                                                              ),
-                                                                              padding: const EdgeInsets.all(5),
-                                                                              height: 18,
-                                                                              child: checkOutequipmentid.contains(result[index].equipmentId)
-                                                                                  ? Text(
-                                                                                      'Scan to CheckIn',
-                                                                                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 8, color: AppColor.homePageContainerTextBig),
-                                                                                    )
-                                                                                  : Text(
-                                                                                      'Scan to CheckOut',
-                                                                                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 8, color: AppColor.homePageContainerTextBig),
-                                                                                    ),
+                                                                            }
+                                                                          },
+                                                                          child:
+                                                                              Container(
+                                                                            decoration:
+                                                                                BoxDecoration(
+                                                                              borderRadius: BorderRadius.circular(5),
+                                                                              color: checkOutequipmentid.contains(result[index].equipmentId) ? Colors.red : Colors.green,
+                                                                              //checkcolors(checkId: result[index].eventId, eventId: checkoutequipment[index].eventId)
                                                                             ),
+                                                                            padding:
+                                                                                const EdgeInsets.all(5),
+                                                                            height:
+                                                                                18,
+                                                                            child: checkOutequipmentid.contains(result[index].equipmentId)
+                                                                                ? Text(
+                                                                                    'Scan to CheckIn',
+                                                                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 8, color: AppColor.homePageContainerTextBig),
+                                                                                  )
+                                                                                : Text(
+                                                                                    'Scan to CheckOut',
+                                                                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 8, color: AppColor.homePageContainerTextBig),
+                                                                                  ),
                                                                           ),
-                                                                          Expanded(
-                                                                              child: Container()),
-                                                                          TextButton(
-                                                                            style:
-                                                                                TextButton.styleFrom(primary: AppColor.gradientFirst),
-                                                                            onPressed:
-                                                                                () async {
-                                                                              await _confirmDialog(context, result[index].id, result[index].equipment.equipmentName);
-                                                                            },
+                                                                        ),
+                                                                        Expanded(
                                                                             child:
-                                                                                Icon(Icons.delete, color: AppColor.gradientFirst),
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                    ],
-                                                                  ),
+                                                                                Container()),
+                                                                        userGroup[i].id ==
+                                                                                '22'
+                                                                            ? TextButton(
+                                                                                style: TextButton.styleFrom(primary: AppColor.gradientFirst),
+                                                                                onPressed: () async {
+                                                                                  await _confirmDialog(context, result[index].id, result[index].equipment.equipmentName);
+                                                                                },
+                                                                                child: Icon(
+                                                                                  Icons.delete,
+                                                                                  color: AppColor.gradientFirst,
+                                                                                ),
+                                                                              )
+                                                                            : Container()
+                                                                      ],
+                                                                    ),
+                                                                  ],
                                                                 ),
-                                                                SizedBox(
-                                                                  width: MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .width,
-                                                                  child: Text(
-                                                                    result[index]
-                                                                            .equipment
-                                                                            .equipmentName
-                                                                            .isEmpty
-                                                                        ? 'No description'
-                                                                        : result[index]
-                                                                            .equipment
-                                                                            .equipmentName,
-                                                                    maxLines: 2,
-                                                                    style: const TextStyle(
-                                                                        fontSize:
-                                                                            10,
-                                                                        fontWeight:
-                                                                            FontWeight.w500),
-                                                                  ),
-                                                                ),
-                                                              ],
+                                                              ),
                                                             ),
-                                                          )
-                                                        ],
+                                                          ],
+                                                        ),
                                                       ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              );
-                                            }
-                                            return Center(
-                                              child: CircularProgressIndicator(
-                                                  color:
-                                                      AppColor.gradientFirst),
-                                            );
-                                          }));
-                            },
-                          )
-                              //});
-                              //     } else {
-                              //       return Center(
-                              //         child: CircularProgressIndicator(
-                              //             color: AppColor.gradientFirst),
-                              //       );
-                              //     }
-                              //   },
-                              // ),
-                              ),
-                        ],
+                                                    );
+                                                  }
+                                                  return Center(
+                                                    child:
+                                                        CircularProgressIndicator(
+                                                            color: AppColor
+                                                                .gradientFirst),
+                                                  );
+                                                }));
+                                      },
+                                    )
+                                        //});
+                                        //     } else {
+                                        //       return Center(
+                                        //         child: CircularProgressIndicator(
+                                        //             color: AppColor.gradientFirst),
+                                        //       );
+                                        //     }
+                                        //   },
+                                        // ),
+                                        ),
+                                  ],
+                                );
+                              }
+                            }
+                          }
+                          return Center(
+                            child: CircularProgressIndicator(
+                                color: AppColor.gradientFirst),
+                          );
+                        },
                       ),
                     );
                   }

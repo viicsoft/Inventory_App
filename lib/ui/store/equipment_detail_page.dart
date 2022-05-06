@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
 import 'package:viicsoft_inventory_app/models/equipments.dart';
+import 'package:viicsoft_inventory_app/models/profile.dart';
+import 'package:viicsoft_inventory_app/services/apis/user_api.dart';
 import 'package:viicsoft_inventory_app/ui/store/update_equipment.dart';
 
 class EquipmentDetailPage extends StatefulWidget {
   final EquipmentElement equipmentElement;
-  const EquipmentDetailPage({
-    Key? key,
-    required this.equipmentElement,
-  }) : super(key: key);
+  const EquipmentDetailPage({Key? key, required this.equipmentElement})
+      : super(key: key);
 
   @override
   State<EquipmentDetailPage> createState() => _EquipmentDetailPageState();
@@ -62,7 +62,10 @@ class _EquipmentDetailPageState extends State<EquipmentDetailPage> {
           ),
           Expanded(
             child: Container(
-              padding: const EdgeInsets.only(left: 20, right: 20, top: 30),
+              padding: const EdgeInsets.only(
+                left: 20,
+                right: 20,
+              ),
               width: MediaQuery.of(context).size.width,
               decoration: const BoxDecoration(
                 color: Colors.white,
@@ -89,7 +92,7 @@ class _EquipmentDetailPageState extends State<EquipmentDetailPage> {
                             ),
                           ),
                         ),
-                        SizedBox(height: screenSize * 0.08),
+                        SizedBox(height: screenSize * 0.04),
                         Row(
                           children: [
                             Text(
@@ -218,44 +221,96 @@ class _EquipmentDetailPageState extends State<EquipmentDetailPage> {
                             //labelText: 'Description',
                           ),
                         ),
-                        SizedBox(height: screenSize * 0.1),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  primary: AppColor.gradientFirst),
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (_) => UpdateEquipmentPage(
-                                              barcode: widget.equipmentElement
-                                                  .equipmentBarcode!,
-                                              categoryId: widget
-                                                  .equipmentElement
-                                                  .equipmentCategoryId,
-                                              condition: widget.equipmentElement
-                                                  .equipmentCondition,
-                                              description: widget
-                                                  .equipmentElement
-                                                  .equipmentDescription!,
-                                              equipmentName: widget
-                                                  .equipmentElement
-                                                  .equipmentName,
-                                              image: widget.equipmentElement
-                                                  .equipmentImage,
-                                              size: widget.equipmentElement
-                                                  .equipmentSize,
-                                              id: widget.equipmentElement.id,
-                                            )));
-                              },
-                              child: const Text(
-                                'Edit',
-                                style: TextStyle(fontSize: 16),
-                              ),
-                            ),
-                          ],
+                        SizedBox(height: screenSize * 0.08),
+                        FutureBuilder<List<Groups>>(
+                          future: UserAPI().fetchUserGroup(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.done) {
+                              if (snapshot.hasError) {
+                                return Center(
+                                  child: CircularProgressIndicator(
+                                    color: AppColor.gradientFirst,
+                                  ),
+                                );
+                              } else {
+                                var userGroup = snapshot.data!;
+                                for (var i = 0; i < userGroup.length; i++) {
+                                  return Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
+                                    children: [
+                                      userGroup[i].id == '22'
+                                          ? ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                  primary:
+                                                      AppColor.gradientFirst),
+                                              onPressed: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (_) =>
+                                                        UpdateEquipmentPage(
+                                                      barcode: widget
+                                                          .equipmentElement
+                                                          .equipmentBarcode!,
+                                                      categoryId: widget
+                                                          .equipmentElement
+                                                          .equipmentCategoryId,
+                                                      condition: widget
+                                                          .equipmentElement
+                                                          .equipmentCondition,
+                                                      description: widget
+                                                          .equipmentElement
+                                                          .equipmentDescription!,
+                                                      equipmentName: widget
+                                                          .equipmentElement
+                                                          .equipmentName,
+                                                      image: widget
+                                                          .equipmentElement
+                                                          .equipmentImage,
+                                                      size: widget
+                                                          .equipmentElement
+                                                          .equipmentSize,
+                                                      id: widget
+                                                          .equipmentElement.id,
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                              child: const Text(
+                                                'Edit',
+                                                style: TextStyle(fontSize: 16),
+                                              ),
+                                            )
+                                          : Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Icon(Icons.arrow_circle_left,
+                                                    color:
+                                                        AppColor.gradientFirst),
+                                                TextButton(
+                                                  onPressed: () =>
+                                                      Navigator.pop(context),
+                                                  child: Text(
+                                                    'Back',
+                                                    style: TextStyle(
+                                                      fontSize: 20,
+                                                      color: AppColor
+                                                          .gradientFirst,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                    ],
+                                  );
+                                }
+                              }
+                            }
+                            return Container();
+                          },
                         ),
                       ],
                     ),

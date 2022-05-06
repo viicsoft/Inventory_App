@@ -10,6 +10,7 @@ import 'package:viicsoft_inventory_app/models/eventequipmentcheckout.dart';
 import 'package:viicsoft_inventory_app/services/apis/equipment_api.dart';
 import 'package:viicsoft_inventory_app/services/apis/equipment_checkin_api.dart';
 import 'package:viicsoft_inventory_app/services/apis/equipment_checkout_api.dart';
+import 'package:viicsoft_inventory_app/services/notification.dart';
 import 'package:viicsoft_inventory_app/ui/Menu/user_profile/profile_page.dart';
 import 'package:viicsoft_inventory_app/ui/event/checkin_equipment.dart';
 import 'package:viicsoft_inventory_app/ui/event/checkout_equipment.dart';
@@ -194,11 +195,29 @@ class _HomePageState extends State<HomePage> {
                                               color: Colors.white,
                                               thickness: 2)),
                                       InkWell(
-                                        onTap: () => Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (_) =>
-                                                    const BadEquipmentPage())),
+                                        onTap: () => {
+                                          if (badResult.length > 1)
+                                            {
+                                              notification(),
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (_) =>
+                                                      const BadEquipmentPage(),
+                                                ),
+                                              ),
+                                            }
+                                          else
+                                            {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (_) =>
+                                                      const BadEquipmentPage(),
+                                                ),
+                                              ),
+                                            }
+                                        },
                                         child: equipmentCondition(
                                             qauntity: badResult.isEmpty
                                                 ? '0'

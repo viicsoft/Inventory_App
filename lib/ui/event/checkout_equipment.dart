@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
 import 'package:viicsoft_inventory_app/models/eventequipmentcheckout.dart';
 import 'package:viicsoft_inventory_app/models/events.dart';
+import 'package:viicsoft_inventory_app/models/profile.dart';
 import 'package:viicsoft_inventory_app/services/apis/equipment_checkout_api.dart';
 import 'package:viicsoft_inventory_app/services/apis/event_api.dart';
+import 'package:viicsoft_inventory_app/services/apis/user_api.dart';
 
 // ignore: must_be_immutable
 class CheckOutEquipmentPage extends StatefulWidget {
@@ -396,13 +398,35 @@ class _CheckOutEquipmentPageState extends State<CheckOutEquipmentPage> {
                                                                                       ),
                                                                                     ),
                                                                                     Expanded(child: Container()),
-                                                                                    IconButton(
-                                                                                        onPressed: () async => await _confirmDialog(context, result[index].id, result[index].equipment.equipmentName),
-                                                                                        icon: const Icon(
-                                                                                          Icons.delete,
-                                                                                          color: Colors.red,
-                                                                                          size: 20,
-                                                                                        )),
+                                                                                    FutureBuilder<List<Groups>>(
+                                                                                      future: UserAPI().fetchUserGroup(),
+                                                                                      builder: (context, snapshot) {
+                                                                                        if (snapshot.connectionState == ConnectionState.done) {
+                                                                                          if (snapshot.hasError) {
+                                                                                            return Center(
+                                                                                              child: CircularProgressIndicator(
+                                                                                                color: AppColor.gradientFirst,
+                                                                                              ),
+                                                                                            );
+                                                                                          } else {
+                                                                                            var userGroup = snapshot.data!;
+                                                                                            for (var i = 0; i < userGroup.length; i++) {
+                                                                                              return userGroup[0].id == '22'
+                                                                                                  ? IconButton(
+                                                                                                      onPressed: () async => await _confirmDialog(context, result[index].id, result[index].equipment.equipmentName),
+                                                                                                      icon: const Icon(
+                                                                                                        Icons.delete,
+                                                                                                        color: Colors.red,
+                                                                                                        size: 20,
+                                                                                                      ),
+                                                                                                    )
+                                                                                                  : Container();
+                                                                                            }
+                                                                                          }
+                                                                                        }
+                                                                                        return Container();
+                                                                                      },
+                                                                                    ),
                                                                                   ],
                                                                                 ),
                                                                               ],

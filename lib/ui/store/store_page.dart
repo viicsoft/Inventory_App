@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
 import 'package:viicsoft_inventory_app/models/category.dart';
+import 'package:viicsoft_inventory_app/models/profile.dart';
+import 'package:viicsoft_inventory_app/models/users.dart';
 import 'package:viicsoft_inventory_app/services/apis/category_api.dart';
+import 'package:viicsoft_inventory_app/services/apis/user_api.dart';
 import 'package:viicsoft_inventory_app/ui/store/equipment_page.dart';
 
 class StorePage extends StatefulWidget {
@@ -92,104 +95,159 @@ class _StorePageState extends State<StorePage> {
                                 context,
                                 index,
                               ) {
-                                return InkWell(
-                                  hoverColor: Colors.black,
-                                  onLongPress: () async {
-                                    await _confirmDialog(context,
-                                        results[index].id, results[index].name);
-                                    setState(() {});
-                                  },
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => EquipmentPage(
-                                            equipmentCategory: results[index],
-                                            categoryId: results[index].id),
-                                      ),
-                                    );
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(2.0),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        boxShadow: const <BoxShadow>[
-                                          BoxShadow(
-                                            color: Colors.black,
-                                            blurRadius: 2.0,
-                                          )
-                                        ],
-                                        gradient: LinearGradient(
-                                          colors: [
-                                            AppColor.gradientFirst,
-                                            AppColor.homePageTitle,
-                                          ],
-                                          begin: Alignment.bottomLeft,
-                                          end: Alignment.centerRight,
-                                        ),
-                                        borderRadius: BorderRadius.circular(15),
-                                      ),
-                                      width: MediaQuery.of(context).size.width,
-                                      child: Column(
-                                        children: [
-                                          Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                2,
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                7,
-                                            padding: const EdgeInsets.only(
-                                                bottom: 5),
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius:
-                                                  BorderRadius.circular(15),
-                                              image: DecorationImage(
-                                                  image: NetworkImage(
-                                                      results[index].image),
-                                                  fit: BoxFit.fill),
+                                return FutureBuilder<List<Groups>>(
+                                    future: UserAPI().fetchUserGroup(),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.done) {
+                                        if (snapshot.hasError) {
+                                          return Center(
+                                            child: CircularProgressIndicator(
+                                              color: AppColor.gradientFirst,
                                             ),
-                                          ),
-                                          Expanded(child: Container()),
-                                          SizedBox(
-                                            child: Center(
-                                              child: Align(
-                                                alignment: Alignment.center,
+                                          );
+                                        } else {
+                                          var userGroup = snapshot.data!;
+                                          for (var i = 0;
+                                              i < userGroup.length;
+                                              i++) {
+                                            return InkWell(
+                                              hoverColor: Colors.black,
+                                              onLongPress: () async {
+                                                if (userGroup[i].id == '22') {
+                                                  await _confirmDialog(
+                                                      context,
+                                                      results[index].id,
+                                                      results[index].name);
+                                                  setState(() {});
+                                                }
+                                              },
+                                              onTap: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        EquipmentPage(
+                                                            equipmentCategory:
+                                                                results[index],
+                                                            categoryId:
+                                                                results[index]
+                                                                    .id),
+                                                  ),
+                                                );
+                                              },
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(2.0),
                                                 child: Container(
                                                   decoration: BoxDecoration(
+                                                    boxShadow: const <
+                                                        BoxShadow>[
+                                                      BoxShadow(
+                                                        color: Colors.black,
+                                                        blurRadius: 2.0,
+                                                      )
+                                                    ],
+                                                    gradient: LinearGradient(
+                                                      colors: [
+                                                        AppColor.gradientFirst,
+                                                        AppColor.homePageTitle,
+                                                      ],
+                                                      begin:
+                                                          Alignment.bottomLeft,
+                                                      end:
+                                                          Alignment.centerRight,
+                                                    ),
                                                     borderRadius:
                                                         BorderRadius.circular(
-                                                            10),
+                                                            15),
                                                   ),
                                                   width: MediaQuery.of(context)
                                                       .size
                                                       .width,
-                                                  child: Center(
-                                                    child: Text(
-                                                      results[index].name,
-                                                      //'camera',
-                                                      style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 12,
-                                                        color: AppColor
-                                                            .homePageContainerTextBig,
+                                                  child: Column(
+                                                    children: [
+                                                      Container(
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width /
+                                                            2,
+                                                        height: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width /
+                                                            7,
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .only(
+                                                                bottom: 5),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: Colors.white,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(15),
+                                                          image: DecorationImage(
+                                                              image: NetworkImage(
+                                                                  results[index]
+                                                                      .image),
+                                                              fit: BoxFit.fill),
+                                                        ),
                                                       ),
-                                                    ),
+                                                      Expanded(
+                                                          child: Container()),
+                                                      SizedBox(
+                                                        child: Center(
+                                                          child: Align(
+                                                            alignment: Alignment
+                                                                .center,
+                                                            child: Container(
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            10),
+                                                              ),
+                                                              width:
+                                                                  MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width,
+                                                              child: Center(
+                                                                child: Text(
+                                                                  results[index]
+                                                                      .name,
+                                                                  //'camera',
+                                                                  style:
+                                                                      TextStyle(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    fontSize:
+                                                                        12,
+                                                                    color: AppColor
+                                                                        .homePageContainerTextBig,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Expanded(
+                                                          child: Container()),
+                                                    ],
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                          ),
-                                          Expanded(child: Container()),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                );
+                                            );
+                                          }
+                                        }
+                                      }
+                                      return Container();
+                                    });
                               },
                             );
                           } else {

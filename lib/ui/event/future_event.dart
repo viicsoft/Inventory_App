@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
 import 'package:viicsoft_inventory_app/models/futureevent.dart';
 import 'package:viicsoft_inventory_app/services/apis/event_api.dart';
-import 'package:viicsoft_inventory_app/ui/event/futurevent_details.dart';
 import 'package:viicsoft_inventory_app/ui/event/events_detail_page.dart';
 
 class FutureEvent extends StatefulWidget {
@@ -55,10 +54,10 @@ class _FutureEventState extends State<FutureEvent> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) =>
-                                              EventsDetailPage(
-                                                eventDetail: results[index],
-                                              )),
+                                        builder: (context) => EventsDetailPage(
+                                          eventDetail: results[index],
+                                        ),
+                                      ),
                                     );
                                   },
                                   child: Container(

@@ -64,6 +64,26 @@ class UserAPI extends BaseAPI {
     }
   }
 
+  Future<List<Groups>> fetchUserGroup() async {
+    final String token = await SharedPrefrence().getToken();
+    final response = await http.get(Uri.parse(super.profileUserPath), headers: {
+      "X-Api-Key": "632F2EC9771B6C4C0BDF30BE21D9009B",
+      "Content-Type": "application/json",
+      'Accept': 'application/json',
+      'x-token': token,
+    });
+    if (response.statusCode == 200) {
+      final _data = jsonDecode(response.body);
+      final List<Groups> userGroup = _data['data']['group']
+          .map<Groups>(
+              (model) => Groups.fromJson(model as Map<String, dynamic>))
+          .toList();
+      return userGroup;
+    } else {
+      throw Exception('Failed to load User group');
+    }
+  }
+
   Future<http.StreamedResponse> updateUserProfile(String email, String password,
       String id, XFile avatar, String fullname) async {
     final String token = await SharedPrefrence().getToken();

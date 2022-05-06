@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
 import 'package:viicsoft_inventory_app/models/events.dart';
+import 'package:viicsoft_inventory_app/models/profile.dart';
 import 'package:viicsoft_inventory_app/services/apis/event_api.dart';
-import 'package:viicsoft_inventory_app/ui/event/futurevent_details.dart';
+import 'package:viicsoft_inventory_app/services/apis/user_api.dart';
+import 'package:viicsoft_inventory_app/ui/event/allevent_details.dart';
 
 class AllEvent extends StatefulWidget {
   const AllEvent({Key? key}) : super(key: key);
@@ -49,138 +51,187 @@ class _AllEventState extends State<AllEvent> {
                                     "${results[index].checkOutDate}");
                                 var endingdate = DateTime.parse(
                                     "${results[index].checkInDate}");
-                                return InkWell(
-                                  onLongPress: () async {
-                                    await _confirmDialog(
-                                        context,
-                                        results[index].id,
-                                        results[index].eventName);
-                                    setState(() {});
-                                  },
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            AllEventDetailPage(
-                                          futureEvent: results[index],
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  child: Container(
-                                    height: 100,
-                                    padding: const EdgeInsets.only(bottom: 10),
-                                    child: Card(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      elevation: 3,
-                                      shadowColor: AppColor.gradientSecond,
-                                      child: Column(
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Container(
-                                                width: 80,
-                                                height: 80,
-                                                decoration: BoxDecoration(
+                                return FutureBuilder<List<Groups>>(
+                                  future: UserAPI().fetchUserGroup(),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.done) {
+                                      if (snapshot.hasError) {
+                                        return Center(
+                                          child: CircularProgressIndicator(
+                                            color: AppColor.gradientFirst,
+                                          ),
+                                        );
+                                      } else {
+                                        var userGroup = snapshot.data!;
+                                        for (var i = 0;
+                                            i < userGroup.length;
+                                            i++) {
+                                          return InkWell(
+                                            onLongPress: () async {
+                                              if (userGroup[i].id == '22') {
+                                                await _confirmDialog(
+                                                    context,
+                                                    results[index].id,
+                                                    results[index].eventName);
+                                                setState(() {});
+                                              }
+                                            },
+                                            onTap: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      AllEventDetailPage(
+                                                    futureEvent: results[index],
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                            child: Container(
+                                              height: 100,
+                                              padding: const EdgeInsets.only(
+                                                  bottom: 10),
+                                              child: Card(
+                                                shape: RoundedRectangleBorder(
                                                   borderRadius:
                                                       BorderRadius.circular(10),
-                                                  image: DecorationImage(
-                                                    image: NetworkImage(
-                                                        results[index]
-                                                            .eventImage),
-                                                    fit: BoxFit.cover,
-                                                  ),
                                                 ),
-                                              ),
-                                              const SizedBox(width: 20),
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    results[index]
-                                                        .eventName
-                                                        .toString(),
-                                                    style: TextStyle(
-                                                        color: AppColor
-                                                            .homePageSubtitle,
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.w500),
-                                                  ),
-                                                  const SizedBox(height: 10),
-                                                  Text(
-                                                    'Location: ${results[index].eventLocation.toString()}',
-                                                    style: const TextStyle(
-                                                        fontSize: 11,
-                                                        fontWeight:
-                                                            FontWeight.w500),
-                                                  ),
-                                                  const SizedBox(height: 10),
-                                                  Row(
-                                                    children: [
-                                                      Text(
-                                                        '${startingdate.day}-${startingdate.month}-${startingdate.year}',
-                                                        style: TextStyle(
-                                                            fontSize: 12,
-                                                            color: Colors
-                                                                .grey[500],
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w500),
-                                                      ),
-                                                      const SizedBox(width: 10),
-                                                      const Text(
-                                                        'To',
-                                                        style: TextStyle(
-                                                            fontSize: 12,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w500),
-                                                      ),
-                                                      const SizedBox(width: 10),
-                                                      Text(
-                                                        '${endingdate.day}-${endingdate.month}-${endingdate.year}',
-                                                        style: TextStyle(
-                                                            fontSize: 12,
-                                                            color: Colors
-                                                                .grey[500],
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w500),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                              Expanded(child: Container()),
-                                              IconButton(
-                                                onPressed: () {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          AllEventDetailPage(
-                                                        futureEvent:
-                                                            results[index],
-                                                      ),
+                                                elevation: 3,
+                                                shadowColor:
+                                                    AppColor.gradientSecond,
+                                                child: Column(
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        Container(
+                                                          width: 80,
+                                                          height: 80,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10),
+                                                            image:
+                                                                DecorationImage(
+                                                              image: NetworkImage(
+                                                                  results[index]
+                                                                      .eventImage),
+                                                              fit: BoxFit.cover,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        const SizedBox(
+                                                            width: 20),
+                                                        Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Text(
+                                                              results[index]
+                                                                  .eventName
+                                                                  .toString(),
+                                                              style: TextStyle(
+                                                                  color: AppColor
+                                                                      .homePageSubtitle,
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500),
+                                                            ),
+                                                            const SizedBox(
+                                                                height: 10),
+                                                            Text(
+                                                              'Location: ${results[index].eventLocation.toString()}',
+                                                              style: const TextStyle(
+                                                                  fontSize: 11,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500),
+                                                            ),
+                                                            const SizedBox(
+                                                                height: 10),
+                                                            Row(
+                                                              children: [
+                                                                Text(
+                                                                  '${startingdate.day}-${startingdate.month}-${startingdate.year}',
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          12,
+                                                                      color: Colors
+                                                                              .grey[
+                                                                          500],
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500),
+                                                                ),
+                                                                const SizedBox(
+                                                                    width: 10),
+                                                                const Text(
+                                                                  'To',
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          12,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500),
+                                                                ),
+                                                                const SizedBox(
+                                                                    width: 10),
+                                                                Text(
+                                                                  '${endingdate.day}-${endingdate.month}-${endingdate.year}',
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          12,
+                                                                      color: Colors
+                                                                              .grey[
+                                                                          500],
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        Expanded(
+                                                            child: Container()),
+                                                        IconButton(
+                                                          onPressed: () {
+                                                            Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        AllEventDetailPage(
+                                                                  futureEvent:
+                                                                      results[
+                                                                          index],
+                                                                ),
+                                                              ),
+                                                            );
+                                                          },
+                                                          icon: Icon(
+                                                            Icons
+                                                                .arrow_forward_ios,
+                                                            color: AppColor
+                                                                .gradientFirst,
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
-                                                  );
-                                                },
-                                                icon: Icon(
-                                                  Icons.arrow_forward_ios,
-                                                  color: AppColor.gradientFirst,
+                                                  ],
                                                 ),
                                               ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
+                                            ),
+                                          );
+                                        }
+                                      }
+                                    }
+                                    return Container();
+                                  },
                                 );
                               });
                         } else {

@@ -3,8 +3,8 @@ import 'package:viicsoft_inventory_app/component/colors.dart';
 import 'package:viicsoft_inventory_app/models/events.dart';
 
 class AllEventDetailPage extends StatefulWidget {
-  Event futureEvent;
-  AllEventDetailPage({
+  final Event futureEvent;
+  const AllEventDetailPage({
     Key? key,
     required this.futureEvent,
   }) : super(key: key);

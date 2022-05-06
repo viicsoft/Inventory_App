@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:viicsoft_inventory_app/ui/Menu/add_category.dart';
 import 'package:viicsoft_inventory_app/ui/Menu/add_event_page.dart';
 import 'package:viicsoft_inventory_app/ui/Menu/add_equipment_page.dart';
@@ -28,10 +29,20 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+
   @override
   void initState() {
     super.initState();
     initialization();
+    var initializationSettingsAndriod =
+        const AndroidInitializationSettings('@drawable/app_icon');
+    var initializationSettingsIOS = const IOSInitializationSettings();
+    var initializationSettings = InitializationSettings(
+        android: initializationSettingsAndriod, iOS: initializationSettingsIOS);
+    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: onSelectNotification);
   }
 
   void initialization() async {
@@ -75,6 +86,18 @@ class _MyAppState extends State<MyApp> {
           '/store': (context) => const StorePage(),
         },
       ),
+    );
+  }
+
+  onSelectNotification(String? payload) async {
+    showDialog(
+      context: context,
+      builder: (_) {
+        return AlertDialog(
+          title: const Text("PayLoad"),
+          content: Text("Payload : $payload"),
+        );
+      },
     );
   }
 }

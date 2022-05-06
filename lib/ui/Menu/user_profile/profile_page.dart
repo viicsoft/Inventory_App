@@ -70,30 +70,59 @@ class _ProfilePageState extends State<ProfilePage> {
                           );
                         },
                       ),
-                      ListTile(
-                        leading: const Icon(Icons.group),
-                        title: const Text('All Users'),
-                        onTap: () {
-                          Navigator.pushNamed(context, '/UserList');
+                      FutureBuilder<List<Groups>>(
+                        future: UserAPI().fetchUserGroup(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.done) {
+                            if (snapshot.hasError) {
+                              return Center(
+                                child: CircularProgressIndicator(
+                                  color: AppColor.gradientFirst,
+                                ),
+                              );
+                            } else {
+                              var userGroup = snapshot.data!;
+                              for (var i = 0; i < userGroup.length; i++) {
+                                return userGroup[i].id == '22'
+                                    ? Column(
+                                        children: [
+                                          ListTile(
+                                            leading: const Icon(Icons.group),
+                                            title: const Text('All Users'),
+                                            onTap: () {
+                                              Navigator.pushNamed(
+                                                  context, '/UserList');
+                                            },
+                                          ),
+                                          const Divider(),
+                                          ListTile(
+                                            leading: const Icon(Icons.add),
+                                            title: const Text('Add Category'),
+                                            onTap: () => Navigator.pushNamed(
+                                                context, '/addCategory'),
+                                          ),
+                                          ListTile(
+                                            leading: const Icon(Icons.add),
+                                            title: const Text('Add Equipment'),
+                                            onTap: () => Navigator.pushNamed(
+                                                context, '/addItem'),
+                                          ),
+                                          const Divider(),
+                                          ListTile(
+                                            leading: const Icon(Icons.add),
+                                            title: const Text('Add Event'),
+                                            onTap: () => Navigator.pushNamed(
+                                                context, '/addevent'),
+                                          ),
+                                        ],
+                                      )
+                                    : Container();
+                              }
+                            }
+                          }
+                          return Container();
                         },
-                      ),
-                      const Divider(),
-                      ListTile(
-                        leading: const Icon(Icons.add),
-                        title: const Text('Add Category'),
-                        onTap: () =>
-                            Navigator.pushNamed(context, '/addCategory'),
-                      ),
-                      ListTile(
-                        leading: const Icon(Icons.add),
-                        title: const Text('Add Equipment'),
-                        onTap: () => Navigator.pushNamed(context, '/addItem'),
-                      ),
-                      const Divider(),
-                      ListTile(
-                        leading: const Icon(Icons.add),
-                        title: const Text('Add Event'),
-                        onTap: () => Navigator.pushNamed(context, '/addevent'),
                       ),
                       const Divider(),
                       ListTile(
