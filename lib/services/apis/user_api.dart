@@ -104,7 +104,31 @@ class UserAPI extends BaseAPI {
     request.files.add(pic);
     var response = await request.send();
     var responseData = await response.stream.toBytes();
+    // ignore: unused_local_variable
     var responseString = String.fromCharCodes(responseData);
+    return response;
+  }
+
+  Future<http.StreamedResponse> updateUserPassword(
+    String email,
+    String password,
+    String fullname,
+    String id,
+  ) async {
+    final String token = await SharedPrefrence().getToken();
+    Map<String, String> headers = {
+      "X-Api-Key": "632F2EC9771B6C4C0BDF30BE21D9009B",
+      'x-token': token,
+    };
+    var request =
+        http.MultipartRequest("POST", Uri.parse(super.updateprofileUserPath));
+    //add header in http request
+    request.headers.addAll(headers);
+    request.fields["email"] = email;
+    request.fields["password"] = password;
+    request.fields["full_name"] = fullname;
+    request.fields["id"] = id;
+    var response = await request.send();
     return response;
   }
 }

@@ -146,6 +146,7 @@ class EquipmentAPI extends BaseAPI {
     // var pic = await http.MultipartFile.fromPath("equipment_image", image.path);
     // request.files.add(pic);
     var response = await request.send();
+    // ignore: unused_local_variable
     var responseData = await response.stream.toBytes();
     return response;
   }

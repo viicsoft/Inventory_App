@@ -1,12 +1,15 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
 import 'package:viicsoft_inventory_app/models/pastevent.dart';
 
 class PastEventDetailPage extends StatefulWidget {
   EventsPast pastEvent;
-  PastEventDetailPage(
-      {Key? key, required this.pastEvent,})
-      : super(key: key);
+  PastEventDetailPage({
+    Key? key,
+    required this.pastEvent,
+  }) : super(key: key);
 
   @override
   State<PastEventDetailPage> createState() => _PastEventDetailPageState();
@@ -76,18 +79,17 @@ class _PastEventDetailPageState extends State<PastEventDetailPage> {
                       children: [
                         Container(
                           margin: const EdgeInsets.only(right: 10, left: 10),
-                          width: MediaQuery.of(context).size.width*0.5,
+                          width: MediaQuery.of(context).size.width * 0.5,
                           height: screenSize * 0.21,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(30),
                             image: DecorationImage(
-                              image: NetworkImage(
-                                  widget.pastEvent.eventImage),
+                              image: NetworkImage(widget.pastEvent.eventImage),
                               fit: BoxFit.fill,
                             ),
                           ),
                         ),
-                         SizedBox(height: screenSize* 0.08),
+                        SizedBox(height: screenSize * 0.08),
                         Row(
                           children: [
                             Text(
@@ -108,7 +110,7 @@ class _PastEventDetailPageState extends State<PastEventDetailPage> {
                             )
                           ],
                         ),
-                        SizedBox(height: screenSize*0.06),
+                        SizedBox(height: screenSize * 0.06),
                         Row(
                           children: [
                             Text(
@@ -129,7 +131,7 @@ class _PastEventDetailPageState extends State<PastEventDetailPage> {
                             ),
                           ],
                         ),
-                        SizedBox(height: screenSize*0.06),
+                        SizedBox(height: screenSize * 0.06),
                         Row(
                           children: [
                             Text(
@@ -150,7 +152,7 @@ class _PastEventDetailPageState extends State<PastEventDetailPage> {
                             ),
                           ],
                         ),
-                        SizedBox(height: screenSize*0.06),
+                        SizedBox(height: screenSize * 0.06),
                         Row(
                           children: [
                             Text(
@@ -171,7 +173,7 @@ class _PastEventDetailPageState extends State<PastEventDetailPage> {
                             )
                           ],
                         ),
-                        SizedBox(height: screenSize*0.06),
+                        SizedBox(height: screenSize * 0.06),
                         Row(
                           children: [
                             Text(
@@ -183,7 +185,7 @@ class _PastEventDetailPageState extends State<PastEventDetailPage> {
                               ),
                             ),
                             Expanded(child: Container()),
-                        Text(
+                            Text(
                               widget.pastEvent.eventLocation,
                               style: const TextStyle(
                                 fontSize: 14,
@@ -192,12 +194,18 @@ class _PastEventDetailPageState extends State<PastEventDetailPage> {
                             ),
                           ],
                         ),
-                        SizedBox(height: screenSize*0.06),
+                        SizedBox(height: screenSize * 0.06),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.arrow_circle_left, color: AppColor.gradientFirst),
-                            TextButton(onPressed: ()=>Navigator.pop(context), child:  Text('Back', style: TextStyle(fontSize: 20, color: AppColor.gradientFirst),)),
+                            Icon(Icons.arrow_circle_left, color: AppColor.red),
+                            TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: Text(
+                                  'Back',
+                                  style: TextStyle(
+                                      fontSize: 20, color: AppColor.red),
+                                )),
                           ],
                         )
                       ],
@@ -210,5 +218,5 @@ class _PastEventDetailPageState extends State<PastEventDetailPage> {
         ],
       ),
     );
-  } 
+  }
 }

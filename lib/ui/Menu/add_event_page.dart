@@ -1,7 +1,13 @@
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:viicsoft_inventory_app/component/button.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
+import 'package:viicsoft_inventory_app/component/datefield.dart';
+import 'package:viicsoft_inventory_app/component/mytextform.dart';
+import 'package:viicsoft_inventory_app/component/popover.dart';
+import 'package:viicsoft_inventory_app/component/style.dart';
+import 'package:viicsoft_inventory_app/component/success_button_sheet.dart';
 import 'package:viicsoft_inventory_app/services/apis/event_api.dart';
 
 class AddEventPage extends StatefulWidget {
@@ -35,206 +41,262 @@ class _AddEventPageState extends State<AddEventPage> {
     });
   }
 
+  List<String> months = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December'
+  ];
+
   @override
-  void initState() {
-    super.initState();
+  void dispose() {
+    _eventName.dispose();
+    _eventLocation.dispose();
+    _eventType.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
     return Scaffold(
+      backgroundColor: AppColor.homePageColor,
       body: Form(
         key: globalFormKey,
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                AppColor.gradientFirst,
-                AppColor.gradientSecond,
-              ],
-              begin: const FractionalOffset(0.0, 0.4),
-              end: Alignment.topRight,
+        child: Column(
+          children: [
+            Container(
+              color: AppColor.white,
+              padding: const EdgeInsets.only(top: 50, left: 10, right: 30),
+              width: screenSize.width,
+              height: 110,
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        icon: Icon(
+                          Icons.arrow_back_ios_new,
+                          size: 25,
+                          color: AppColor.iconBlack,
+                        ),
+                      ),
+                      const SizedBox(width: 16.5),
+                      Text(
+                        'Create Event',
+                        style: style.copyWith(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Expanded(child: Container()),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-          child: Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.only(top: 50, left: 10, right: 30),
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.only(left: 22, right: 22),
                 width: screenSize.width,
-                height: 110,
                 child: Column(
                   children: [
-                    Row(
-                      children: [
-                        IconButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          icon: Icon(
-                            Icons.arrow_back_ios_new,
-                            size: screenSize.width * 0.06,
-                            color: Colors.white,
-                          ),
+                    Expanded(
+                      child: MediaQuery.removePadding(
+                        removeTop: true,
+                        context: context,
+                        child: ListView(
+                          children: [
+                            const SizedBox(height: 10),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                eventImages(context),
+                                const SizedBox(height: 5),
+                                Text(
+                                  'Choose event image*',
+                                  style: style.copyWith(
+                                    fontSize: 11,
+                                    color: AppColor.darkGrey,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Center(
+                              child: Text(
+                                noImage ? 'No image selected !' : '',
+                                style: style.copyWith(
+                                  fontSize: 11,
+                                  color: AppColor.red,
+                                ),
+                              ),
+                            ),
+
+                            Text(
+                              'Event name*',
+                              style: style.copyWith(
+                                color: AppColor.darkGrey,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+
+                            // event location
+                            MyTextForm(
+                              controller: _eventName,
+                              obscureText: false,
+                              validatior: (input) =>
+                                  (input!.isEmpty) ? "Enter Event Name" : null,
+                              labelText: 'Enter event name',
+                            ),
+                            SizedBox(height: screenSize.width * 0.015),
+                            //
+                            Text(
+                              'Event type*',
+                              style: style.copyWith(
+                                color: AppColor.darkGrey,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+
+                            // event type
+                            MyTextForm(
+                              controller: _eventType,
+                              obscureText: false,
+                              validatior: (input) =>
+                                  (input!.isEmpty) ? "Enter Event Type" : null,
+                              labelText: 'Enter event type',
+                            ),
+                            SizedBox(height: screenSize.width * 0.015),
+                            //
+                            Text(
+                              'Event location*',
+                              style: style.copyWith(
+                                fontSize: 11,
+                                color: AppColor.darkGrey,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+
+                            // event location
+                            MyTextForm(
+                              controller: _eventLocation,
+                              obscureText: false,
+                              validatior: (input) => (input!.isEmpty)
+                                  ? "Enter Event Location"
+                                  : null,
+                              labelText: 'Enter event location',
+                            ),
+                            SizedBox(height: screenSize.width * 0.015),
+
+                            Text(
+                              'Event starting Date',
+                              style: style.copyWith(
+                                fontSize: 11,
+                                color: AppColor.darkGrey,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+
+                            // starting date
+                            DateField(
+                              pickedDate:
+                                  '${startingDate.day} ${months[startingDate.month - 1]}, ${startingDate.year}',
+                              onPressed: () => _startingDate(context),
+                            ),
+
+                            SizedBox(height: screenSize.width * 0.015),
+                            Text(
+                              'Event ending Date',
+                              style: style.copyWith(
+                                fontSize: 11,
+                                color: AppColor.darkGrey,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+
+                            // ending date
+                            DateField(
+                              pickedDate:
+                                  '${endingDate.day}  ${months[endingDate.month - 1]}, ${endingDate.year}',
+                              onPressed: () => _endingDate(context),
+                            ),
+
+                            //
+                            SizedBox(height: screenSize.width * 0.1),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                MainButton(
+                                  borderColor: Colors.transparent,
+                                  text: 'CREATE EVENT',
+                                  backgroundColor: AppColor.primaryColor,
+                                  textColor: AppColor.buttonText,
+                                  onTap: () async {
+                                    if (globalFormKey.currentState!
+                                        .validate()) {
+                                      if (_eventImage == null) {
+                                        setState(() {
+                                          noImage = true;
+                                        });
+                                      } else {
+                                        setState(() {
+                                          noImage = false;
+                                        });
+                                      }
+                                      var res = await _eventAPI.addEvent(
+                                          _eventName.text,
+                                          _eventImage!,
+                                          _eventType.text,
+                                          _eventLocation.text,
+                                          endingDate.toString(),
+                                          startingDate.toString());
+
+                                      if (res.statusCode == 200) {
+                                        successButtomSheet(
+                                            context: context,
+                                            buttonText: 'CONTINUE',
+                                            title:
+                                                ' Event Created \n  Successfully!',
+                                            onTap: () =>
+                                                Navigator.pop(context));
+                                      } else {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                            backgroundColor: Colors.red,
+                                            content:
+                                                Text("Something went wrong"),
+                                          ),
+                                        );
+                                      }
+                                    }
+                                  },
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
-                        Expanded(child: Container()),
-                        Text(
-                          'Create Event',
-                          style: TextStyle(
-                              fontSize: 23,
-                              color: AppColor.homePageContainerTextBig),
-                        ),
-                        Expanded(child: Container()),
-                      ],
+                      ),
                     ),
                   ],
                 ),
               ),
-              Expanded(
-                child: Container(
-                  padding: const EdgeInsets.only(left: 30, right: 30),
-                  width: screenSize.width,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(10),
-                      topLeft: Radius.circular(10),
-                    ),
-                  ),
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding:
-                              EdgeInsets.only(top: screenSize.width * 0.03),
-                          child: ListView(
-                            children: [
-                              eventImages(context),
-                              Center(
-                                child: Text(
-                                  noImage ? 'No image selected !' : '',
-                                  style:
-                                      TextStyle(color: AppColor.gradientFirst),
-                                ),
-                              ),
-                              SizedBox(height: screenSize.width * 0.08),
-                              TextFormField(
-                                controller: _eventName,
-                                validator: (input) =>
-                                    (input!.isEmpty) ? "Add Event Name" : null,
-                                decoration: const InputDecoration(
-                                  contentPadding: EdgeInsets.symmetric(
-                                      vertical: 8.0, horizontal: 10.0),
-                                  labelText: 'Event Name*',
-                                ),
-                              ),
-                              SizedBox(height: screenSize.width * 0.03),
-                              TextFormField(
-                                controller: _eventType,
-                                validator: (input) =>
-                                    (input!.isEmpty) ? "Add Event Type" : null,
-                                decoration: const InputDecoration(
-                                  contentPadding: EdgeInsets.symmetric(
-                                      vertical: 8.0, horizontal: 10.0),
-                                  labelText: 'Event Type*',
-                                ),
-                              ),
-                              SizedBox(height: screenSize.width * 0.03),
-                              TextFormField(
-                                controller: _eventLocation,
-                                validator: (input) => (input!.isEmpty)
-                                    ? "Add Event Location"
-                                    : null,
-                                decoration: const InputDecoration(
-                                  contentPadding: EdgeInsets.symmetric(
-                                      vertical: 8.0, horizontal: 10.0),
-                                  labelText: 'Event Location*',
-                                ),
-                              ),
-                              SizedBox(height: screenSize.width * 0.03),
-                              ListTile(
-                                trailing: Text(
-                                    "${startingDate.day}/${startingDate.month}/${startingDate.year}"),
-                                leading: const Text(
-                                  'Event starting Date',
-                                  style: TextStyle(fontSize: 14),
-                                ),
-                                title: const Icon(Icons.arrow_drop_down),
-                                onTap: () => _startingDate(context),
-                              ),
-                              ListTile(
-                                trailing: Text(
-                                    "${endingDate.day}/${endingDate.month}/${endingDate.year}"),
-                                leading: const Text(
-                                  'Event Ending Date',
-                                  style: TextStyle(fontSize: 14),
-                                ),
-                                title: const Icon(Icons.arrow_drop_down),
-                                onTap: () => _endingDate(context),
-                              ),
-                              SizedBox(height: screenSize.width * 0.08),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                        primary: AppColor.gradientFirst),
-                                    onPressed: () async {
-                                      if (globalFormKey.currentState!
-                                          .validate()) {
-                                        if (_eventImage == null) {
-                                          setState(() {
-                                            noImage = true;
-                                          });
-                                        } else {
-                                          setState(() {
-                                            noImage = false;
-                                          });
-                                        }
-                                        var res = await _eventAPI.addEvent(
-                                            _eventName.text,
-                                            _eventImage!,
-                                            _eventType.text,
-                                            _eventLocation.text,
-                                            endingDate.toString(),
-                                            startingDate.toString());
-
-                                        if (res.statusCode == 200) {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(const SnackBar(
-                                                  backgroundColor: Colors.green,
-                                                  content:
-                                                      Text("Event Created")));
-                                          Navigator.pop(context);
-                                        } else {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            const SnackBar(
-                                              backgroundColor: Colors.red,
-                                              content:
-                                                  Text("Something went wrong"),
-                                            ),
-                                          );
-                                        }
-                                      }
-                                    },
-                                    child: const Text(
-                                      'Create Event',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -248,11 +310,11 @@ class _AddEventPageState extends State<AddEventPage> {
           alignment: AlignmentDirectional.center,
           children: [
             Container(
-              width: MediaQuery.of(context).size.width * 0.28,
-              height: MediaQuery.of(context).size.width * 0.25,
+              width: MediaQuery.of(context).size.width * 0.16,
+              height: MediaQuery.of(context).size.width * 0.14,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(
-                    MediaQuery.of(context).size.width * 0.06),
+                    MediaQuery.of(context).size.width * 0.02),
                 image: DecorationImage(
                   image: _eventImage != null
                       ? FileImage(File(_eventImage!.path))
@@ -263,50 +325,50 @@ class _AddEventPageState extends State<AddEventPage> {
             ),
             Positioned(
               bottom: 0,
-              right: 0,
+              right: -1,
               child: InkWell(
-                onTap: () => showDialog<String>(
+                onTap: () => showModalBottomSheet(
                   context: context,
-                  builder: (BuildContext context) => AlertDialog(
-                    title: Text(
-                      'Select Image',
-                      style: TextStyle(
-                        color: AppColor.homePageSubtitle,
-                      ),
-                    ),
-                    content: const Text(
-                        'Select image from device gallery or use device camera'),
-                    actions: <Widget>[
-                      TextButton(
-                        onPressed: () {
-                          getImage(ImageSource.camera);
-                          Navigator.pop(context);
-                        },
-                        child: Text(
-                          'Camera',
-                          style: TextStyle(
-                            color: AppColor.gradientFirst,
+                  builder: (context) {
+                    return Popover(
+                      mainAxisSize: MainAxisSize.min,
+                      child: Column(children: [
+                        InkWell(
+                          onTap: () {
+                            getImage(ImageSource.camera);
+                            Navigator.pop(context);
+                          },
+                          child: Row(
+                            children: [
+                              const Icon(Icons.camera_alt_outlined),
+                              const SizedBox(width: 10),
+                              Text('Take a Pictue', style: style)
+                            ],
                           ),
                         ),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          getImage(ImageSource.gallery);
-                          Navigator.pop(context);
-                        },
-                        child: Text(
-                          'Gallery',
-                          style: TextStyle(
-                            color: AppColor.gradientFirst,
+                        const SizedBox(height: 10),
+                        const Divider(),
+                        const SizedBox(height: 10),
+                        InkWell(
+                          onTap: () {
+                            getImage(ImageSource.gallery);
+                            Navigator.pop(context);
+                          },
+                          child: Row(
+                            children: [
+                              const Icon(Icons.photo_library),
+                              const SizedBox(width: 10),
+                              Text('Select from gallery', style: style)
+                            ],
                           ),
                         ),
-                      ),
-                    ],
-                  ),
+                      ]),
+                    );
+                  },
                 ),
                 child: Container(
-                  height: 25,
-                  width: 25,
+                  height: 18,
+                  width: 18,
                   decoration: BoxDecoration(
                     color: AppColor.homePageTitle,
                     shape: BoxShape.circle,
@@ -317,7 +379,7 @@ class _AddEventPageState extends State<AddEventPage> {
                   ),
                   child: const Icon(
                     Icons.edit,
-                    size: 15,
+                    size: 10,
                     color: Colors.white,
                   ),
                 ),
@@ -332,6 +394,7 @@ class _AddEventPageState extends State<AddEventPage> {
   _startingDate(BuildContext context) async {
     final DateTime? selected = await showDatePicker(
       context: context,
+      confirmText: 'SET DATE',
       initialDate: startingDate,
       firstDate: DateTime(2016),
       lastDate: DateTime(2030),

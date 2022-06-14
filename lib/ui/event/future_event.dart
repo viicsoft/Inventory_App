@@ -1,193 +1,162 @@
 import 'package:flutter/material.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
-import 'package:viicsoft_inventory_app/models/futureevent.dart';
+import 'package:viicsoft_inventory_app/component/future_event_sheet.dart';
+import 'package:viicsoft_inventory_app/component/style.dart';
+import 'package:viicsoft_inventory_app/models/future_event.dart';
 import 'package:viicsoft_inventory_app/services/apis/event_api.dart';
-import 'package:viicsoft_inventory_app/ui/event/events_detail_page.dart';
 
-class FutureEvent extends StatefulWidget {
-  const FutureEvent({Key? key}) : super(key: key);
+class FutureEventPage extends StatefulWidget {
+  const FutureEventPage({Key? key}) : super(key: key);
 
   @override
-  State<FutureEvent> createState() => _FutureEventState();
+  State<FutureEventPage> createState() => _FutureEventPageState();
 }
 
-class _FutureEventState extends State<FutureEvent> {
+class _FutureEventPageState extends State<FutureEventPage> {
+  Future refresh() async {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-          child: Container(
-            width: MediaQuery.of(context).size.width,
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                topRight: Radius.circular(20),
-                topLeft: Radius.circular(20),
+    return RefreshIndicator(
+      onRefresh: refresh,
+      child: Column(
+        children: [
+          Expanded(
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(
+                color: AppColor.homePageColor,
               ),
-            ),
-            child: Column(
-              children: [
-                Expanded(
-                  child: FutureBuilder<List<EventsFuture>>(
-                      future: EventAPI().fetchFutureEvents(),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasError) {
-                          return Center(
-                            child: CircularProgressIndicator(
-                                color: AppColor.gradientFirst),
-                          );
-                        } else if (snapshot.connectionState ==
-                            ConnectionState.done) {
-                          final results = snapshot.data!;
-                          return ListView.builder(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 5, vertical: 5),
-                              itemCount: results.length,
-                              itemBuilder: (_, int index) {
-                                var startingdate = DateTime.parse(
-                                    "${results[index].checkOutDate}");
-                                var endingdate = DateTime.parse(
-                                    "${results[index].checkInDate}");
-                                return InkWell(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => EventsDetailPage(
-                                          eventDetail: results[index],
+              child: Column(
+                children: [
+                  Expanded(
+                    child: FutureBuilder<List<EventsFuture>>(
+                        future: EventAPI().fetchFutureEvents(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasError) {
+                            return const Center(
+                              child: Text('error'),
+                            );
+                          } else if (snapshot.connectionState ==
+                              ConnectionState.done) {
+                            final results = snapshot.data!;
+                            return ListView.builder(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 5),
+                                itemCount: results.length,
+                                itemBuilder: (_, int index) {
+                                  return InkWell(
+                                    child: SizedBox(
+                                      height: 147,
+                                      child: Card(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
                                         ),
-                                      ),
-                                    );
-                                  },
-                                  child: Container(
-                                    height: 100,
-                                    padding: const EdgeInsets.only(bottom: 10),
-                                    child: Card(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      elevation: 3,
-                                      shadowColor: AppColor.gradientSecond,
-                                      child: Column(
-                                        children: [
-                                          Row(
+                                        elevation: 0,
+                                        shadowColor: AppColor.gradientSecond,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(15.0),
+                                          child: Column(
                                             children: [
-                                              Container(
-                                                width: 80,
-                                                height: 80,
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                  image: DecorationImage(
-                                                    image: NetworkImage(
-                                                        results[index]
-                                                            .eventImage),
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                ),
-                                              ),
-                                              const SizedBox(width: 20),
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                              Row(
                                                 children: [
-                                                  Text(
-                                                    results[index]
-                                                        .eventName
-                                                        .toString(),
-                                                    style: TextStyle(
-                                                        color: AppColor
-                                                            .homePageSubtitle,
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.w500),
-                                                  ),
-                                                  const SizedBox(height: 10),
-                                                  Text(
-                                                    'Location: ${results[index].eventLocation.toString()}',
-                                                    style: const TextStyle(
-                                                        fontSize: 11,
-                                                        fontWeight:
-                                                            FontWeight.w500),
-                                                  ),
-                                                  const SizedBox(height: 10),
-                                                  Row(
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
                                                     children: [
                                                       Text(
-                                                        '${startingdate.day}-${startingdate.month}-${startingdate.year}',
-                                                        style: TextStyle(
-                                                            fontSize: 12,
-                                                            color: Colors
-                                                                .grey[500],
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w500),
+                                                        results[index]
+                                                            .eventName
+                                                            .toString(),
+                                                        style: style.copyWith(
+                                                            color:
+                                                                AppColor.black),
                                                       ),
-                                                      const SizedBox(width: 10),
-                                                      const Text(
-                                                        'To',
-                                                        style: TextStyle(
-                                                            fontSize: 12,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w500),
+                                                      const SizedBox(
+                                                        height: 10,
                                                       ),
-                                                      const SizedBox(width: 10),
                                                       Text(
-                                                        '${endingdate.day}-${endingdate.month}-${endingdate.year}',
-                                                        style: TextStyle(
-                                                            fontSize: 12,
-                                                            color: Colors
-                                                                .grey[500],
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w500),
+                                                        'Location: ${results[index].eventLocation.toString()}',
+                                                        style: style.copyWith(
+                                                          fontSize: 14,
+                                                          color:
+                                                              AppColor.darkGrey,
+                                                        ),
                                                       ),
+                                                      const SizedBox(
+                                                        height: 10,
+                                                      ),
+                                                      InkWell(
+                                                        onTap: () {
+                                                          futureEventDetailbuttomSheet(
+                                                            context,
+                                                            results[index],
+                                                            results[index]
+                                                                .eventImage,
+                                                            results[index]
+                                                                .eventName,
+                                                            results[index]
+                                                                .checkOutDate,
+                                                            results[index]
+                                                                .checkInDate,
+                                                            results[index]
+                                                                .eventLocation,
+                                                          );
+                                                        },
+                                                        child: Container(
+                                                          height: 40,
+                                                          width: 280,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        8),
+                                                            border: Border.all(
+                                                              color: AppColor
+                                                                  .black,
+                                                            ),
+                                                          ),
+                                                          child: Center(
+                                                            child: Text(
+                                                              'VIEW EVENT DETAIL',
+                                                              style: style
+                                                                  .copyWith(
+                                                                fontSize: 12,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      )
                                                     ],
                                                   ),
                                                 ],
                                               ),
-                                              Expanded(child: Container()),
-                                              IconButton(
-                                                onPressed: () {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          EventsDetailPage(
-                                                        eventDetail:
-                                                            results[index],
-                                                      ),
-                                                    ),
-                                                  );
-                                                },
-                                                icon: Icon(
-                                                  Icons.arrow_forward_ios,
-                                                  color: AppColor.gradientFirst,
-                                                ),
-                                              ),
                                             ],
                                           ),
-                                        ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                );
-                              });
-                        } else {
-                          return Center(
-                            child: CircularProgressIndicator(
-                                color: AppColor.gradientFirst),
-                          );
-                        }
-                      }),
-                )
-              ],
+                                  );
+                                });
+                          } else {
+                            return Center(
+                              child: CircularProgressIndicator(
+                                  color: AppColor.darkGrey),
+                            );
+                          }
+                        }),
+                  )
+                ],
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

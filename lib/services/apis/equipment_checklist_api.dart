@@ -45,7 +45,6 @@ class EventEquipmentChecklistAPI extends BaseAPI {
             body: body);
     if (response.statusCode == 200) {
       //print(' delete user: ${response.body}');
-      print(response.body);
       return response;
     } else {
       throw Exception('Failed to Add Equipment to CheckList.');

@@ -81,10 +81,12 @@ class EquipmentsAvailable {
         equipmentId: json["equipment_id"],
         equipmentCondition: json["equipment_condition"],
         equipmentCategoryId: json["equipment_category_id"],
+        // ignore: prefer_if_null_operators
         equipmentBarcode: json["equipment_barcode"] == null
             ? null
             : json["equipment_barcode"],
         equipmentImage:
+            // ignore: prefer_if_null_operators
             json["equipment_image"] == null ? null : json["equipment_image"],
       );
 
@@ -93,7 +95,9 @@ class EquipmentsAvailable {
         "equipment_id": equipmentId,
         "equipment_condition": equipmentCondition,
         "equipment_category_id": equipmentCategoryId,
+        // ignore: unnecessary_null_comparison, prefer_if_null_operators
         "equipment_barcode": equipmentBarcode == null ? null : equipmentBarcode,
+        // ignore: unnecessary_null_comparison, prefer_if_null_operators
         "equipment_image": equipmentImage == null ? null : equipmentImage,
       };
 }

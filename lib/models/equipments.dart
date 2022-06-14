@@ -22,18 +22,18 @@ class Equipment {
   int total;
 
   factory Equipment.fromJson(Map<String, dynamic> json) => Equipment(
-    status: json["status"],
-    message: json["message"],
-    data: Data.fromJson(json["data"]),
-    total: json["total"],
-  );
+        status: json["status"],
+        message: json["message"],
+        data: Data.fromJson(json["data"]),
+        total: json["total"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "status": status,
-    "message": message,
-    "data": data.toJson(),
-    "total": total,
-  };
+        "status": status,
+        "message": message,
+        "data": data.toJson(),
+        "total": total,
+      };
 }
 
 class Data {
@@ -44,12 +44,13 @@ class Data {
   List<EquipmentElement> equipments;
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
-    equipments: List<EquipmentElement>.from(json["equipments"].map((x) => EquipmentElement.fromJson(x))),
-  );
+        equipments: List<EquipmentElement>.from(
+            json["equipments"].map((x) => EquipmentElement.fromJson(x))),
+      );
 
   Map<String, dynamic> toJson() => {
-    "equipments": List<dynamic>.from(equipments.map((x) => x.toJson())),
-  };
+        "equipments": List<dynamic>.from(equipments.map((x) => x.toJson())),
+      };
 }
 
 class EquipmentElement {
@@ -73,25 +74,36 @@ class EquipmentElement {
   String equipmentCategoryId;
   String equipmentImage;
 
-  factory EquipmentElement.fromJson(Map<String, dynamic> json) => EquipmentElement(
-    id: json["id"],
-    equipmentName: json["equipment_name"],
-    equipmentCondition: json["equipment_condition"],
-    equipmentSize: json["equipment_size"],
-    equipmentDescription: json["equipment_description"] == null ? null : json["equipment_description"],
-    equipmentBarcode: json["equipment_barcode"] == null ? null : json["equipment_barcode"],
-    equipmentCategoryId: json["equipment_category_id"],
-    equipmentImage: json["equipment_image"],
-  );
+  factory EquipmentElement.fromJson(Map<String, dynamic> json) =>
+      EquipmentElement(
+        id: json["id"],
+        equipmentName: json["equipment_name"],
+        equipmentCondition: json["equipment_condition"],
+        equipmentSize: json["equipment_size"],
+        // ignore: prefer_if_null_operators
+        equipmentDescription: json["equipment_description"] == null
+            ? null
+            : json["equipment_description"],
+        // ignore: prefer_if_null_operators
+        equipmentBarcode: json["equipment_barcode"] == null
+            ? null
+            : json["equipment_barcode"],
+        equipmentCategoryId: json["equipment_category_id"],
+        equipmentImage: json["equipment_image"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "equipment_name": equipmentName,
-    "equipment_condition": equipmentCondition,
-    "equipment_size": equipmentSize,
-    "equipment_description": equipmentDescription == null ? null : equipmentDescription,
-    "equipment_barcode": equipmentBarcode == null ? null : equipmentBarcode,
-    "equipment_category_id": equipmentCategoryId,
-    "equipment_image": equipmentImage,
-  };
+        "id": id,
+        "equipment_name": equipmentName,
+        "equipment_condition": equipmentCondition,
+        "equipment_size": equipmentSize,
+        // ignore: prefer_if_null_operators
+        "equipment_description":
+            // ignore: prefer_if_null_operators
+            equipmentDescription == null ? null : equipmentDescription,
+        // ignore: prefer_if_null_operators
+        "equipment_barcode": equipmentBarcode == null ? null : equipmentBarcode,
+        "equipment_category_id": equipmentCategoryId,
+        "equipment_image": equipmentImage,
+      };
 }

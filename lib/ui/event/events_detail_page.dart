@@ -1,13 +1,10 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
 import 'package:viicsoft_inventory_app/models/eventequipmentchecklist.dart';
 import 'package:viicsoft_inventory_app/models/eventequipmentcheckout.dart';
-import 'package:viicsoft_inventory_app/models/futureevent.dart';
+import 'package:viicsoft_inventory_app/models/future_event.dart';
 import 'package:viicsoft_inventory_app/models/profile.dart';
 import 'package:viicsoft_inventory_app/services/apis/equipment_checkin_api.dart';
 import 'package:viicsoft_inventory_app/services/apis/equipment_checklist_api.dart';
@@ -28,12 +25,11 @@ class EventsDetailPage extends StatefulWidget {
 class _EventsDetailPageState extends State<EventsDetailPage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   String _scanInBarcode = '';
+  // ignore: unused_field
   String _scanOutBarcode = '';
 
   final EquipmentCheckInAPI _equipmentCheckInAPI = EquipmentCheckInAPI();
   final EquipmentCheckOutAPI _equipmentCheckOutAPI = EquipmentCheckOutAPI();
-  final RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
   List scanedEquipment = [];
 
   Future scanInBarcode() async {
@@ -66,30 +62,24 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
     });
   }
 
-  void _onRefresh() async {
-    await Future.delayed(const Duration(milliseconds: 1000));
+  Future refresh() async {
     setState(() {});
-    _refreshController.refreshCompleted();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         key: scaffoldKey,
-        backgroundColor: AppColor.homePageBackground,
-        body: SmartRefresher(
-          enablePullDown: true,
-          //header: const WaterDropHeader(),
-          controller: _refreshController,
-          onRefresh: _onRefresh,
+        backgroundColor: AppColor.primaryColor,
+        body: RefreshIndicator(
+          onRefresh: refresh,
           child: FutureBuilder<List<EventEquipmentChecklist>>(
               future: EventEquipmentChecklistAPI().fetchAllEquipmentCheckList(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
                   if (snapshot.data == null) {
                     return Center(
-                      child: CircularProgressIndicator(
-                          color: AppColor.gradientFirst),
+                      child: CircularProgressIndicator(color: AppColor.red),
                     );
                   } else {
                     var results = snapshot.data!;
@@ -107,7 +97,7 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
                             if (snapshot.hasError) {
                               return Center(
                                 child: CircularProgressIndicator(
-                                  color: AppColor.gradientFirst,
+                                  color: AppColor.red,
                                 ),
                               );
                             } else {
@@ -130,8 +120,7 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
                                         userGroup[i].id == '22'
                                             ? ElevatedButton(
                                                 style: ElevatedButton.styleFrom(
-                                                    primary:
-                                                        AppColor.gradientFirst),
+                                                    primary: AppColor.red),
                                                 onPressed: () {
                                                   Navigator.push(
                                                     context,
@@ -158,7 +147,7 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
                                             ? ElevatedButton(
                                                 style: ElevatedButton.styleFrom(
                                                     primary: AppColor
-                                                        .homePageSubtitle),
+                                                        .homePageTotalEquip),
                                                 onPressed: () {
                                                   Navigator.push(
                                                       context,
@@ -186,8 +175,7 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
                                       width: MediaQuery.of(context).size.width,
                                       height: 250,
                                       decoration: BoxDecoration(
-                                          color:
-                                              AppColor.homePageContainerTextBig,
+                                          color: AppColor.iconBlack,
                                           borderRadius: const BorderRadius.only(
                                             topRight: Radius.circular(80),
                                             topLeft: Radius.circular(10),
@@ -248,7 +236,7 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
                                                       fontWeight:
                                                           FontWeight.bold,
                                                       color: AppColor
-                                                          .homePageSubtitle),
+                                                          .homePageTotalEquip),
                                                 ),
                                                 const SizedBox(height: 10),
                                                 Column(
@@ -262,7 +250,7 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
                                                         fontWeight:
                                                             FontWeight.w500,
                                                         color: AppColor
-                                                            .homePageSubtitle,
+                                                            .homePageTotalEquip,
                                                       ),
                                                     ),
                                                     const SizedBox(height: 8),
@@ -273,7 +261,7 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
                                                         fontWeight:
                                                             FontWeight.w500,
                                                         color: AppColor
-                                                            .homePageSubtitle,
+                                                            .homePageTotalEquip,
                                                       ),
                                                     ),
                                                     const SizedBox(height: 8),
@@ -288,7 +276,7 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
                                                                       .bold,
                                                               fontSize: 14,
                                                               color: AppColor
-                                                                  .homePageSubtitle,
+                                                                  .homePageTotalEquip,
                                                             ),
                                                           ),
                                                         ),
@@ -298,8 +286,8 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
                                                           '${widget.eventDetail.checkOutDate.day}-${widget.eventDetail.checkOutDate.month}-${widget.eventDetail.checkOutDate.year}',
                                                           style: TextStyle(
                                                               fontSize: 12,
-                                                              color: AppColor
-                                                                  .gradientFirst,
+                                                              color:
+                                                                  AppColor.red,
                                                               fontWeight:
                                                                   FontWeight
                                                                       .w500),
@@ -320,8 +308,8 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
                                                           '${widget.eventDetail.checkInDate.day}-${widget.eventDetail.checkInDate.month}-${widget.eventDetail.checkInDate.year}',
                                                           style: TextStyle(
                                                               fontSize: 12,
-                                                              color: AppColor
-                                                                  .gradientFirst,
+                                                              color:
+                                                                  AppColor.red,
                                                               fontWeight:
                                                                   FontWeight
                                                                       .w500),
@@ -347,7 +335,7 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
                                           style: TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.w500,
-                                            color: AppColor.homePageIcons,
+                                            color: AppColor.black,
                                           ),
                                         ),
                                       ],
@@ -406,7 +394,7 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
                                                                           BorderRadius.circular(
                                                                               3),
                                                                       color: AppColor
-                                                                          .homePageSubtitle),
+                                                                          .homePageTotalEquip),
                                                                   padding:
                                                                       const EdgeInsets
                                                                           .all(2),
@@ -423,7 +411,7 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
                                                                           fontSize:
                                                                               8,
                                                                           color:
-                                                                              AppColor.homePageContainerTextBig),
+                                                                              AppColor.iconBlack),
                                                                     ),
                                                                   ),
                                                                 ),
@@ -500,7 +488,7 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
                                                                             style: TextStyle(
                                                                                 fontWeight: FontWeight.bold,
                                                                                 fontSize: 8,
-                                                                                color: AppColor.homePageContainerTextBig),
+                                                                                color: AppColor.iconBlack),
                                                                           ),
                                                                         ),
                                                                         Expanded(
@@ -535,11 +523,11 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
                                                                             child: checkOutequipmentid.contains(result[index].equipmentId)
                                                                                 ? Text(
                                                                                     'Scan to CheckIn',
-                                                                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 8, color: AppColor.homePageContainerTextBig),
+                                                                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 8, color: AppColor.iconBlack),
                                                                                   )
                                                                                 : Text(
                                                                                     'Scan to CheckOut',
-                                                                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 8, color: AppColor.homePageContainerTextBig),
+                                                                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 8, color: AppColor.iconBlack),
                                                                                   ),
                                                                           ),
                                                                         ),
@@ -549,13 +537,13 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
                                                                         userGroup[i].id ==
                                                                                 '22'
                                                                             ? TextButton(
-                                                                                style: TextButton.styleFrom(primary: AppColor.gradientFirst),
+                                                                                style: TextButton.styleFrom(primary: AppColor.red),
                                                                                 onPressed: () async {
                                                                                   await _confirmDialog(context, result[index].id, result[index].equipment.equipmentName);
                                                                                 },
                                                                                 child: Icon(
                                                                                   Icons.delete,
-                                                                                  color: AppColor.gradientFirst,
+                                                                                  color: AppColor.red,
                                                                                 ),
                                                                               )
                                                                             : Container()
@@ -573,8 +561,8 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
                                                   return Center(
                                                     child:
                                                         CircularProgressIndicator(
-                                                            color: AppColor
-                                                                .gradientFirst),
+                                                            color:
+                                                                AppColor.red),
                                                   );
                                                 }));
                                       },
@@ -595,8 +583,8 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
                             }
                           }
                           return Center(
-                            child: CircularProgressIndicator(
-                                color: AppColor.gradientFirst),
+                            child:
+                                CircularProgressIndicator(color: AppColor.red),
                           );
                         },
                       ),
@@ -605,8 +593,7 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
                 }
 
                 return Center(
-                  child:
-                      CircularProgressIndicator(color: AppColor.gradientFirst),
+                  child: CircularProgressIndicator(color: AppColor.red),
                 );
               }),
         ));
@@ -646,7 +633,7 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
           ),
           actions: <Widget>[
             ElevatedButton(
-              style: ElevatedButton.styleFrom(primary: AppColor.gradientFirst),
+              style: ElevatedButton.styleFrom(primary: AppColor.red),
               child: const Text('Yes'),
               onPressed: () async {
                 var res = await EventEquipmentChecklistAPI()
@@ -669,7 +656,7 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
               },
             ),
             ElevatedButton(
-              style: ElevatedButton.styleFrom(primary: AppColor.gradientFirst),
+              style: ElevatedButton.styleFrom(primary: AppColor.red),
               child: const Text('No'),
               onPressed: () {
                 Navigator.of(context).pop();

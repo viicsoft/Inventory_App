@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:viicsoft_inventory_app/models/events.dart';
-import 'package:viicsoft_inventory_app/models/futureevent.dart';
+import 'package:viicsoft_inventory_app/models/future_event.dart';
 import 'package:viicsoft_inventory_app/models/pastevent.dart';
 import 'package:viicsoft_inventory_app/services/sharedpref.dart';
 import '../api.dart';

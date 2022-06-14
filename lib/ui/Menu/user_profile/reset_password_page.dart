@@ -23,7 +23,10 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
             SizedBox(
               child: Row(
                 children: [
-                  IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.arrow_back_ios),),
+                  IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: const Icon(Icons.arrow_back_ios),
+                  ),
                   Expanded(child: Container()),
                   Text(
                     'Reset Password',
@@ -46,8 +49,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                       textform(
                         obscureText: _isObscure,
                         suffixIcon: IconButton(
-                          icon: Icon(
-                              _isObscure ? Icons.visibility : Icons.visibility_off),
+                          icon: Icon(_isObscure
+                              ? Icons.visibility
+                              : Icons.visibility_off),
                           onPressed: () {
                             setState(() {
                               _isObscure = !_isObscure;
@@ -61,8 +65,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                       textform(
                         obscureText: _isObscure1,
                         suffixIcon: IconButton(
-                          icon: Icon(
-                              _isObscure1 ? Icons.visibility : Icons.visibility_off),
+                          icon: Icon(_isObscure1
+                              ? Icons.visibility
+                              : Icons.visibility_off),
                           onPressed: () {
                             setState(() {
                               _isObscure1 = !_isObscure1;
@@ -76,8 +81,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                       textform(
                         obscureText: _isObscure2,
                         suffixIcon: IconButton(
-                          icon: Icon(
-                              _isObscure2 ? Icons.visibility : Icons.visibility_off),
+                          icon: Icon(_isObscure2
+                              ? Icons.visibility
+                              : Icons.visibility_off),
                           onPressed: () {
                             setState(() {
                               _isObscure2 = !_isObscure2;
@@ -91,13 +97,15 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   ),
                   //const SizedBox(height: 50),
                   Padding(
-                    padding: const EdgeInsets.only(top: 100, left: 40, right: 20),
+                    padding:
+                        const EdgeInsets.only(top: 100, left: 40, right: 20),
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, '/PasswordResetSuccessPage');
+                        Navigator.pushNamed(
+                            context, '/PasswordResetSuccessPage');
                       },
                       child: const Text('Update Password'),
-                      style: ElevatedButton.styleFrom(primary: AppColor.gradientFirst),
+                      style: ElevatedButton.styleFrom(primary: AppColor.red),
                     ),
                   ),
                 ],

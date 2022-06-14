@@ -20,16 +20,16 @@ class Users {
   Data data;
 
   factory Users.fromJson(Map<String, dynamic> json) => Users(
-    status: json["status"],
-    message: json["message"],
-    data: Data.fromJson(json["data"]),
-  );
+        status: json["status"],
+        message: json["message"],
+        data: Data.fromJson(json["data"]),
+      );
 
   Map<String, dynamic> toJson() => {
-    "status": status,
-    "message": message,
-    "data": data.toJson(),
-  };
+        "status": status,
+        "message": message,
+        "data": data.toJson(),
+      };
 }
 
 class Data {
@@ -40,12 +40,12 @@ class Data {
   List<User> user;
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
-    user: List<User>.from(json["user"].map((x) => User.fromJson(x))),
-  );
+        user: List<User>.from(json["user"].map((x) => User.fromJson(x))),
+      );
 
   Map<String, dynamic> toJson() => {
-    "user": List<dynamic>.from(user.map((x) => x.toJson())),
-  };
+        "user": List<dynamic>.from(user.map((x) => x.toJson())),
+      };
 }
 
 class User {
@@ -100,56 +100,66 @@ class User {
   List<Group> group;
 
   factory User.fromJson(Map<String, dynamic> json) => User(
-    id: json["id"],
-    email: json["email"],
-    oauthUid: json["oauth_uid"],
-    oauthProvider: json["oauth_provider"],
-    username: json["username"],
-    fullName: json["full_name"],
-    avatar: json["avatar"],
-    banned: json["banned"],
-    lastLogin: json["last_login"] == null ? null : DateTime.parse(json["last_login"]),
-    lastActivity: json["last_activity"] == null ? null : DateTime.parse(json["last_activity"]),
-    dateCreated: DateTime.parse(json["date_created"]),
-    forgotExp: json["forgot_exp"],
-    rememberTime: json["remember_time"],
-    rememberExp: json["remember_exp"],
-    verificationCode: json["verification_code"],
-    topSecret: json["top_secret"],
-    ipAddress: json["ip_address"] == null ? null : json["ip_address"],
-    createdBy: json["created_by"],
-    updatedBy: json["updated_by"],
-    updatedAt: json["updated_at"],
-    createdAt: DateTime.parse(json["created_at"]),
-    avatarThumbnail: json["avatar_thumbnail"],
-    group: List<Group>.from(json["group"].map((x) => Group.fromJson(x))),
-  );
+        id: json["id"],
+        email: json["email"],
+        oauthUid: json["oauth_uid"],
+        oauthProvider: json["oauth_provider"],
+        username: json["username"],
+        fullName: json["full_name"],
+        avatar: json["avatar"],
+        banned: json["banned"],
+        lastLogin: json["last_login"] == null
+            ? null
+            : DateTime.parse(json["last_login"]),
+        lastActivity: json["last_activity"] == null
+            ? null
+            : DateTime.parse(json["last_activity"]),
+        dateCreated: DateTime.parse(json["date_created"]),
+        forgotExp: json["forgot_exp"],
+        rememberTime: json["remember_time"],
+        rememberExp: json["remember_exp"],
+        verificationCode: json["verification_code"],
+        topSecret: json["top_secret"],
+        // ignore: prefer_if_null_operators
+        ipAddress: json["ip_address"] == null ? null : json["ip_address"],
+        createdBy: json["created_by"],
+        updatedBy: json["updated_by"],
+        updatedAt: json["updated_at"],
+        createdAt: DateTime.parse(json["created_at"]),
+        avatarThumbnail: json["avatar_thumbnail"],
+        group: List<Group>.from(json["group"].map((x) => Group.fromJson(x))),
+      );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "email": email,
-    "oauth_uid": oauthUid,
-    "oauth_provider": oauthProvider,
-    "username": username,
-    "full_name": fullName,
-    "avatar": avatar,
-    "banned": banned,
-    "last_login": lastLogin == null ? null : lastLogin.toIso8601String(),
-    "last_activity": lastActivity == null ? null : lastActivity.toIso8601String(),
-    "date_created": dateCreated.toIso8601String(),
-    "forgot_exp": forgotExp,
-    "remember_time": rememberTime,
-    "remember_exp": rememberExp,
-    "verification_code": verificationCode,
-    "top_secret": topSecret,
-    "ip_address": ipAddress == null ? null : ipAddress,
-    "created_by": createdBy,
-    "updated_by": updatedBy,
-    "updated_at": updatedAt,
-    "created_at": createdAt.toIso8601String(),
-    "avatar_thumbnail": avatarThumbnail,
-    "group": List<dynamic>.from(group.map((x) => x.toJson())),
-  };
+        "id": id,
+        "email": email,
+        "oauth_uid": oauthUid,
+        "oauth_provider": oauthProvider,
+        "username": username,
+        "full_name": fullName,
+        "avatar": avatar,
+        "banned": banned,
+        // ignore: prefer_null_aware_operators
+        "last_login": lastLogin == null ? null : lastLogin.toIso8601String(),
+        // ignore: prefer_null_aware_operators
+        "last_activity":
+            // ignore: prefer_null_aware_operators
+            lastActivity == null ? null : lastActivity.toIso8601String(),
+        "date_created": dateCreated.toIso8601String(),
+        "forgot_exp": forgotExp,
+        "remember_time": rememberTime,
+        "remember_exp": rememberExp,
+        "verification_code": verificationCode,
+        "top_secret": topSecret,
+        // ignore: prefer_if_null_operators
+        "ip_address": ipAddress == null ? null : ipAddress,
+        "created_by": createdBy,
+        "updated_by": updatedBy,
+        "updated_at": updatedAt,
+        "created_at": createdAt.toIso8601String(),
+        "avatar_thumbnail": avatarThumbnail,
+        "group": List<dynamic>.from(group.map((x) => x.toJson())),
+      };
 }
 
 class Group {
@@ -178,28 +188,30 @@ class Group {
   String definition;
 
   factory Group.fromJson(Map<String, dynamic> json) => Group(
-    userId: json["user_id"],
-    groupId: json["group_id"],
-    createdBy: json["created_by"] == null ? null : json["created_by"],
-    updatedBy: json["updated_by"],
-    updatedAt: json["updated_at"],
-    createdAt: json["created_at"],
-    id: json["id"],
-    name: json["name"],
-    priority: json["priority"],
-    definition: json["definition"],
-  );
+        userId: json["user_id"],
+        groupId: json["group_id"],
+        // ignore: prefer_if_null_operators
+        createdBy: json["created_by"] == null ? null : json["created_by"],
+        updatedBy: json["updated_by"],
+        updatedAt: json["updated_at"],
+        createdAt: json["created_at"],
+        id: json["id"],
+        name: json["name"],
+        priority: json["priority"],
+        definition: json["definition"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "user_id": userId,
-    "group_id": groupId,
-    "created_by": createdBy == null ? null : createdBy,
-    "updated_by": updatedBy,
-    "updated_at": updatedAt,
-    "created_at": createdAt,
-    "id": id,
-    "name": name,
-    "priority": priority,
-    "definition": definition,
-  };
+        "user_id": userId,
+        "group_id": groupId,
+        // ignore: prefer_if_null_operators
+        "created_by": createdBy == null ? null : createdBy,
+        "updated_by": updatedBy,
+        "updated_at": updatedAt,
+        "created_at": createdAt,
+        "id": id,
+        "name": name,
+        "priority": priority,
+        "definition": definition,
+      };
 }

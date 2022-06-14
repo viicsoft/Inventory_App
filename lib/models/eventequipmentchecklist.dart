@@ -2,6 +2,8 @@
 //
 //     final eventEquipmentCheckList = eventEquipmentCheckListFromJson(jsonString);
 
+// ignore_for_file: constant_identifier_names
+
 import 'dart:convert';
 
 EventEquipmentCheckList eventEquipmentCheckListFromJson(String str) =>

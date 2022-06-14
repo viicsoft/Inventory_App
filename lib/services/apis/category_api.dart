@@ -51,6 +51,7 @@ class CategoryAPI extends BaseAPI {
 
     //Get the response from the server
     var responseData = await response.stream.toBytes();
+    // ignore: unused_local_variable
     var responseString = String.fromCharCodes(responseData);
     return response;
   }

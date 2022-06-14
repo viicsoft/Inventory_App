@@ -39,7 +39,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="LaunchImage" width="222" height="222"/>
+        <image name="LaunchImage" width="2000" height="1568"/>
         <image name="LaunchBackground" width="1" height="1"/>
         <image name="BrandingImage" width="222" height="222"/>
     </resources>

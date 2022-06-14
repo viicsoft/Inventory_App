@@ -1,5 +1,7 @@
+// ignore: file_names
 import 'package:flutter/material.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
+import 'package:viicsoft_inventory_app/component/style.dart';
 import 'package:viicsoft_inventory_app/models/avialable_equipment.dart';
 import 'package:viicsoft_inventory_app/models/category.dart';
 import 'package:viicsoft_inventory_app/services/apis/category_api.dart';
@@ -29,7 +31,33 @@ class _AvialableEquipmentPageState extends State<AvialableEquipmentPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColor.homePageBackground,
+      backgroundColor: AppColor.homePageColor,
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        toolbarHeight: 75,
+        elevation: 0,
+        backgroundColor: AppColor.white,
+        title: Row(
+          children: [
+            IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Icon(
+                Icons.arrow_back_ios_new,
+                size: 25,
+                color: AppColor.iconBlack,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Text(
+              'Avialable Equipments',
+              style: style.copyWith(fontWeight: FontWeight.bold),
+            ),
+            Expanded(child: Container()),
+          ],
+        ),
+      ),
       body: FutureBuilder<List<EquipmentCategory>>(
           future: _category,
           builder: (context, snapshot) {
@@ -37,147 +65,113 @@ class _AvialableEquipmentPageState extends State<AvialableEquipmentPage> {
               if (snapshot.hasData) {
                 final category = snapshot.data;
                 if (category != null) {
-                  return Container(
-                    padding: const EdgeInsets.only(top: 60),
-                    child: Column(
-                      children: [
-                        Row(
+                  return Column(
+                    children: [
+                      Container(
+                        color: AppColor.lightGrey,
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 20, horizontal: 25),
+                        height: 140,
+                        child: Column(
                           children: [
-                            IconButton(
-                              onPressed: () {
-                                Navigator.pop(context);
+                            DropdownButton<EquipmentCategory>(
+                              isExpanded: true,
+                              value: selectedCategory ?? category[0],
+                              elevation: 16,
+                              style: TextStyle(color: AppColor.lightGrey),
+                              onChanged: (newValue) {
+                                setState(() {
+                                  selectedCategory = newValue!;
+                                });
                               },
-                              icon: const Icon(
-                                Icons.arrow_back_ios_new,
-                                size: 25,
+                              items: category.map((EquipmentCategory value) {
+                                return DropdownMenuItem<EquipmentCategory>(
+                                  value: value,
+                                  child: Text(
+                                    value.name,
+                                    style: style.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20,
+                                        color: AppColor.green),
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+                            Center(
+                              child: Text(
+                                'Select category to display equipment',
+                                style: style.copyWith(
+                                    fontSize: 11, color: AppColor.darkGrey),
                               ),
                             ),
-                            Expanded(child: Container()),
-                            Text(
-                              'Avialable Equipments',
-                              style: TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.w500,
-                                color: AppColor.homePageTitle,
-                              ),
-                            ),
-                            const SizedBox(width: 50),
-                            Expanded(child: Container()),
                           ],
                         ),
-                        SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.15),
-                        Container(
-                          color: Colors.grey[200],
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 20, horizontal: 25),
-                          height: MediaQuery.of(context).size.width * 0.3,
-                          child: Column(
-                            children: [
-                              DropdownButton<EquipmentCategory>(
-                                isExpanded: true,
-                                value: selectedCategory ?? category[0],
-                                elevation: 16,
-                                style: TextStyle(color: Colors.grey[600]),
-                                onChanged: (newValue) {
-                                  setState(() {
-                                    selectedCategory = newValue!;
-                                  });
-                                },
-                                items: category.map((EquipmentCategory value) {
-                                  return DropdownMenuItem<EquipmentCategory>(
-                                    value: value,
-                                    child: Text(
-                                      value.name,
-                                      style: TextStyle(
-                                          color: AppColor.gradientFirst,
-                                          fontSize: 22),
-                                    ),
-                                  );
-                                }).toList(),
-                              ),
-                              const Center(
-                                child: Text(
-                                    'Select category to display equipment'),
-                              )
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          child: FutureBuilder<List<EquipmentsAvailable>>(
-                              future: EquipmentAPI().fetchAvialableEquipments(),
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.done) {
-                                  if (selectedCategory == null) {
-                                    final result = snapshot.data!;
-                                    return SizedBox(
-                                      child: ListView.builder(
-                                        itemCount: result.length,
-                                        itemBuilder: (_, int index) {
-                                          return equipmentCard(
-                                              result, index, context);
-                                        },
-                                      ),
-                                    );
-                                  } else {
-                                    final results = snapshot.data!;
-                                    var result = results
-                                        .where((item) => selectedCategory!.id
-                                            .contains(item.equipmentCategoryId))
-                                        .toList();
-                                    return ListView.builder(
+                      ),
+                      const SizedBox(height: 5),
+                      Expanded(
+                        child: FutureBuilder<List<EquipmentsAvailable>>(
+                            future: EquipmentAPI().fetchAvialableEquipments(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.done) {
+                                if (selectedCategory == null) {
+                                  final result = snapshot.data!;
+                                  return SizedBox(
+                                    child: ListView.builder(
                                       itemCount: result.length,
                                       itemBuilder: (_, int index) {
                                         return equipmentCard(
                                             result, index, context);
                                       },
-                                    );
-                                  }
+                                    ),
+                                  );
                                 } else {
-                                  return Center(
-                                    child: CircularProgressIndicator(
-                                        color: AppColor.gradientFirst),
+                                  final results = snapshot.data!;
+                                  var result = results
+                                      .where((item) => selectedCategory!.id
+                                          .contains(item.equipmentCategoryId))
+                                      .toList();
+                                  return ListView.builder(
+                                    itemCount: result.length,
+                                    itemBuilder: (_, int index) {
+                                      return equipmentCard(
+                                          result, index, context);
+                                    },
                                   );
                                 }
-                              }),
-                        )
-                      ],
-                    ),
+                              } else {
+                                return const Center();
+                              }
+                            }),
+                      )
+                    ],
                   );
                 } else {
-                  return Center(
-                    child: CircularProgressIndicator(
-                        color: AppColor.gradientFirst),
-                  );
+                  return const Center();
                 }
               }
             }
             return Center(
-              child: CircularProgressIndicator(color: AppColor.gradientFirst),
+              child: CircularProgressIndicator(color: AppColor.darkGrey),
             );
           }),
     );
   }
 
-  Padding equipmentCard(
+  equipmentCard(
       List<EquipmentsAvailable> result, int index, BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(right: 5, left: 5),
-      child: Container(
-        height: 85,
-        padding: const EdgeInsets.only(bottom: 2, right: 3),
+      padding: const EdgeInsets.only(left: 20, right: 20),
+      child: SizedBox(
+        height: 80,
         child: Card(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(8),
           ),
-          elevation: 3,
+          elevation: 0,
           shadowColor: AppColor.gradientSecond,
           child: Padding(
-            padding: const EdgeInsets.only(
-              top: 3,
-              left: 3,
-            ),
+            padding: const EdgeInsets.all(6),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -187,10 +181,10 @@ class _AvialableEquipmentPageState extends State<AvialableEquipmentPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
-                          width: 60,
-                          height: 70,
+                          width: 56,
+                          height: 56,
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(4),
                             image: DecorationImage(
                               image: NetworkImage(result[index].equipmentImage),
                               fit: BoxFit.cover,
@@ -204,48 +198,56 @@ class _AvialableEquipmentPageState extends State<AvialableEquipmentPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width,
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  result[index].equipmentName,
-                                  maxLines: 1,
-                                  style: TextStyle(
-                                      color: AppColor.homePageTitle,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500),
+                          Text(result[index].equipmentName,
+                              maxLines: 1, style: style.copyWith(fontSize: 14)),
+                          const SizedBox(height: 5),
+                          Container(
+                            padding: const EdgeInsets.all(4),
+                            height: 30,
+                            width: 52,
+                            decoration: BoxDecoration(
+                                color: result[index].equipmentCondition == 'BAD'
+                                    ? const Color(0xFFFEEAEA)
+                                    : result[index].equipmentCondition ==
+                                                'NEW' ||
+                                            result[index].equipmentCondition ==
+                                                'OLD'
+                                        ? const Color(0xFFEDF9F3)
+                                        : result[index].equipmentCondition ==
+                                                'FAIR'
+                                            ? const Color(0xFFFFFAEC)
+                                            : null,
+                                borderRadius: BorderRadius.circular(8)),
+                            child: Center(
+                              child: Text(
+                                result[index].equipmentCondition == 'BAD'
+                                    ? 'Bad'
+                                    : result[index].equipmentCondition ==
+                                                'NEW' ||
+                                            result[index].equipmentCondition ==
+                                                'OLD'
+                                        ? 'Good'
+                                        : result[index].equipmentCondition ==
+                                                'FAIR'
+                                            ? 'Fair'
+                                            : '',
+                                style: style.copyWith(
+                                  fontSize: 12,
+                                  color: result[index].equipmentCondition ==
+                                          'BAD'
+                                      ? AppColor.red
+                                      : result[index].equipmentCondition ==
+                                                  'NEW' ||
+                                              result[index]
+                                                      .equipmentCondition ==
+                                                  'OLD'
+                                          ? AppColor.green
+                                          : result[index].equipmentCondition ==
+                                                  'FAIR'
+                                              ? const Color(0xFFFFCC42)
+                                              : null,
                                 ),
-                                Expanded(child: Container()),
-                                Container(
-                                  margin: const EdgeInsets.only(right: 10),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      color: colorscondition(
-                                          result[index].equipmentCondition)),
-                                  padding: const EdgeInsets.all(5),
-                                  height: 17,
-                                  child: Text(
-                                    result[index].equipmentCondition,
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 8,
-                                        color:
-                                            AppColor.homePageContainerTextBig),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const Divider(),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width,
-                            child: Text(
-                              result[index].equipmentName,
-                              maxLines: 2,
-                              style: const TextStyle(
-                                  fontSize: 12, fontWeight: FontWeight.w500),
+                              ),
                             ),
                           ),
                         ],
@@ -259,17 +261,5 @@ class _AvialableEquipmentPageState extends State<AvialableEquipmentPage> {
         ),
       ),
     );
-  }
-
-  Color colorscondition(String conditionresult) {
-    if (conditionresult == 'NEW') {
-      return Colors.green;
-    } else if (conditionresult == 'OLD') {
-      return Colors.lime[900]!;
-    } else if (conditionresult == 'FAIR') {
-      return Colors.greenAccent;
-    } else {
-      return Colors.red;
-    }
   }
 }

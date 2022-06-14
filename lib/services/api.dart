@@ -7,8 +7,6 @@ class BaseAPI {
 
   //http://34.79.101.196/crisp_inventory/api
 
-  //Map<String, String> key = {"X-Api-Key": "632F2EC9771B6C4C0BDF30BE21D9009B"};
-
   Map<String, String> headers = {
     "X-Api-Key": "632F2EC9771B6C4C0BDF30BE21D9009B",
     "Content-Type": "application/json"

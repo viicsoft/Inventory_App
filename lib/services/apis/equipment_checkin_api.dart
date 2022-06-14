@@ -46,7 +46,7 @@ class EquipmentCheckInAPI extends BaseAPI {
       //print(' delete user: ${response.body}');
       return response;
     } else {
-      throw Exception('Failed to Add Equipment to CheckList.');
+      throw Exception('Failed to checkin equipment.');
     }
   }
 

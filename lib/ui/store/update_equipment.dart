@@ -1,41 +1,25 @@
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
-import 'package:flutter/services.dart';
+import 'package:viicsoft_inventory_app/component/button.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
+import 'package:viicsoft_inventory_app/component/mytextform.dart';
+import 'package:viicsoft_inventory_app/component/style.dart';
 import 'package:viicsoft_inventory_app/models/category.dart';
-import 'package:viicsoft_inventory_app/services/apis/category_api.dart';
+import 'package:viicsoft_inventory_app/models/equipments.dart';
 import 'package:viicsoft_inventory_app/services/apis/equipment_api.dart';
 
 class UpdateEquipmentPage extends StatefulWidget {
-  String? equipmentName;
-  String image;
-  String categoryId;
-  String condition;
-  String size;
-  String description;
-  String barcode;
-  String id;
-  UpdateEquipmentPage(
-      {Key? key,
-      required this.barcode,
-      required this.categoryId,
-      required this.condition,
-      required this.description,
-      required this.equipmentName,
-      required this.image,
-      required this.size,
-      required this.id})
-      : super(key: key);
+  final EquipmentElement? equipment;
+  const UpdateEquipmentPage({Key? key, this.equipment}) : super(key: key);
 
   @override
   State<UpdateEquipmentPage> createState() => _UpdateEquipmentPageState();
 }
 
 class _UpdateEquipmentPageState extends State<UpdateEquipmentPage> {
-  bool _isOnlineImage = true;
   XFile? _itemimage;
+  GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
 
   final picker = ImagePicker();
 
@@ -45,349 +29,194 @@ class _UpdateEquipmentPageState extends State<UpdateEquipmentPage> {
 
     setState(() {
       _itemimage = pickedFile;
-      _isOnlineImage = false;
     });
   }
 
-  late Future<List<EquipmentCategory>> _category;
-  EquipmentCategory? selectedCategory;
-  final CategoryAPI _categoryApi = CategoryAPI();
+  EquipmentCategory? newselectedCategory;
   final EquipmentAPI _equipmentApi = EquipmentAPI();
-  bool _categoryNotSelected = false;
-
-  @override
-  void initState() {
-    _category = _categoryApi.fetchAllCategory();
-    super.initState();
-  }
-
-  Future scanBarcodeNormal() async {
-    String barcodeScanRes;
-    try {
-      barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
-          '#ff6666', 'Cancel', true, ScanMode.BARCODE);
-    } on PlatformException {
-      barcodeScanRes = 'Failed to get platform version.';
-    }
-
-    if (!mounted) return;
-    setState(() {
-      widget.barcode = barcodeScanRes;
-    });
-  }
+  String? _newCondition;
 
   List data = [];
 
   @override
+  void initState() {
+    _newCondition = widget.equipment!.equipmentCondition;
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    var screenSize = MediaQuery.of(context).size;
+
+    String _newSize = widget.equipment!.equipmentSize;
     TextEditingController descriptionController =
-        TextEditingController(text: widget.description);
-    TextEditingController equipmentNameController =
-        TextEditingController(text: widget.equipmentName);
+        TextEditingController(text: widget.equipment!.equipmentDescription);
+    TextEditingController _equipmentNameController =
+        TextEditingController(text: widget.equipment!.equipmentName);
     return Scaffold(
-      body: FutureBuilder<List<EquipmentCategory>>(
-          future: _category,
-          builder: (context, snapshot) {
-            final category = snapshot.data;
-            if (category != null) {
-              final index = category
-                  .indexWhere((element) => element.id == widget.categoryId);
-              return Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      AppColor.gradientFirst,
-                      AppColor.gradientSecond,
-                    ],
-                    begin: const FractionalOffset(0.0, 0.4),
-                    end: Alignment.topRight,
-                  ),
-                ),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: AppColor.white,
+        toolbarHeight: screenSize.height * 0.11,
+        elevation: 0,
+        title: Row(
+          children: [
+            IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Icon(
+                Icons.arrow_back_ios_new,
+                size: 25,
+                color: AppColor.iconBlack,
+              ),
+            ),
+            const SizedBox(width: 5),
+            Text(
+              'Edit Equipment ( ${widget.equipment!.equipmentName} )',
+              style: style.copyWith(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Expanded(child: Container()),
+          ],
+        ),
+      ),
+      body: Form(
+        key: globalFormKey,
+        child: Column(
+          children: [
+            Expanded(
+              child: Container(
+                color: AppColor.homePageColor,
                 child: Column(
                   children: [
-                    Container(
-                      padding:
-                          const EdgeInsets.only(top: 30, left: 30, right: 30),
-                      width: MediaQuery.of(context).size.width,
-                      height: 130,
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              IconButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                icon: const Icon(
-                                  Icons.arrow_back_ios_new,
-                                  size: 25,
-                                  color: Colors.white,
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 20, left: 20),
+                        child: ListView(
+                          children: [
+                            const SizedBox(height: 20),
+                            Text(
+                              'Equipment name*',
+                              style: style.copyWith(
+                                color: AppColor.darkGrey,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            MyTextForm(
+                              controller: _equipmentNameController,
+                              obscureText: false,
+                              labelText: 'Enter equipment name',
+                            ),
+                            const SizedBox(height: 5),
+                            Text(
+                              'Equipment condition*',
+                              style: style.copyWith(
+                                color: AppColor.darkGrey,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            Container(
+                              height: 60,
+                              width: screenSize.width,
+                              decoration: BoxDecoration(
+                                // color: AppColor.red,
+                                border: Border.all(color: AppColor.buttonText),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 30, right: 20),
+                                  child: DropdownButton<String>(
+                                    isExpanded: true,
+                                    underline: const Divider(
+                                        color: Colors.transparent),
+                                    value: _newCondition,
+                                    elevation: 0,
+                                    style: style.copyWith(fontSize: 14),
+                                    onChanged: (String? newValue) {
+                                      setState(() {
+                                        _newCondition = newValue!;
+                                      });
+                                    },
+                                    items: <String>[
+                                      'NEW',
+                                      'OLD',
+                                      'BAD',
+                                      'FAIR',
+                                    ].map<DropdownMenuItem<String>>(
+                                        (String value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: Text(value),
+                                      );
+                                    }).toList(),
+                                  ),
                                 ),
                               ),
-                            ],
-                          ),
-                          Container(
-                            padding: const EdgeInsets.only(
-                                top: 10, left: 20, right: 20),
-                            child: Column(
+                            ),
+
+                            const SizedBox(height: 5),
+                            Text(
+                              'Equipment description*',
+                              style: style.copyWith(
+                                color: AppColor.darkGrey,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            TextFormField(
+                              controller: descriptionController,
+                              validator: (input) => (input!.isEmpty)
+                                  ? "Add Equipment Description"
+                                  : null,
+                              keyboardType: TextInputType.multiline,
+                              maxLines: null,
+                              decoration: InputDecoration(
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                  borderSide: BorderSide(
+                                    color: AppColor.textFormColor,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                  borderSide: BorderSide(
+                                    color: AppColor.activetextFormColor,
+                                  ),
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 25.0, horizontal: 10.0),
+                                border: const OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(12))),
+                                hintStyle:
+                                    style.copyWith(color: AppColor.buttonText),
+                                hintText: 'Description',
+                              ),
+                            ),
+                            const SizedBox(height: 5),
+
+                            //
+                            const SizedBox(height: 5),
+                            Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Update Equipment',
-                                  style: TextStyle(
-                                      fontSize: 25,
-                                      color: AppColor.homePageContainerTextBig),
+                                  'Image*',
+                                  style: style.copyWith(
+                                    color: AppColor.darkGrey,
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
+                                itemImages(context),
                               ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.only(left: 30, right: 30),
-                        width: MediaQuery.of(context).size.width,
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.only(
-                            topRight: Radius.circular(70),
-                            topLeft: Radius.circular(70),
-                          ),
-                        ),
-                        child: Column(
-                          children: [
-                            Expanded(
-                              child: ListView(
-                                children: [
-                                  itemImages(context),
-                                  const SizedBox(height: 15),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        'Category*',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w500,
-                                          color: AppColor.homePageTitle,
-                                        ),
-                                      ),
-                                      Expanded(child: Container()),
-                                      Column(
-                                        children: [
-                                          DropdownButton<EquipmentCategory>(
-                                            value: selectedCategory ??
-                                                category[index],
-                                            elevation: 16,
-                                            style: TextStyle(
-                                                color: Colors.grey[600]),
-                                            onChanged: (newValue) {
-                                              setState(() {
-                                                selectedCategory = newValue!;
-                                              });
-                                            },
-                                            items: category
-                                                .map((EquipmentCategory value) {
-                                              return DropdownMenuItem<
-                                                  EquipmentCategory>(
-                                                value: value,
-                                                child: Text(
-                                                  value.name,
-                                                  style: TextStyle(
-                                                    fontSize: 15,
-                                                    fontWeight: FontWeight.w500,
-                                                    color:
-                                                        AppColor.gradientFirst,
-                                                  ),
-                                                ),
-                                              );
-                                            }).toList(),
-                                          ),
-                                          Text(
-                                            _categoryNotSelected
-                                                ? 'Category not Selected !'
-                                                : '',
-                                            style: const TextStyle(
-                                              color: Colors.red,
-                                              fontSize: 10,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 10),
-                                  TextField(
-                                    controller: equipmentNameController,
-                                    decoration: InputDecoration(
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              vertical: 8.0, horizontal: 10.0),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      labelText: 'Equipment Name',
-                                    ),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        'Condition*',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w500,
-                                          color: AppColor.homePageTitle,
-                                        ),
-                                      ),
-                                      Expanded(child: Container()),
-                                      DropdownButton<String>(
-                                        value: widget.condition,
-                                        elevation: 16,
-                                        style:
-                                            TextStyle(color: Colors.grey[600]),
-                                        onChanged: (String? newValue) {
-                                          setState(() {
-                                            widget.condition = newValue!;
-                                          });
-                                        },
-                                        items: <String>[
-                                          'NEW',
-                                          'OLD',
-                                          'BAD',
-                                          'FAIR',
-                                        ].map<DropdownMenuItem<String>>(
-                                            (String value) {
-                                          return DropdownMenuItem<String>(
-                                            value: value,
-                                            child: Text(value),
-                                          );
-                                        }).toList(),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        'Size*',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w500,
-                                          color: AppColor.homePageTitle,
-                                        ),
-                                      ),
-                                      Expanded(child: Container()),
-                                      DropdownButton<String>(
-                                        value: widget.size,
-                                        elevation: 16,
-                                        style:
-                                            TextStyle(color: Colors.grey[600]),
-                                        onChanged: (String? newValue) {
-                                          setState(() {
-                                            widget.size = newValue!;
-                                          });
-                                        },
-                                        items: <String>[
-                                          'LONG',
-                                          'VERY LONG',
-                                          'SHORT',
-                                          'VERY SHORT',
-                                        ].map<DropdownMenuItem<String>>(
-                                            (String value) {
-                                          return DropdownMenuItem<String>(
-                                            value: value,
-                                            child: Text(value),
-                                          );
-                                        }).toList(),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 10),
-                                  TextField(
-                                    controller: descriptionController,
-                                    keyboardType: TextInputType.multiline,
-                                    maxLines: null,
-                                    decoration: const InputDecoration(
-                                      contentPadding: EdgeInsets.symmetric(
-                                          vertical: 25.0, horizontal: 10.0),
-                                      border: OutlineInputBorder(),
-                                      labelText: 'Description',
-                                    ),
-                                  ),
-                                  const SizedBox(height: 20),
-                                  Row(
-                                    children: [
-                                      ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                            primary: AppColor.homePageTitle),
-                                        onPressed: () => scanBarcodeNormal(),
-                                        child: const Text('Scan Barcode'),
-                                      ),
-                                      Expanded(child: Container()),
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 15),
-                                        child: Text(
-                                            'Barcode : ${widget.barcode}\n',
-                                            style:
-                                                const TextStyle(fontSize: 16)),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 40),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.stretch,
-                                    children: [
-                                      ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                            primary: AppColor.gradientFirst),
-                                        onPressed: () async {
-                                          if (selectedCategory == null) {
-                                            setState(() {
-                                              _categoryNotSelected = true;
-                                            });
-                                          } else {
-                                            var res = await _equipmentApi
-                                                .updateEquipment(
-                                                    equipmentNameController
-                                                        .text,
-                                                    //_itemimage!,
-                                                    selectedCategory!.id,
-                                                    widget.condition,
-                                                    widget.size,
-                                                    descriptionController.text,
-                                                    widget.barcode,
-                                                    widget.id);
-                                            if (res.statusCode == 200) {
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(const SnackBar(
-                                                      backgroundColor:
-                                                          Colors.green,
-                                                      content: Text(
-                                                          "Equipment Updated")));
-                                              Navigator.pop(context);
-                                            } else {
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(
-                                                const SnackBar(
-                                                  backgroundColor: Colors.red,
-                                                  content: Text(
-                                                      "Something went wrong"),
-                                                ),
-                                              );
-                                            }
-                                          }
-                                        },
-                                        child: const Text(
-                                          'Update Equipment',
-                                          style: TextStyle(fontSize: 16),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
                             ),
                           ],
                         ),
@@ -395,13 +224,47 @@ class _UpdateEquipmentPageState extends State<UpdateEquipmentPage> {
                     ),
                   ],
                 ),
-              );
-            } else {
-              return Center(
-                child: CircularProgressIndicator(color: AppColor.gradientFirst),
-              );
-            }
-          }),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: MainButton(
+                borderColor: Colors.transparent,
+                text: 'UPDATE EQUIPMENT',
+                backgroundColor: AppColor.primaryColor,
+                textColor: AppColor.buttonText,
+                onTap: () async {
+                  if (globalFormKey.currentState!.validate()) {
+                    var res = await _equipmentApi.updateEquipment(
+                      _equipmentNameController.text,
+                      widget.equipment!.equipmentCategoryId,
+                      _newCondition!,
+                      _newSize,
+                      descriptionController.text,
+                      widget.equipment!.equipmentBarcode!,
+                      widget.equipment!.id,
+                    );
+                    if (res.statusCode == 200 || res.statusCode == 201) {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          backgroundColor: Colors.green,
+                          content: Text(
+                              "${_equipmentNameController.text} Updated successfully")));
+                      Navigator.pop(context);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          backgroundColor: Colors.red,
+                          content: Text("Something went wrong"),
+                        ),
+                      );
+                    }
+                  }
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -413,74 +276,23 @@ class _UpdateEquipmentPageState extends State<UpdateEquipmentPage> {
           alignment: AlignmentDirectional.center,
           children: [
             Container(
-              width: 80,
-              height: 80,
+              width: MediaQuery.of(context).size.width * 0.25,
+              height: MediaQuery.of(context).size.width * 0.22,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(50),
+                border: Border.all(color: AppColor.textFormColor),
+                borderRadius: BorderRadius.circular(12),
                 image: DecorationImage(
-                  image: userimage(_isOnlineImage, widget.image),
+                  image: _itemimage != null
+                      ? FileImage(File(_itemimage!.path))
+                      : NetworkImage(widget.equipment!.equipmentImage)
+                          as ImageProvider,
                   fit: BoxFit.cover,
                 ),
               ),
             ),
-            // Positioned(
-            //   bottom: 0,
-            //   right: 0,
-            //   child: InkWell(
-            //     onTap: () => showDialog<String>(
-            //       context: context,
-            //       builder: (BuildContext context) => AlertDialog(
-            //         title: const Text('Select Image'),
-            //         content: const Text(
-            //             'Select image from device gallery or use device camera'),
-            //         actions: <Widget>[
-            //           TextButton(
-            //             onPressed: () {
-            //               getImage(ImageSource.camera);
-            //               Navigator.pop(context);
-            //             },
-            //             child: const Text('Camera'),
-            //           ),
-            //           TextButton(
-            //             onPressed: () {
-            //               getImage(ImageSource.gallery);
-            //               Navigator.pop(context);
-            //             },
-            //             child: const Text('Gallery'),
-            //           ),
-            //         ],
-            //       ),
-            //     ),
-            //     child: Container(
-            //       height: 25,
-            //       width: 25,
-            //       decoration: BoxDecoration(
-            //         color: AppColor.homePageTitle,
-            //         shape: BoxShape.circle,
-            //         border: Border.all(
-            //           width: 1.5,
-            //           color: Colors.white,
-            //         ),
-            //       ),
-            //       child: const Icon(
-            //         Icons.edit,
-            //         size: 15,
-            //         color: Colors.white,
-            //       ),
-            //     ),
-            //   ),
-            // ),
           ],
         ),
       ],
     );
-  }
-
-  ImageProvider userimage(bool saverImage, String url) {
-    if (saverImage) {
-      return NetworkImage(url);
-    } else {
-      return FileImage(File(_itemimage!.path));
-    }
   }
 }

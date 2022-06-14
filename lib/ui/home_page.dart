@@ -1,7 +1,7 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:viicsoft_inventory_app/component/home_activities_container.dart';
+import 'package:viicsoft_inventory_app/component/homebigcontainer.dart';
+import 'package:viicsoft_inventory_app/component/homesmallcontainer.dart';
 import 'package:viicsoft_inventory_app/models/avialable_equipment.dart';
 import 'package:viicsoft_inventory_app/models/equipment_not_avialable.dart';
 import 'package:viicsoft_inventory_app/models/equipmentcheckin.dart';
@@ -10,17 +10,17 @@ import 'package:viicsoft_inventory_app/models/eventequipmentcheckout.dart';
 import 'package:viicsoft_inventory_app/services/apis/equipment_api.dart';
 import 'package:viicsoft_inventory_app/services/apis/equipment_checkin_api.dart';
 import 'package:viicsoft_inventory_app/services/apis/equipment_checkout_api.dart';
-import 'package:viicsoft_inventory_app/services/notification.dart';
+import 'package:viicsoft_inventory_app/services/notification_service.dart';
 import 'package:viicsoft_inventory_app/ui/Menu/user_profile/profile_page.dart';
 import 'package:viicsoft_inventory_app/ui/event/checkin_equipment.dart';
 import 'package:viicsoft_inventory_app/ui/event/checkout_equipment.dart';
-import 'package:viicsoft_inventory_app/ui/store/avialable_Equipment.dart';
+import 'package:viicsoft_inventory_app/ui/store/avialable_equipment.dart';
 import 'package:viicsoft_inventory_app/ui/store/bad_equipment.dart';
 import 'package:viicsoft_inventory_app/ui/store/equipment_not_avialable.dart';
 import 'package:viicsoft_inventory_app/ui/store/fair_equipment.dart';
 import 'package:viicsoft_inventory_app/ui/store/good_equipment.dart';
+import 'package:viicsoft_inventory_app/ui/store/totalequipment.dart';
 import '../component/colors.dart';
-import '../component/item_images.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -31,42 +31,63 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final EquipmentAPI _equipmentApi = EquipmentAPI();
-  final RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
-  void _onRefresh() async {
-    await Future.delayed(const Duration(milliseconds: 1000));
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  Future refresh() async {
     setState(() {});
-    _refreshController.refreshCompleted();
   }
 
   @override
   Widget build(BuildContext context) {
-    var screensize = MediaQuery.of(context).size;
+    // var screensize = MediaQuery.of(context).size;
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
+        key: _scaffoldKey,
         drawer: const ProfilePage(),
         appBar: AppBar(
-          toolbarHeight: screensize.height * 0.082,
-          iconTheme: const IconThemeData(color: Colors.black, size: 40),
+          automaticallyImplyLeading: false,
           elevation: 0,
-          backgroundColor: AppColor.homePageBackground,
-          title: Text(
-            'Dashboard',
-            style: TextStyle(
-              fontSize: 35,
-              color: AppColor.homePageTitle,
-              fontWeight: FontWeight.w700,
+          backgroundColor: AppColor.white,
+          flexibleSpace: Padding(
+            padding: const EdgeInsets.only(top: 30, left: 20, right: 20),
+            child: Row(
+              children: [
+                Text(
+                  'Dashboard',
+                  style: TextStyle(
+                    fontSize: 24,
+                    color: AppColor.primaryColor,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                Expanded(child: Container()),
+                Container(
+                  height: 40,
+                  width: 40,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8.0),
+                    border: Border.all(color: AppColor.buttonText),
+                  ),
+                  child: InkWell(
+                    onTap: () => _scaffoldKey.currentState!.openDrawer(),
+                    child: Icon(
+                      Icons.apps_rounded,
+                      size: 30,
+                      color: AppColor.iconBlack,
+                    ),
+                  ),
+                )
+              ],
             ),
           ),
         ),
-        backgroundColor: AppColor.homePageBackground,
+        backgroundColor: AppColor.homePageColor,
         body: FutureBuilder<List<EquipmentElement>>(
           future: EquipmentAPI().fetchAllEquipments(),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               return Center(
-                child: CircularProgressIndicator(color: AppColor.gradientFirst),
+                child: CircularProgressIndicator(color: AppColor.red),
               );
             } else if (snapshot.connectionState == ConnectionState.done) {
               final result = snapshot.data!;
@@ -83,354 +104,225 @@ class _HomePageState extends State<HomePage> {
                   .where((item) => item.equipmentCondition == 'OLD')
                   .toList();
               var goodResult = newResult + oldResult;
-              return SmartRefresher(
-                enablePullDown: true,
-                controller: _refreshController,
-                onRefresh: _onRefresh,
+              return RefreshIndicator(
+                onRefresh: refresh,
                 child: ListView(
                   children: [
                     Container(
                       padding:
-                          const EdgeInsets.only(top: 10, left: 15, right: 15),
+                          const EdgeInsets.only(top: 0, left: 20, right: 20),
                       child: Column(
                         children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: screensize.height * 0.35,
-                            decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    AppColor.gradientFirst,
-                                    AppColor.gradientSecond.withOpacity(0.8)
-                                  ],
-                                  begin: Alignment.bottomLeft,
-                                  end: Alignment.centerRight,
-                                ),
-                                borderRadius: const BorderRadius.only(
-                                  topRight: Radius.circular(40),
-                                  topLeft: Radius.circular(40),
-                                  bottomLeft: Radius.circular(40),
-                                  bottomRight: Radius.circular(40),
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    offset: const Offset(2, 5),
-                                    blurRadius: 4,
-                                    color: AppColor.gradientSecond
-                                        .withOpacity(0.2),
-                                  )
-                                ]),
-                            child: Container(
-                              padding: const EdgeInsets.only(
-                                  top: 15, left: 15, right: 15),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        'Inventory Summary',
-                                        style: TextStyle(
-                                            fontSize: 30,
-                                            color: AppColor
-                                                .homePageContainerTextBig),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: screensize.height * 0.03,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          color: Colors.white,
-                                        ),
-                                        padding: const EdgeInsets.all(5),
-                                        height: 30,
-                                        child: Center(
-                                          child: Text(
-                                            result.length.toString(),
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 16,
-                                                color: Colors.black),
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(width: 15),
-                                      Text(
-                                        'Total Equipments Recorded',
-                                        style: TextStyle(
-                                            fontSize: 18,
-                                            color: AppColor
-                                                .homePageContainerTextBig),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: screensize.width / 15),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      InkWell(
-                                        onTap: () => Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (_) =>
-                                                    const FairEquipmentPage())),
-                                        child: equipmentCondition(
-                                            qauntity: fairResult.isEmpty
-                                                ? '0'
-                                                : '${fairResult.length}',
-                                            condition: 'Fair'),
-                                      ),
-                                      const SizedBox(
-                                          height: 50,
-                                          child: VerticalDivider(
-                                              color: Colors.white,
-                                              thickness: 2)),
-                                      InkWell(
-                                        onTap: () => {
-                                          if (badResult.length > 1)
-                                            {
-                                              notification(),
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (_) =>
-                                                      const BadEquipmentPage(),
-                                                ),
-                                              ),
-                                            }
-                                          else
-                                            {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (_) =>
-                                                      const BadEquipmentPage(),
-                                                ),
-                                              ),
-                                            }
-                                        },
-                                        child: equipmentCondition(
-                                            qauntity: badResult.isEmpty
-                                                ? '0'
-                                                : '${badResult.length}',
-                                            condition: 'Bad'),
-                                      ),
-                                      const SizedBox(
-                                          height: 50,
-                                          child: VerticalDivider(
-                                              color: Colors.white,
-                                              thickness: 2)),
-                                      InkWell(
-                                        onTap: () => Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (_) =>
-                                                    const GoodEquipmentPage())),
-                                        child: equipmentCondition(
-                                            qauntity: goodResult.isEmpty
-                                                ? '0'
-                                                : '${goodResult.length}',
-                                            condition: 'Good'),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                      height:
-                                          MediaQuery.of(context).size.width /
-                                              16),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      InkWell(
-                                        onTap: () => Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (_) =>
-                                                    const AvialableEquipmentPage())),
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            color: Colors.white,
-                                          ),
-                                          padding: const EdgeInsets.all(5),
-                                          height: 30,
-                                          child: Center(
-                                            child: FutureBuilder<
-                                                    List<EquipmentsAvailable>>(
-                                                future: _equipmentApi
-                                                    .fetchAvialableEquipments(),
-                                                builder: (context, snapshot) {
-                                                  if (snapshot
-                                                          .connectionState ==
-                                                      ConnectionState.done) {
-                                                    if (snapshot.hasData) {
-                                                      var aviableEquipment =
-                                                          snapshot.data!;
-                                                      return Text(
-                                                        aviableEquipment.length
-                                                            .toString(),
-                                                        style: const TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize: 16,
-                                                            color:
-                                                                Colors.black),
-                                                      );
-                                                    }
-                                                  }
-                                                  return Center(
-                                                    child:
-                                                        CircularProgressIndicator(
-                                                            color: AppColor
-                                                                .gradientFirst),
-                                                  );
-                                                }),
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(width: 15),
-                                      Text(
-                                        'Equipments Available ',
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          color:
-                                              AppColor.homePageContainerTextBig,
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                ],
+                          const SizedBox(
+                            height: 22.0,
+                          ),
+                          Row(
+                            children: [
+                              HomeBigContainer(
+                                backgroundColor: AppColor.homePageTotalEquip,
+                                dividerColor: const Color(0xFF6ECAFA),
+                                title: 'Total Equipments',
+                                totalCount: result.length.toString(),
+                                onTap: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) =>
+                                            const TotalEquipmentPage())),
                               ),
-                            ),
+                              Expanded(child: Container()),
+                              FutureBuilder<List<EquipmentsAvailable>>(
+                                  future:
+                                      _equipmentApi.fetchAvialableEquipments(),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.done) {
+                                      if (snapshot.hasData) {
+                                        var aviableEquipment = snapshot.data!;
+                                        return HomeBigContainer(
+                                          backgroundColor: AppColor.green,
+                                          dividerColor: const Color(0xFF78D0A5),
+                                          title: 'Avialable Equipments',
+                                          totalCount: aviableEquipment.length
+                                              .toString(),
+                                          onTap: () => Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (_) =>
+                                                  const AvialableEquipmentPage(),
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    }
+                                    return const Center();
+                                  }),
+                              Expanded(child: Container()),
+                              FutureBuilder<
+                                  List<EquipmentsNotAvailableElement>>(
+                                future:
+                                    _equipmentApi.fetchEquipmentsNotAvialable(),
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasData) {
+                                    return HomeBigContainer(
+                                      backgroundColor: AppColor.red,
+                                      dividerColor: const Color(0XFFF5605F),
+                                      title: 'Unavialable Equipments',
+                                      totalCount:
+                                          snapshot.data!.length.toString(),
+                                      onTap: () => Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const EquipmentNotAvialablePage(),
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                  return const Center();
+                                },
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 6,
+                          ),
+                          Row(
+                            children: [
+                              HomeSmallContainer(
+                                borderColor: AppColor.green,
+                                buttonColor: AppColor.green,
+                                backgroundColor: const Color(0xFFEDF9F3),
+                                title: 'Good Equipments',
+                                totalCount: goodResult.isEmpty
+                                    ? '0'
+                                    : '${goodResult.length}',
+                                onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const GoodEquipmentPage(),
+                                  ),
+                                ),
+                              ),
+                              Expanded(child: Container()),
+                              HomeSmallContainer(
+                                borderColor: const Color(0xFFFFCC42),
+                                buttonColor: const Color(0xFFFFCC42),
+                                backgroundColor: const Color(0xFFFFFAEC),
+                                title: 'Fair Equipments',
+                                totalCount: fairResult.isEmpty
+                                    ? '0'
+                                    : '${fairResult.length}',
+                                onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const FairEquipmentPage(),
+                                  ),
+                                ),
+                              ),
+                              Expanded(child: Container()),
+                              HomeSmallContainer(
+                                borderColor: const Color(0xFFF22B29),
+                                buttonColor: const Color(0xFFF22B29),
+                                backgroundColor: const Color(0xFFFEEAEA),
+                                title: 'Bad Equipments',
+                                totalCount: badResult.isEmpty
+                                    ? '0'
+                                    : '${badResult.length}',
+                                onTap: () async => {
+                                  if (badResult.length > 1)
+                                    {
+                                      await NotificationService()
+                                          .notification(),
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) =>
+                                              const BadEquipmentPage(),
+                                        ),
+                                      ),
+                                    }
+                                  else
+                                    {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) =>
+                                              const BadEquipmentPage(),
+                                        ),
+                                      ),
+                                    }
+                                },
+                              )
+                            ],
                           ),
                           SizedBox(
-                              height: MediaQuery.of(context).size.width / 15),
+                              height: MediaQuery.of(context).size.width / 13),
                           Row(
                             children: [
                               Text(
-                                'Activities',
+                                'Quick Actions',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                  fontSize: 25,
+                                  fontSize: 16,
                                   fontWeight: FontWeight.w500,
-                                  color: AppColor.homePageTitle,
+                                  color: AppColor.primaryColor,
                                 ),
                               ),
                             ],
                           ),
                           SizedBox(
-                              height: MediaQuery.of(context).size.width / 15),
+                              height: MediaQuery.of(context).size.width / 13),
                           SizedBox(
                             child: Column(
                               children: [
-                                FutureBuilder<
-                                    List<EquipmentsNotAvailableElement>>(
-                                  future: _equipmentApi
-                                      .fetchEquipmentsNotAvialable(),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.hasData) {
-                                      return homeactivities(
-                                        context,
-                                        qauntity:
-                                            snapshot.data!.length.toString(),
-                                        title: 'Equipment Not Avialable',
-                                        icon: Icons.pending,
-                                        onpressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const EquipmentNotAvialablePage(),
-                                            ),
-                                          );
-                                        },
-                                      );
-                                    }
-                                    return Center(
-                                      child: CircularProgressIndicator(
-                                          color: AppColor.gradientFirst),
-                                    );
-                                  },
-                                ),
-                                SizedBox(
-                                    height:
-                                        MediaQuery.of(context).size.width / 16),
-                                FutureBuilder<List<EventsEquipmentCheckout>>(
-                                  future: EquipmentCheckOutAPI()
-                                      .fetchAllEquipmentCheckOut(),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.hasData) {
-                                      return homeactivities(
-                                        context,
-                                        qauntity:
-                                            snapshot.data!.length.toString(),
-                                        title: 'CheckOut Equipment',
-                                        icon: Icons.collections,
-                                        onpressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  CheckOutEquipmentPage(
-                                                equipmentCheckout:
-                                                    snapshot.data,
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      );
-                                    }
-                                    return Center(
-                                      child: CircularProgressIndicator(
-                                          color: AppColor.gradientFirst),
-                                    );
-                                  },
-                                ),
-                                SizedBox(
-                                    height:
-                                        MediaQuery.of(context).size.width / 16),
                                 FutureBuilder<List<EquipmentsCheckin>>(
                                   future: EquipmentCheckInAPI()
                                       .fetchAllEquipmentCheckIn(),
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData) {
-                                      return homeactivities(
-                                        context,
-                                        qauntity:
-                                            snapshot.data!.length.toString(),
-                                        title: 'CheckIn Equipment',
-                                        icon: Icons.not_interested,
-                                        onpressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const CheckInEquipmentPage(),
-                                            ),
-                                          );
-                                        },
+                                      return InkWell(
+                                        onTap: () => Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                const CheckInEquipmentPage(),
+                                          ),
+                                        ),
+                                        child: const HomeActivitiesContainer(
+                                          title: 'Check In Equipments',
+                                          description:
+                                              'Click to see equipments returned in past events',
+                                        ),
                                       );
                                     }
-                                    return Center(
-                                      child: CircularProgressIndicator(
-                                        color: AppColor.gradientFirst,
-                                      ),
-                                    );
+                                    return const Center();
                                   },
                                 ),
-                                SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.width / 16,
+                                const SizedBox(height: 10.0),
+                                FutureBuilder<List<EventsEquipmentCheckout>>(
+                                  future: EquipmentCheckOutAPI()
+                                      .fetchAllEquipmentCheckOut(),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData) {
+                                      return InkWell(
+                                        onTap: () => Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                CheckOutEquipmentPage(
+                                              equipmentCheckout: snapshot.data,
+                                            ),
+                                          ),
+                                        ),
+                                        child: const HomeActivitiesContainer(
+                                          title: 'Check Out Equipments',
+                                          description:
+                                              'Click to see equipment yet to be returned from events',
+                                        ),
+                                      );
+                                    }
+                                    return const Center();
+                                  },
                                 ),
                               ],
                             ),
@@ -443,193 +335,10 @@ class _HomePageState extends State<HomePage> {
               );
             } else {
               return Center(
-                child: CircularProgressIndicator(color: AppColor.gradientFirst),
+                child: CircularProgressIndicator(color: AppColor.darkGrey),
               );
             }
           },
-        ),
-      ),
-    );
-  }
-
-  equipmentCondition({String? qauntity, String? condition}) {
-    return Column(
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: Colors.white,
-          ),
-          padding: const EdgeInsets.all(5),
-          height: 30,
-          child: Center(
-            child: Text(
-              qauntity!,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-                color: Colors.black,
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(height: 5),
-        Text(
-          condition!,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-            color: AppColor.homePageContainerTextBig,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget homeactivities(BuildContext context,
-      {String? qauntity,
-      String? title,
-      Function()? onpressed,
-      IconData? icon}) {
-    return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.08,
-      width: MediaQuery.of(context).size.width,
-      child: Stack(
-        children: [
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.width / 5.5,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                gradient: LinearGradient(
-                  colors: [
-                    AppColor.gradientSecond,
-                    AppColor.gradientFirst,
-                    Colors.white70,
-                  ],
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    blurRadius: 4,
-                    offset: const Offset(1, 1.5),
-                    color: AppColor.gradientSecond.withOpacity(0.3),
-                  )
-                ]),
-            child: Padding(
-              padding: const EdgeInsets.only(top: 5, right: 10, left: 10),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      //Icon(icon, size: 30, color: Colors.white),
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.white,
-                        ),
-                        padding: const EdgeInsets.all(5),
-                        height: 30,
-                        child: Center(
-                          child: Text(
-                            qauntity!,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Container(),
-                      ),
-                      Text(
-                        title!,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: AppColor.homePageContainerTextBig,
-                        ),
-                      ),
-                      Expanded(
-                        child: Container(),
-                      ),
-                      IconButton(
-                        onPressed: onpressed,
-                        icon: const Icon(Icons.arrow_forward_ios, size: 25),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  final picker = ImagePicker();
-  XFile? menuimage;
-
-  Future getImage(ImageSource source) async {
-    final pickedFile = await picker.pickImage(source: source);
-
-    setState(() {
-      menuimage = pickedFile;
-    });
-  }
-
-  bottmsheet(BuildContext context) {
-    return Padding(
-      padding: MediaQuery.of(context).viewInsets,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(30),
-            topRight: Radius.circular(30),
-          ),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ItemImages(
-              imageProvide: menuimage != null
-                  ? FileImage(File(menuimage!.path))
-                  : const AssetImage('assets/ex2.png') as ImageProvider,
-              onpressedCamera: () {
-                getImage(ImageSource.camera);
-                Navigator.pop(context);
-              },
-              onpressedGallery: () {
-                getImage(ImageSource.gallery);
-                Navigator.pop(context);
-              },
-            ),
-            const SizedBox(height: 20),
-            const TextField(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'menu name',
-              ),
-            ),
-            const SizedBox(height: 50),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                ElevatedButton(
-                  style:
-                      ElevatedButton.styleFrom(primary: AppColor.gradientFirst),
-                  onPressed: () {},
-                  child: const Text(
-                    'Create Menu',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ),
-              ],
-            )
-          ],
         ),
       ),
     );

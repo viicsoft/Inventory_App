@@ -3,13 +3,17 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter/services.dart';
+import 'package:viicsoft_inventory_app/component/button.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
+import 'package:viicsoft_inventory_app/component/mytextform.dart';
+import 'package:viicsoft_inventory_app/component/popover.dart';
+import 'package:viicsoft_inventory_app/component/style.dart';
 import 'package:viicsoft_inventory_app/models/category.dart';
-import 'package:viicsoft_inventory_app/services/apis/category_api.dart';
 import 'package:viicsoft_inventory_app/services/apis/equipment_api.dart';
 
 class AddEquipmentPage extends StatefulWidget {
-  const AddEquipmentPage({Key? key}) : super(key: key);
+  final EquipmentCategory? category;
+  const AddEquipmentPage({Key? key, this.category}) : super(key: key);
 
   @override
   State<AddEquipmentPage> createState() => _AddEquipmentPageState();
@@ -21,7 +25,8 @@ class _AddEquipmentPageState extends State<AddEquipmentPage> {
   String _newSize = 'SHORT';
   GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
   TextEditingController descriptionController = TextEditingController();
-  TextEditingController equipmentNameController = TextEditingController();
+  final TextEditingController _equipmentNameController =
+      TextEditingController();
   final picker = ImagePicker();
   bool noImage = false;
 
@@ -35,16 +40,8 @@ class _AddEquipmentPageState extends State<AddEquipmentPage> {
   }
 
   String _scanBarcode = '';
-  late Future<List<EquipmentCategory>> _category;
   EquipmentCategory? newselectedCategory;
-  final CategoryAPI _categoryApi = CategoryAPI();
   final EquipmentAPI _equipmentApi = EquipmentAPI();
-
-  @override
-  void initState() {
-    _category = _categoryApi.fetchAllCategory();
-    super.initState();
-  }
 
   Future scanBarcodeNormal() async {
     String barcodeScanRes;
@@ -64,325 +61,336 @@ class _AddEquipmentPageState extends State<AddEquipmentPage> {
   List data = [];
 
   @override
+  void dispose() {
+    descriptionController.dispose();
+    _equipmentNameController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    var screenSize = MediaQuery.of(context).size;
     return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: AppColor.white,
+        toolbarHeight: screenSize.height * 0.11,
+        elevation: 0,
+        title: Row(
+          children: [
+            IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Icon(
+                Icons.arrow_back_ios_new,
+                size: 25,
+                color: AppColor.iconBlack,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Text(
+              'Add New Equipment ( ${widget.category!.name} )',
+              style: style.copyWith(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Expanded(child: Container()),
+          ],
+        ),
+      ),
       body: Form(
         key: globalFormKey,
-        child: FutureBuilder<List<EquipmentCategory>>(
-            future: _category,
-            builder: (context, snapshot) {
-              final category = snapshot.data;
-              if (category != null) {
-                return Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        AppColor.gradientFirst,
-                        AppColor.gradientSecond,
-                      ],
-                      begin: const FractionalOffset(0.0, 0.4),
-                      end: Alignment.topRight,
-                    ),
-                  ),
-                  child: Column(
-                    children: [
-                      Container(
-                        padding:
-                            const EdgeInsets.only(top: 30, left: 30, right: 30),
-                        width: MediaQuery.of(context).size.width,
-                        height: 130,
-                        child: Column(
+        child: Column(
+          children: [
+            Expanded(
+              child: Container(
+                color: AppColor.homePageColor,
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 20, left: 20),
+                        child: ListView(
                           children: [
+                            const SizedBox(height: 10),
+                            Text(
+                              'Equipment name*',
+                              style: style.copyWith(
+                                color: AppColor.darkGrey,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            MyTextForm(
+                              controller: _equipmentNameController,
+                              obscureText: false,
+                              labelText: 'Enter equipment name',
+                            ),
+                            const SizedBox(height: 5),
+                            Text(
+                              'Equipment condition*',
+                              style: style.copyWith(
+                                color: AppColor.darkGrey,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            Container(
+                              height: 60,
+                              width: screenSize.width,
+                              decoration: BoxDecoration(
+                                // color: AppColor.red,
+                                border: Border.all(color: AppColor.buttonText),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 30, right: 20),
+                                  child: DropdownButton<String>(
+                                    isExpanded: true,
+                                    underline: const Divider(
+                                        color: Colors.transparent),
+                                    value: _newCondition,
+                                    elevation: 0,
+                                    style: style.copyWith(fontSize: 14),
+                                    onChanged: (String? newValue) {
+                                      setState(() {
+                                        _newCondition = newValue!;
+                                      });
+                                    },
+                                    items: <String>[
+                                      'NEW',
+                                      'OLD',
+                                      'BAD',
+                                      'FAIR',
+                                    ].map<DropdownMenuItem<String>>(
+                                        (String value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: Text(value),
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 5),
+                            Text(
+                              'Equipment size*',
+                              style: style.copyWith(
+                                color: AppColor.darkGrey,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            Container(
+                              height: 60,
+                              width: screenSize.width,
+                              decoration: BoxDecoration(
+                                // color: AppColor.red,
+                                border: Border.all(color: AppColor.buttonText),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 30, right: 20),
+                                  child: DropdownButton<String>(
+                                    underline: const Divider(
+                                        color: Colors.transparent),
+                                    isExpanded: true,
+                                    value: _newSize,
+                                    elevation: 16,
+                                    style: style.copyWith(fontSize: 14),
+                                    onChanged: (String? newValue) {
+                                      setState(() {
+                                        _newSize = newValue!;
+                                      });
+                                    },
+                                    items: <String>[
+                                      'SHORT',
+                                      'LONG',
+                                      'VERY LONG',
+                                      'VERY SHORT',
+                                    ].map<DropdownMenuItem<String>>(
+                                        (String value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: Text(value),
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 5),
+                            Text(
+                              'Equipment description*',
+                              style: style.copyWith(
+                                color: AppColor.darkGrey,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            TextFormField(
+                              controller: descriptionController,
+                              validator: (input) => (input!.isEmpty)
+                                  ? "Add Equipment Description"
+                                  : null,
+                              keyboardType: TextInputType.multiline,
+                              maxLines: null,
+                              decoration: InputDecoration(
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                  borderSide: BorderSide(
+                                    color: AppColor.textFormColor,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                  borderSide: BorderSide(
+                                    color: AppColor.activetextFormColor,
+                                  ),
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 25.0, horizontal: 10.0),
+                                border: const OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(12))),
+                                hintStyle:
+                                    style.copyWith(color: AppColor.buttonText),
+                                hintText: 'Description',
+                              ),
+                            ),
+                            const SizedBox(height: 5),
+                            Text(
+                              'Scan equipment*',
+                              style: style.copyWith(
+                                color: AppColor.darkGrey,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 5),
                             Row(
                               children: [
-                                IconButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  icon: const Icon(
-                                    Icons.arrow_back_ios_new,
-                                    size: 25,
-                                    color: Colors.white,
+                                ElevatedButton(
+                                  style: ButtonStyle(
+                                    elevation:
+                                        MaterialStateProperty.all<double>(0),
+                                    padding:
+                                        MaterialStateProperty.all<EdgeInsets>(
+                                            const EdgeInsets.all(15)),
+                                    foregroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                      AppColor.buttonText,
+                                    ),
+                                    shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                    ),
+                                  ),
+                                  onPressed: () => scanBarcodeNormal(),
+                                  child: const Text('Scan Barcode'),
+                                ),
+                                Expanded(child: Container()),
+                                Container(
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: AppColor.textFormColor),
+                                      borderRadius: BorderRadius.circular(12)),
+                                  height: 50,
+                                  width: screenSize.height * 0.25,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 5, right: 6, left: 6, bottom: 3),
+                                    child: Text('$_scanBarcode\n',
+                                        style: const TextStyle(fontSize: 14)),
                                   ),
                                 ),
                               ],
                             ),
-                            Container(
-                              padding: const EdgeInsets.only(
-                                  top: 10, left: 20, right: 20),
-                              child: Text(
-                                'Add New Equipment',
-                                style: TextStyle(
-                                    fontSize: 25,
-                                    color: AppColor.homePageContainerTextBig),
-                              ),
+
+                            //
+                            const SizedBox(height: 5),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Image*',
+                                  style: style.copyWith(
+                                    color: AppColor.darkGrey,
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                itemImages(context),
+                                Text(
+                                  noImage ? 'No image selected !' : '',
+                                  style: style.copyWith(
+                                      fontSize: 11, color: AppColor.red),
+                                ),
+                              ],
                             ),
                           ],
                         ),
                       ),
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.only(left: 30, right: 30),
-                          width: MediaQuery.of(context).size.width,
-                          decoration: const BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(70),
-                              topLeft: Radius.circular(70),
-                            ),
-                          ),
-                          child: Column(
-                            children: [
-                              Expanded(
-                                child: ListView(
-                                  children: [
-                                    itemImages(context),
-                                    Center(
-                                      child: Text(
-                                        noImage ? 'No image selected !' : '',
-                                        style: TextStyle(
-                                            color: AppColor.gradientFirst),
-                                      ),
-                                    ),
-                                    const SizedBox(height: 10),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          'Category*',
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w500,
-                                            color: AppColor.homePageTitle,
-                                          ),
-                                        ),
-                                        Expanded(child: Container()),
-                                        DropdownButton<EquipmentCategory>(
-                                          value: newselectedCategory,
-                                          elevation: 16,
-                                          style: TextStyle(
-                                              color: Colors.grey[600]),
-                                          onChanged: (newValue) {
-                                            setState(() {
-                                              newselectedCategory = newValue!;
-                                            });
-                                          },
-                                          items: category
-                                              .map((EquipmentCategory value) {
-                                            return DropdownMenuItem<
-                                                EquipmentCategory>(
-                                              value: value,
-                                              child: Text(
-                                                value.name,
-                                                style: TextStyle(
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.w500,
-                                                  color: AppColor.gradientFirst,
-                                                ),
-                                              ),
-                                            );
-                                          }).toList(),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 8),
-                                    TextFormField(
-                                      controller: equipmentNameController,
-                                      validator: (input) => (input!.isEmpty)
-                                          ? "Add Equipment Name"
-                                          : null,
-                                      decoration: const InputDecoration(
-                                        contentPadding: EdgeInsets.symmetric(
-                                            vertical: 8.0, horizontal: 10.0),
-                                        labelText: 'Equipment Name*',
-                                      ),
-                                    ),
-                                    const SizedBox(height: 5),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          'Condition*',
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w500,
-                                            color: AppColor.homePageTitle,
-                                          ),
-                                        ),
-                                        Expanded(child: Container()),
-                                        DropdownButton<String>(
-                                          value: _newCondition,
-                                          elevation: 16,
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.grey[600]),
-                                          onChanged: (String? newValue) {
-                                            setState(() {
-                                              _newCondition = newValue!;
-                                            });
-                                          },
-                                          items: <String>[
-                                            'NEW',
-                                            'OLD',
-                                            'BAD',
-                                            'FAIR',
-                                          ].map<DropdownMenuItem<String>>(
-                                              (String value) {
-                                            return DropdownMenuItem<String>(
-                                              value: value,
-                                              child: Text(value),
-                                            );
-                                          }).toList(),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 8),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          'Size*',
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w500,
-                                            color: AppColor.homePageTitle,
-                                          ),
-                                        ),
-                                        Expanded(child: Container()),
-                                        DropdownButton<String>(
-                                          value: _newSize,
-                                          elevation: 16,
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.grey[600]),
-                                          onChanged: (String? newValue) {
-                                            setState(() {
-                                              _newSize = newValue!;
-                                            });
-                                          },
-                                          items: <String>[
-                                            'SHORT',
-                                            'LONG',
-                                            'VERY LONG',
-                                            'VERY SHORT',
-                                          ].map<DropdownMenuItem<String>>(
-                                              (String value) {
-                                            return DropdownMenuItem<String>(
-                                              value: value,
-                                              child: Text(value),
-                                            );
-                                          }).toList(),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 8),
-                                    TextFormField(
-                                      controller: descriptionController,
-                                      validator: (input) => (input!.isEmpty)
-                                          ? "Add Equipment Description"
-                                          : null,
-                                      keyboardType: TextInputType.multiline,
-                                      maxLines: null,
-                                      decoration: const InputDecoration(
-                                        contentPadding: EdgeInsets.symmetric(
-                                            vertical: 25.0, horizontal: 10.0),
-                                        border: OutlineInputBorder(),
-                                        labelText: 'Description',
-                                      ),
-                                    ),
-                                    const SizedBox(height: 20),
-                                    Row(
-                                      children: [
-                                        ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                              primary: AppColor.homePageTitle),
-                                          onPressed: () => scanBarcodeNormal(),
-                                          child: const Text('Scan Barcode'),
-                                        ),
-                                        Expanded(child: Container()),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 15),
-                                          child: Text(
-                                              'Result : $_scanBarcode\n',
-                                              style: const TextStyle(
-                                                  fontSize: 14)),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 30),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.stretch,
-                                      children: [
-                                        ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                              primary: AppColor.gradientFirst),
-                                          onPressed: () async {
-                                            if (globalFormKey.currentState!
-                                                .validate()) {
-                                              if (_itemimage == null) {
-                                                setState(() {
-                                                  noImage = true;
-                                                });
-                                              } else {
-                                                setState(() {
-                                                  noImage = false;
-                                                });
-                                              }
-                                              var res = await _equipmentApi
-                                                  .addEquipment(
-                                                      equipmentNameController
-                                                          .text,
-                                                      _itemimage!,
-                                                      newselectedCategory!.id,
-                                                      _newCondition,
-                                                      _newSize,
-                                                      descriptionController
-                                                          .text,
-                                                      _scanBarcode);
-                                              if (res.statusCode == 200 ||
-                                                  res.statusCode == 201) {
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(const SnackBar(
-                                                        backgroundColor:
-                                                            Colors.green,
-                                                        content: Text(
-                                                            "Equipment added")));
-                                                Navigator.pop(context);
-                                              } else {
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(
-                                                  const SnackBar(
-                                                    backgroundColor: Colors.red,
-                                                    content: Text(
-                                                        "Something went wrong"),
-                                                  ),
-                                                );
-                                              }
-                                            }
-                                          },
-                                          child: const Text(
-                                            'Add Equipment',
-                                            style: TextStyle(fontSize: 16),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: MainButton(
+                borderColor: Colors.transparent,
+                text: 'ADD NEW EQUIPMENT',
+                backgroundColor: AppColor.primaryColor,
+                textColor: AppColor.buttonText,
+                onTap: () async {
+                  if (globalFormKey.currentState!.validate()) {
+                    if (_itemimage == null) {
+                      setState(() {
+                        noImage = true;
+                      });
+                    } else {
+                      setState(() {
+                        noImage = false;
+                      });
+                    }
+                    var res = await _equipmentApi.addEquipment(
+                        _equipmentNameController.text,
+                        _itemimage!,
+                        widget.category!.id,
+                        _newCondition,
+                        _newSize,
+                        descriptionController.text,
+                        _scanBarcode);
+                    if (res.statusCode == 200 || res.statusCode == 201) {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          backgroundColor: Colors.green,
+                          content: Text(
+                              "${_equipmentNameController.text} added successfully")));
+                      Navigator.pop(context);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          backgroundColor: Colors.red,
+                          content: Text("Something went wrong"),
                         ),
-                      ),
-                    ],
-                  ),
-                );
-              } else {
-                return Center(
-                  child:
-                      CircularProgressIndicator(color: AppColor.gradientFirst),
-                );
-              }
-            }),
+                      );
+                    }
+                  }
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -398,12 +406,12 @@ class _AddEquipmentPageState extends State<AddEquipmentPage> {
               width: MediaQuery.of(context).size.width * 0.25,
               height: MediaQuery.of(context).size.width * 0.22,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(
-                    MediaQuery.of(context).size.width * 0.06),
+                border: Border.all(color: AppColor.textFormColor),
+                borderRadius: BorderRadius.circular(12),
                 image: DecorationImage(
                   image: _itemimage != null
                       ? FileImage(File(_itemimage!.path))
-                      : const AssetImage('assets/camera.jpg') as ImageProvider,
+                      : const AssetImage('assets/white.jpg') as ImageProvider,
                   fit: BoxFit.cover,
                 ),
               ),
@@ -412,44 +420,44 @@ class _AddEquipmentPageState extends State<AddEquipmentPage> {
               bottom: 0,
               right: 0,
               child: InkWell(
-                onTap: () => showDialog<String>(
+                onTap: () => showModalBottomSheet(
                   context: context,
-                  builder: (BuildContext context) => AlertDialog(
-                    title: Text(
-                      'Select Image',
-                      style: TextStyle(
-                        color: AppColor.homePageSubtitle,
-                      ),
-                    ),
-                    content: const Text(
-                        'Select image from device gallery or use device camera'),
-                    actions: <Widget>[
-                      TextButton(
-                        onPressed: () {
-                          getImage(ImageSource.camera);
-                          Navigator.pop(context);
-                        },
-                        child: Text(
-                          'Camera',
-                          style: TextStyle(
-                            color: AppColor.gradientFirst,
+                  builder: (context) {
+                    return Popover(
+                      mainAxisSize: MainAxisSize.min,
+                      child: Column(children: [
+                        InkWell(
+                          onTap: () {
+                            getImage(ImageSource.camera);
+                            Navigator.pop(context);
+                          },
+                          child: Row(
+                            children: [
+                              const Icon(Icons.camera_alt_outlined),
+                              const SizedBox(width: 10),
+                              Text('Take a Pictue', style: style)
+                            ],
                           ),
                         ),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          getImage(ImageSource.gallery);
-                          Navigator.pop(context);
-                        },
-                        child: Text(
-                          'Gallery',
-                          style: TextStyle(
-                            color: AppColor.gradientFirst,
+                        const SizedBox(height: 10),
+                        const Divider(),
+                        const SizedBox(height: 10),
+                        InkWell(
+                          onTap: () {
+                            getImage(ImageSource.gallery);
+                            Navigator.pop(context);
+                          },
+                          child: Row(
+                            children: [
+                              const Icon(Icons.photo_library),
+                              const SizedBox(width: 10),
+                              Text('Select from gallery', style: style)
+                            ],
                           ),
                         ),
-                      ),
-                    ],
-                  ),
+                      ]),
+                    );
+                  },
                 ),
                 child: Container(
                   height: 25,
@@ -463,7 +471,7 @@ class _AddEquipmentPageState extends State<AddEquipmentPage> {
                     ),
                   ),
                   child: const Icon(
-                    Icons.edit,
+                    Icons.add,
                     size: 15,
                     color: Colors.white,
                   ),

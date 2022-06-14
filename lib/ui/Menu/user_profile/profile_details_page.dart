@@ -1,9 +1,10 @@
-import 'dart:io';
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:viicsoft_inventory_app/component/button.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
+import 'package:viicsoft_inventory_app/component/confirm_password.dart';
+import 'package:viicsoft_inventory_app/component/profile_update.dart';
+import 'package:viicsoft_inventory_app/component/style.dart';
 import 'package:viicsoft_inventory_app/models/profile.dart';
 import 'package:viicsoft_inventory_app/services/apis/user_api.dart';
 
@@ -15,375 +16,234 @@ class ProfileDetailPage extends StatefulWidget {
 }
 
 class _ProfileDetailPageState extends State<ProfileDetailPage> {
-  bool _isOnlineImage = true;
-  bool _isObscure = true;
-  bool _isObscureConfirmPassword = true;
-  XFile? _profileimage;
-  bool noImage = false;
-
-  final TextEditingController _newPassword = TextEditingController();
-  final TextEditingController _confirmPasswordField = TextEditingController();
   GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
 
   final picker = ImagePicker();
   UserAPI userAPI = UserAPI();
 
-  Future getImage(ImageSource source) async {
-    final pickedFile = await picker.pickImage(
-        source: source, imageQuality: 50, maxHeight: 700, maxWidth: 650);
-
-    if (pickedFile == null) {
-      _isOnlineImage = true;
-    } else {
-      setState(() {
-        _profileimage = pickedFile;
-        _isOnlineImage = false;
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    var screenSize = MediaQuery.of(context).size;
     return Scaffold(
+      backgroundColor: AppColor.homePageColor,
+      appBar: AppBar(
+        backgroundColor: AppColor.white,
+        toolbarHeight: 75,
+        automaticallyImplyLeading: false,
+        elevation: 0,
+        title: Row(
+          children: [
+            IconButton(
+              onPressed: () => {Navigator.pop(context)},
+              icon: Icon(
+                Icons.arrow_back_ios,
+                size: 25,
+                color: AppColor.iconBlack,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Center(
+              child: Text('My Profile',
+                  style: style.copyWith(fontWeight: FontWeight.bold)),
+            ),
+            Expanded(flex: 2, child: Container()),
+          ],
+        ),
+      ),
       body: FutureBuilder<ProfileUser>(
           future: userAPI.fetchProfileUser(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               if (snapshot.hasData) {
                 var result = snapshot.data!;
-                final TextEditingController _newEmail =
-                    TextEditingController(text: result.email);
-                final TextEditingController _newName =
-                    TextEditingController(text: result.fullName);
+
                 return Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 50),
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   child: Form(
                     key: globalFormKey,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          children: [
-                            IconButton(
-                              onPressed: () => {Navigator.pop(context)},
-                              icon: const Icon(Icons.arrow_back_ios),
-                            ),
-                            Expanded(child: Container()),
-                            const Center(
-                              child: Text(
-                                'Edit Profile',
-                                style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.w500),
-                              ),
-                            ),
-                            Expanded(flex: 2, child: Container()),
-                          ],
-                        ),
                         Expanded(
                           child: ListView(
-                            children: [
-                              Column(
-                                children: <Widget>[
-                                  Stack(
-                                    alignment: AlignmentDirectional.center,
+                            children: <Widget>[
+                              Container(
+                                height: screenSize.height * 0.55,
+                                width: screenSize.width,
+                                decoration: BoxDecoration(
+                                    color: AppColor.primaryColor,
+                                    borderRadius: BorderRadius.circular(12)),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(top: 30),
+                                  child: Column(
                                     children: [
                                       Container(
-                                        width: 90,
-                                        height: 90,
+                                        height: 120,
+                                        width: 120,
                                         decoration: BoxDecoration(
                                           borderRadius:
-                                              BorderRadius.circular(40),
-                                          image: DecorationImage(
-                                            image: _isOnlineImage
-                                                ? NetworkImage(
-                                                    result.avatarThumbnail)
-                                                : FileImage(File(
-                                                        _profileimage!.path))
-                                                    as ImageProvider,
+                                              BorderRadius.circular(130),
+                                          border: Border.all(
+                                              color: AppColor.white, width: 2),
+                                        ),
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(130),
+                                          child: Image.network(
+                                            result.avatarThumbnail,
                                             fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                      ),
-                                      Positioned(
-                                        bottom: 0,
-                                        right: 0,
-                                        child: InkWell(
-                                          onTap: () {
-                                            showDialog<String>(
-                                              context: context,
-                                              builder: (BuildContext context) =>
-                                                  AlertDialog(
-                                                title: Text(
-                                                  'Select Image',
-                                                  style: TextStyle(
-                                                    color: AppColor
-                                                        .homePageSubtitle,
-                                                  ),
+                                            errorBuilder:
+                                                (context, error, stackTrace) {
+                                              return ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(130),
+                                                child: Image.asset(
+                                                  'assets/No_image.png',
                                                 ),
-                                                content: const Text(
-                                                    'Select image from device gallery or use device camera'),
-                                                actions: <Widget>[
-                                                  TextButton(
-                                                    onPressed: () {
-                                                      getImage(
-                                                          ImageSource.camera);
-                                                      Navigator.pop(context);
-                                                    },
-                                                    child: Text(
-                                                      'Camera',
-                                                      style: TextStyle(
-                                                        color: AppColor
-                                                            .gradientFirst,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  TextButton(
-                                                    onPressed: () {
-                                                      getImage(
-                                                          ImageSource.gallery);
-                                                      Navigator.pop(context);
-                                                    },
-                                                    child: Text(
-                                                      'Gallery',
-                                                      style: TextStyle(
-                                                        color: AppColor
-                                                            .gradientFirst,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            );
-                                          },
-                                          child: Container(
-                                            height: 25,
-                                            width: 25,
-                                            decoration: BoxDecoration(
-                                              color: AppColor.homePageTitle,
-                                              shape: BoxShape.circle,
-                                              border: Border.all(
-                                                width: 1.5,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                            child: const Icon(
-                                              Icons.edit,
-                                              size: 15,
-                                              color: Colors.white,
-                                            ),
+                                              );
+                                            },
                                           ),
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 5),
-                                  Center(
-                                    child: Text(
-                                      noImage ? 'No image selected !' : '',
-                                      style: TextStyle(
-                                          color: AppColor.gradientFirst),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 15),
-                                  Text(
-                                    result.fullName,
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: AppColor.homePageTitle,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 5),
-                                  Text(
-                                    result.email,
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: AppColor.homePageTitle,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 20),
-                                  TextFormField(
-                                    controller: _newName,
-                                    cursorColor: Colors.black54,
-                                    decoration: InputDecoration(
-                                      focusedBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: AppColor.gradientFirst,
+                                      //
+                                      SizedBox(
+                                          height: screenSize.height * 0.015),
+                                      Text(
+                                        result.fullName,
+                                        style: style.copyWith(
+                                          fontSize: 22,
+                                          color: AppColor.white,
                                         ),
                                       ),
-                                      icon: const Icon(
-                                        Icons.person,
-                                        color: Colors.grey,
-                                      ),
-                                      labelStyle: const TextStyle(
-                                        color: Colors.grey,
-                                      ),
-                                      labelText: 'Name*',
-                                    ),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  TextFormField(
-                                    cursorColor: Colors.black54,
-                                    controller: _newEmail,
-                                    validator: (input) =>
-                                        !(input?.contains('@') ?? false)
-                                            ? "Put a valid Email Address"
-                                            : null,
-                                    decoration: InputDecoration(
-                                      focusedBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: AppColor.gradientFirst,
+                                      SizedBox(
+                                          height: screenSize.height * 0.005),
+                                      Text(
+                                        result.email,
+                                        style: style.copyWith(
+                                          fontSize: 14,
+                                          color: AppColor.darkGrey,
                                         ),
                                       ),
-                                      icon: const Icon(
-                                        Icons.email,
-                                        color: Colors.grey,
-                                      ),
-                                      labelText: 'Email*',
-                                      labelStyle: const TextStyle(
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  TextFormField(
-                                    controller: _newPassword,
-                                    obscureText: _isObscure,
-                                    cursorColor: Colors.black54,
-                                    validator: (value) {
-                                      bool passValid =
-                                          RegExp("^(?=.*[A-Z])(?=.*[a-z]).*")
-                                              .hasMatch(value!);
-                                      if (value.isEmpty || !passValid) {
-                                        return 'Please enter Valid Pasword*';
-                                      }
-                                      if (value.length < 6) {
-                                        return 'Pasword Must be more than 5 charater*';
-                                      }
-                                      return null;
-                                    },
-                                    decoration: InputDecoration(
-                                      focusedBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: AppColor.gradientFirst,
-                                        ),
-                                      ),
-                                      suffixIcon: IconButton(
-                                        icon: Icon(
-                                            _isObscure
-                                                ? Icons.visibility
-                                                : Icons.visibility_off,
-                                            color: Colors.grey),
-                                        onPressed: () {
-                                          setState(() {
-                                            _isObscure = !_isObscure;
-                                          });
+
+                                      SizedBox(
+                                          height: screenSize.height * 0.03),
+                                      FutureBuilder<List<Groups>>(
+                                        future: UserAPI().fetchUserGroup(),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.connectionState ==
+                                              ConnectionState.done) {
+                                            if (snapshot.hasError) {
+                                              return const Center();
+                                            } else {
+                                              var userGroup = snapshot.data!;
+                                              for (var i = 0;
+                                                  i < userGroup.length;
+                                                  i++) {
+                                                return Container(
+                                                  height: 25,
+                                                  width: 85,
+                                                  decoration: BoxDecoration(
+                                                    color:
+                                                        const Color(0xffEDF9F3),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8),
+                                                  ),
+                                                  child: Center(
+                                                    child: Text(
+                                                      userGroup[i].id == '22'
+                                                          ? 'SUPER USER'
+                                                          : 'USER',
+                                                      style: style.copyWith(
+                                                          fontSize: 12,
+                                                          color:
+                                                              AppColor.green),
+                                                    ),
+                                                  ),
+                                                );
+                                              }
+                                            }
+                                          }
+                                          return const Center();
                                         },
                                       ),
-                                      icon: const Icon(
-                                        Icons.security,
-                                        color: Colors.grey,
-                                      ),
-                                      hintText:
-                                          'password must contain Upper case and lowercase',
-                                      hintStyle: const TextStyle(
-                                          fontSize: 12, color: Colors.red),
-                                      labelText: 'Change Password*',
-                                      labelStyle: const TextStyle(
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                  ),
-                                  TextFormField(
-                                    obscureText: _isObscureConfirmPassword,
-                                    controller: _confirmPasswordField,
-                                    cursorColor: Colors.black54,
-                                    decoration: InputDecoration(
-                                      focusedBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: AppColor.gradientFirst,
+
+                                      //
+                                      SizedBox(
+                                          height: screenSize.height * 0.03),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 50),
+                                        child: Divider(
+                                          color: AppColor.darkGrey,
                                         ),
                                       ),
-                                      suffixIcon: IconButton(
-                                          icon: Icon(
-                                              _isObscureConfirmPassword
-                                                  ? Icons.visibility
-                                                  : Icons.visibility_off,
-                                              color: Colors.grey),
-                                          onPressed: () {
-                                            setState(() {
-                                              _isObscureConfirmPassword =
-                                                  !_isObscureConfirmPassword;
-                                            });
-                                          }),
-                                      icon: const Icon(
-                                        Icons.security,
-                                        color: Colors.grey,
-                                      ),
-                                      labelText: 'Confirm Pasword',
-                                      labelStyle: const TextStyle(
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                    validator: (value) {
-                                      if (_newPassword.text !=
-                                          _confirmPasswordField.text) {
-                                        return 'Please Confirm Pasword*';
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.width * 0.2),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  ElevatedButton(
-                                    onPressed: () async {
-                                      if (globalFormKey.currentState!
-                                          .validate()) {
-                                        if (_profileimage == null) {
-                                          setState(() {
-                                            noImage = true;
-                                          });
-                                        } else {
-                                          noImage = false;
-                                        }
-                                        var res = await UserAPI()
-                                            .updateUserProfile(
-                                                _newEmail.text.trim(),
-                                                _newPassword.text.trim(),
-                                                result.id,
-                                                _profileimage!,
-                                                _newName.text.trim());
-                                        if (res.statusCode == 200) {
-                                          _newPassword.clear();
-                                          _confirmPasswordField.clear();
-                                          Navigator.pushNamed(context,
-                                              '/profileChangeSuccessPage');
-                                        } else {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            const SnackBar(
-                                              backgroundColor: Colors.red,
-                                              content: Text(
-                                                  "Not Saved Something went wrong !"),
-                                            ),
+                                      //
+                                      SizedBox(
+                                          height: screenSize.height * 0.03),
+
+                                      InkWell(
+                                        onTap: () {
+                                          showModalBottomSheet(
+                                            isScrollControlled: true,
+                                            context: context,
+                                            builder: (_) {
+                                              return ProfileUpdateSheet(
+                                                  profile: result);
+                                            },
                                           );
-                                        }
-                                      }
-                                    },
-                                    child: const Text('Save'),
-                                    style: ElevatedButton.styleFrom(
-                                        primary: AppColor.gradientFirst),
+                                        },
+                                        child: Container(
+                                          height: 57,
+                                          width: 158,
+                                          decoration: BoxDecoration(
+                                            color: Colors.transparent,
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                            border: Border.all(
+                                                color: AppColor.white),
+                                          ),
+                                          child: Center(
+                                              child: Text(
+                                            'EDIT PROFILE',
+                                            style: style.copyWith(
+                                              fontSize: 12,
+                                              color: AppColor.buttonText,
+                                            ),
+                                          )),
+                                        ),
+                                      )
+                                    ],
                                   ),
-                                ],
-                              )
+                                ),
+                              ),
+                              //
+                              SizedBox(height: screenSize.height * 0.03),
+                              const Divider(),
+                              SizedBox(height: screenSize.height * 0.02),
+                              Text(
+                                'SETTINGS',
+                                style: style.copyWith(color: AppColor.darkGrey),
+                              ),
+
+                              //
+                              SizedBox(height: screenSize.height * 0.03),
+                              MainButton(
+                                borderColor: AppColor.lightGrey,
+                                text: 'Change Password',
+                                backgroundColor: AppColor.white,
+                                textColor: AppColor.primaryColor,
+                                onTap: () {
+                                  showModalBottomSheet(
+                                      isScrollControlled: true,
+                                      context: context,
+                                      builder: (_) {
+                                        return ConfirmPassswordSheet(
+                                            profile: result);
+                                      });
+                                },
+                              ),
                             ],
                           ),
                         ),
@@ -392,24 +252,13 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                   ),
                 );
               } else {
-                return Center(
-                  child:
-                      CircularProgressIndicator(color: AppColor.gradientFirst),
-                );
+                return const Center();
               }
             }
             return Center(
-              child: CircularProgressIndicator(color: AppColor.gradientFirst),
+              child: CircularProgressIndicator(color: AppColor.darkGrey),
             );
           }),
     );
   }
-
-  // userimage(bool saverImage, String url) {
-  //   if (saverImage) {
-  //     return Image.network(url);
-  //   } else {
-  //     return Image.file(File(_profileimage.path));
-  //   }
-  // }
 }

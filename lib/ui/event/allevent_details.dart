@@ -197,15 +197,13 @@ class _AllEventDetailPageState extends State<AllEventDetailPage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.arrow_circle_left,
-                                color: AppColor.gradientFirst),
+                            Icon(Icons.arrow_circle_left, color: AppColor.red),
                             TextButton(
                                 onPressed: () => Navigator.pop(context),
                                 child: Text(
                                   'Back',
                                   style: TextStyle(
-                                      fontSize: 20,
-                                      color: AppColor.gradientFirst),
+                                      fontSize: 20, color: AppColor.red),
                                 )),
                           ],
                         )
