@@ -5,12 +5,12 @@ import 'package:viicsoft_inventory_app/component/button.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
 import 'package:viicsoft_inventory_app/component/popover.dart';
 import 'package:viicsoft_inventory_app/component/style.dart';
+import 'package:viicsoft_inventory_app/models/equipment_not_avialable.dart';
 import 'package:viicsoft_inventory_app/models/eventequipmentchecklist.dart';
-import 'package:viicsoft_inventory_app/models/eventequipmentcheckout.dart';
 import 'package:viicsoft_inventory_app/models/profile.dart';
+import 'package:viicsoft_inventory_app/services/apis/equipment_api.dart';
 import 'package:viicsoft_inventory_app/services/apis/equipment_checkin_api.dart';
 import 'package:viicsoft_inventory_app/services/apis/equipment_checklist_api.dart';
-import 'package:viicsoft_inventory_app/services/apis/equipment_checkout_api.dart';
 import 'package:viicsoft_inventory_app/services/apis/user_api.dart';
 
 class EventsEquipment extends StatefulWidget {
@@ -164,9 +164,10 @@ class _EventsEquipmentState extends State<EventsEquipment> {
                         itemBuilder: (_, int index) {
                           return SizedBox(
                             height: 88,
-                            child: FutureBuilder<List<EventsEquipmentCheckout>>(
-                              future: EquipmentCheckOutAPI()
-                                  .fetchAllEquipmentCheckOut(),
+                            child: FutureBuilder<
+                                List<EquipmentsNotAvailableElement>>(
+                              future:
+                                  EquipmentAPI().fetchEquipmentsNotAvialable(),
                               builder: (context, snapshot) {
                                 if (snapshot.connectionState ==
                                     ConnectionState.done) {

@@ -6,9 +6,10 @@ import 'package:viicsoft_inventory_app/component/colors.dart';
 import 'package:viicsoft_inventory_app/component/confirm_delete_sheet.dart';
 import 'package:viicsoft_inventory_app/component/popover.dart';
 import 'package:viicsoft_inventory_app/component/style.dart';
+import 'package:viicsoft_inventory_app/models/equipment_not_avialable.dart';
 import 'package:viicsoft_inventory_app/models/eventequipmentchecklist.dart';
-import 'package:viicsoft_inventory_app/models/eventequipmentcheckout.dart';
 import 'package:viicsoft_inventory_app/models/future_event.dart';
+import 'package:viicsoft_inventory_app/services/apis/equipment_api.dart';
 import 'package:viicsoft_inventory_app/services/apis/equipment_checkin_api.dart';
 import 'package:viicsoft_inventory_app/services/apis/equipment_checklist_api.dart';
 import 'package:viicsoft_inventory_app/services/apis/equipment_checkout_api.dart';
@@ -200,9 +201,9 @@ class _FutureEventsEquipmentState extends State<FutureEventsEquipment> {
                               child: SizedBox(
                                 height: 90,
                                 child: FutureBuilder<
-                                    List<EventsEquipmentCheckout>>(
-                                  future: EquipmentCheckOutAPI()
-                                      .fetchAllEquipmentCheckOut(),
+                                    List<EquipmentsNotAvailableElement>>(
+                                  future: EquipmentAPI()
+                                      .fetchEquipmentsNotAvialable(),
                                   builder: (context, snapshot) {
                                     if (snapshot.connectionState ==
                                         ConnectionState.done) {
