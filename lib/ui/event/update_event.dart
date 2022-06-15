@@ -220,11 +220,7 @@ class _UpdateEventPageState extends State<UpdateEventPage> {
                                     context: context,
                                     buttonText: 'BACK TO EVENTS',
                                     title: ' Event Updated \n  Successfully!',
-                                    onTap: () => Navigator.pushAndRemoveUntil(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (_) => const EventsPage()),
-                                        (route) => false));
+                                    onTap: () => Navigator.pop(context));
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
