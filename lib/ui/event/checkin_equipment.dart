@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
 import 'package:viicsoft_inventory_app/component/confirm_delete_sheet.dart';
 import 'package:viicsoft_inventory_app/component/style.dart';
-import 'package:viicsoft_inventory_app/component/success_button_sheet.dart';
 import 'package:viicsoft_inventory_app/models/equipmentcheckin.dart';
 import 'package:viicsoft_inventory_app/models/profile.dart';
 import 'package:viicsoft_inventory_app/services/apis/equipment_checkin_api.dart';
@@ -115,15 +114,17 @@ class _CheckInEquipmentPageState extends State<CheckInEquipmentPage> {
                                                       if (res.statusCode ==
                                                           200) {
                                                         setState(() {});
-                                                        successButtomSheet(
-                                                          context: context,
-                                                          buttonText:
-                                                              'BACK TO MY PROFILE',
-                                                          title:
-                                                              'Event Deleted\n  Successfully',
-                                                          onTap: () =>
-                                                              Navigator.pop(
-                                                                  context),
+                                                        Navigator.pop(context);
+                                                        ScaffoldMessenger.of(
+                                                                context)
+                                                            .showSnackBar(
+                                                          SnackBar(
+                                                            backgroundColor:
+                                                                Colors.green,
+                                                            content: Text(
+                                                              "(${result[index].equipment.equipmentName})  Equipment successfully removed",
+                                                            ),
+                                                          ),
                                                         );
                                                       }
                                                     })

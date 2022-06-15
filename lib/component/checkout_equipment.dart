@@ -230,7 +230,7 @@ class _CheckOutEquipmentState extends State<CheckOutEquipment> {
                                                           backgroundColor:
                                                               Colors.green,
                                                           content: Text(
-                                                            "(${result[index].equipment.equipmentName})  Equipment successfully deleted",
+                                                            "(${result[index].equipment.equipmentName})  Equipment successfully removed",
                                                           ),
                                                         ),
                                                       );
