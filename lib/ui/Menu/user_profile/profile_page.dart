@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
 import 'package:viicsoft_inventory_app/component/style.dart';
 import 'package:viicsoft_inventory_app/models/profile.dart';
@@ -223,7 +224,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
-                            onTap: () {
+                            onTap: () async {
+                              SharedPreferences prefs =
+                                  await SharedPreferences.getInstance();
+                              prefs.setBool('isLoggedIn', false);
                               Navigator.pushAndRemoveUntil(
                                   context,
                                   PageRouteBuilder(pageBuilder:

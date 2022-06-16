@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:viicsoft_inventory_app/component/buttom_navbar.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
 import 'package:viicsoft_inventory_app/services/notification_service.dart';
 import 'package:viicsoft_inventory_app/ui/Menu/add_event_page.dart';
@@ -21,11 +23,14 @@ Future<void> main() async {
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   await NotificationService().init();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  runApp(const MyApp());
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  var status = prefs.getBool('isLoggedIn') ?? false;
+  runApp(MyApp(status: status));
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final bool? status;
+  const MyApp({Key? key, this.status}) : super(key: key);
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -42,7 +47,7 @@ class _MyAppState extends State<MyApp> {
 
   void initialization() async {
     await Future.delayed(const Duration(seconds: 1));
-    FlutterNativeSplash.remove();
+    //FlutterNativeSplash.remove();
   }
 
   @override
@@ -56,7 +61,7 @@ class _MyAppState extends State<MyApp> {
         fontFamily: 'Poppins',
       ),
       title: 'Inventory App',
-      initialRoute: '/',
+      initialRoute: widget.status! ? '/myButtomNavigationBar' : '/login',
       routes: {
         '/': (context) => const //CheckOutEquipmentPage(),
             SignupLogin(),
@@ -70,6 +75,7 @@ class _MyAppState extends State<MyApp> {
             const ProfileChangeSuccessPage(),
         '/event': (context) => const EventsPage(),
         '/store': (context) => const StorePage(),
+        '/myButtomNavigationBar': (context) => const MyButtomNavigationBar()
       },
     );
   }

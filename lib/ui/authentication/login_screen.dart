@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:viicsoft_inventory_app/component/buttom_navbar.dart';
 import 'package:viicsoft_inventory_app/component/button.dart';
 import 'package:viicsoft_inventory_app/component/colors.dart';
@@ -152,6 +153,9 @@ class _LoginState extends State<Login> {
                                     );
 
                                     if (res.statusCode == 200) {
+                                      SharedPreferences prefs =
+                                          await SharedPreferences.getInstance();
+                                      prefs.setBool('isLoggedIn', true);
                                       Navigator.pushReplacement(
                                         context,
                                         MaterialPageRoute(

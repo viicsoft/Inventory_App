@@ -8,7 +8,6 @@ import 'package:viicsoft_inventory_app/component/style.dart';
 import 'package:viicsoft_inventory_app/component/success_button_sheet.dart';
 import 'package:viicsoft_inventory_app/models/future_event.dart';
 import 'package:viicsoft_inventory_app/services/apis/event_api.dart';
-import 'package:viicsoft_inventory_app/ui/event/events_page.dart';
 
 class UpdateEventPage extends StatefulWidget {
   final EventsFuture eventDetail;

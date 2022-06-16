@@ -84,8 +84,8 @@ class UserAPI extends BaseAPI {
     }
   }
 
-  Future<http.StreamedResponse> updateUserProfile(String email, String password,
-      String id, XFile avatar, String fullname) async {
+  Future<http.StreamedResponse> updateUserProfile(
+      String email, String id, XFile avatar, String fullname) async {
     final String token = await SharedPrefrence().getToken();
     Map<String, String> headers = {
       "X-Api-Key": "632F2EC9771B6C4C0BDF30BE21D9009B",
@@ -97,7 +97,7 @@ class UserAPI extends BaseAPI {
     //add header in http request
     request.headers.addAll(headers);
     request.fields["email"] = email;
-    request.fields["password"] = password;
+    //request.fields["password"] = password;
     request.fields["full_name"] = fullname;
     request.fields["id"] = id;
     var pic = await http.MultipartFile.fromPath("avatar", avatar.path);

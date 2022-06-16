@@ -318,7 +318,7 @@ class _AddEventPageState extends State<AddEventPage> {
                 image: DecorationImage(
                   image: _eventImage != null
                       ? FileImage(File(_eventImage!.path))
-                      : const AssetImage('assets/musk.jpg') as ImageProvider,
+                      : const AssetImage('assets/white.jpg') as ImageProvider,
                   fit: BoxFit.cover,
                 ),
               ),

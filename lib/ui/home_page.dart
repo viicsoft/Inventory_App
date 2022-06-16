@@ -87,7 +87,7 @@ class _HomePageState extends State<HomePage> {
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               return Center(
-                child: CircularProgressIndicator(color: AppColor.red),
+                child: CircularProgressIndicator(color: AppColor.darkGrey),
               );
             } else if (snapshot.connectionState == ConnectionState.done) {
               final result = snapshot.data!;
@@ -118,16 +118,23 @@ class _HomePageState extends State<HomePage> {
                           ),
                           Row(
                             children: [
-                              HomeBigContainer(
-                                backgroundColor: AppColor.homePageTotalEquip,
-                                dividerColor: const Color(0xFF6ECAFA),
-                                title: 'Total Equipments',
-                                totalCount: result.length.toString(),
+                              InkWell(
                                 onTap: () => Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (_) =>
                                             const TotalEquipmentPage())),
+                                child: HomeBigContainer(
+                                  backgroundColor: AppColor.homePageTotalEquip,
+                                  dividerColor: const Color(0xFF6ECAFA),
+                                  title: 'Total Equipments',
+                                  totalCount: result.length.toString(),
+                                  onTap: () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (_) =>
+                                              const TotalEquipmentPage())),
+                                ),
                               ),
                               Expanded(child: Container()),
                               FutureBuilder<List<EquipmentsAvailable>>(
@@ -138,17 +145,27 @@ class _HomePageState extends State<HomePage> {
                                         ConnectionState.done) {
                                       if (snapshot.hasData) {
                                         var aviableEquipment = snapshot.data!;
-                                        return HomeBigContainer(
-                                          backgroundColor: AppColor.green,
-                                          dividerColor: const Color(0xFF78D0A5),
-                                          title: 'Avialable Equipments',
-                                          totalCount: aviableEquipment.length
-                                              .toString(),
+                                        return InkWell(
                                           onTap: () => Navigator.push(
                                             context,
                                             MaterialPageRoute(
                                               builder: (_) =>
                                                   const AvialableEquipmentPage(),
+                                            ),
+                                          ),
+                                          child: HomeBigContainer(
+                                            backgroundColor: AppColor.green,
+                                            dividerColor:
+                                                const Color(0xFF78D0A5),
+                                            title: 'Avialable Equipments',
+                                            totalCount: aviableEquipment.length
+                                                .toString(),
+                                            onTap: () => Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (_) =>
+                                                    const AvialableEquipmentPage(),
+                                              ),
                                             ),
                                           ),
                                         );
@@ -163,17 +180,26 @@ class _HomePageState extends State<HomePage> {
                                     _equipmentApi.fetchEquipmentsNotAvialable(),
                                 builder: (context, snapshot) {
                                   if (snapshot.hasData) {
-                                    return HomeBigContainer(
-                                      backgroundColor: AppColor.red,
-                                      dividerColor: const Color(0XFFF5605F),
-                                      title: 'Unavialable Equipments',
-                                      totalCount:
-                                          snapshot.data!.length.toString(),
+                                    return InkWell(
                                       onTap: () => Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
                                               const EquipmentNotAvialablePage(),
+                                        ),
+                                      ),
+                                      child: HomeBigContainer(
+                                        backgroundColor: AppColor.red,
+                                        dividerColor: const Color(0XFFF5605F),
+                                        title: 'Unavialable Equipments',
+                                        totalCount:
+                                            snapshot.data!.length.toString(),
+                                        onTap: () => Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                const EquipmentNotAvialablePage(),
+                                          ),
                                         ),
                                       ),
                                     );
@@ -188,70 +214,94 @@ class _HomePageState extends State<HomePage> {
                           ),
                           Row(
                             children: [
-                              HomeSmallContainer(
-                                borderColor: AppColor.green,
-                                buttonColor: AppColor.green,
-                                backgroundColor: const Color(0xFFEDF9F3),
-                                title: 'Good Equipments',
-                                totalCount: goodResult.isEmpty
-                                    ? '0'
-                                    : '${goodResult.length}',
+                              InkWell(
                                 onTap: () => Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder: (_) => const GoodEquipmentPage(),
                                   ),
                                 ),
+                                child: HomeSmallContainer(
+                                  borderColor: AppColor.green,
+                                  buttonColor: AppColor.green,
+                                  backgroundColor: const Color(0xFFEDF9F3),
+                                  title: 'Good Equipments',
+                                  totalCount: goodResult.isEmpty
+                                      ? '0'
+                                      : '${goodResult.length}',
+                                  onTap: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => const GoodEquipmentPage(),
+                                    ),
+                                  ),
+                                ),
                               ),
                               Expanded(child: Container()),
-                              HomeSmallContainer(
-                                borderColor: const Color(0xFFFFCC42),
-                                buttonColor: const Color(0xFFFFCC42),
-                                backgroundColor: const Color(0xFFFFFAEC),
-                                title: 'Fair Equipments',
-                                totalCount: fairResult.isEmpty
-                                    ? '0'
-                                    : '${fairResult.length}',
+                              InkWell(
                                 onTap: () => Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder: (_) => const FairEquipmentPage(),
                                   ),
                                 ),
+                                child: HomeSmallContainer(
+                                  borderColor: const Color(0xFFFFCC42),
+                                  buttonColor: const Color(0xFFFFCC42),
+                                  backgroundColor: const Color(0xFFFFFAEC),
+                                  title: 'Fair Equipments',
+                                  totalCount: fairResult.isEmpty
+                                      ? '0'
+                                      : '${fairResult.length}',
+                                  onTap: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => const FairEquipmentPage(),
+                                    ),
+                                  ),
+                                ),
                               ),
                               Expanded(child: Container()),
-                              HomeSmallContainer(
-                                borderColor: const Color(0xFFF22B29),
-                                buttonColor: const Color(0xFFF22B29),
-                                backgroundColor: const Color(0xFFFEEAEA),
-                                title: 'Bad Equipments',
-                                totalCount: badResult.isEmpty
-                                    ? '0'
-                                    : '${badResult.length}',
-                                onTap: () async => {
-                                  if (badResult.length > 1)
-                                    {
-                                      await NotificationService()
-                                          .notification(),
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) =>
-                                              const BadEquipmentPage(),
+                              InkWell(
+                                onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const BadEquipmentPage(),
+                                  ),
+                                ),
+                                child: HomeSmallContainer(
+                                  borderColor: const Color(0xFFF22B29),
+                                  buttonColor: const Color(0xFFF22B29),
+                                  backgroundColor: const Color(0xFFFEEAEA),
+                                  title: 'Bad Equipments',
+                                  totalCount: badResult.isEmpty
+                                      ? '0'
+                                      : '${badResult.length}',
+                                  onTap: () async => {
+                                    if (badResult.length > 1)
+                                      {
+                                        await NotificationService()
+                                            .notification(),
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) =>
+                                                const BadEquipmentPage(),
+                                          ),
                                         ),
-                                      ),
-                                    }
-                                  else
-                                    {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) =>
-                                              const BadEquipmentPage(),
+                                      }
+                                    else
+                                      {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) =>
+                                                const BadEquipmentPage(),
+                                          ),
                                         ),
-                                      ),
-                                    }
-                                },
+                                      }
+                                  },
+                                ),
                               )
                             ],
                           ),

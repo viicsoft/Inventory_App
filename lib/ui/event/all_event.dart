@@ -39,7 +39,7 @@ class _AllEventState extends State<AllEvent> {
                           if (snapshot.hasError) {
                             return Center(
                               child: CircularProgressIndicator(
-                                  color: AppColor.red),
+                                  color: AppColor.darkGrey),
                             );
                           } else if (snapshot.connectionState ==
                               ConnectionState.done) {

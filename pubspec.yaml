@@ -33,16 +33,15 @@ dev_dependencies:
   flutter_lints: ^1.0.4
 
 flutter_icons:
-  image_path: "assets/app_icon.png"
+  image_path: "assets/icon.png"
   android: true
   ios: true
 
-flutter_native_splash:
-  # flutter pub run flutter_native_splash:create
-  color: "#283547"
-  image: assets/logos.png
-  android: true
-  ios: true
+flutter_native_splash: flutter pub run flutter_native_splash:create
+color: "#283547"
+image: assets/logos.png
+android: true
+ios: true
 
 flutter:
   # The following line ensures that the Material Icons font is

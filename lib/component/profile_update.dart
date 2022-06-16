@@ -22,7 +22,6 @@ class ProfileUpdateSheet extends StatefulWidget {
 class _ProfileUpdateSheetState extends State<ProfileUpdateSheet> {
   final TextEditingController _newEmail = TextEditingController();
   final TextEditingController _newName = TextEditingController();
-  final TextEditingController _password = TextEditingController();
   final GlobalKey<FormState> _globalFormKey = GlobalKey<FormState>();
 
   final picker = ImagePicker();
@@ -234,30 +233,8 @@ class _ProfileUpdateSheetState extends State<ProfileUpdateSheet> {
             ),
             //
             const SizedBox(height: 4),
-            Text(
-              'Password',
-              style: style.copyWith(
-                  fontSize: 11,
-                  color: AppColor.darkGrey,
-                  fontWeight: FontWeight.bold),
-            ),
-            MyTextForm(
-              controller: _password,
-              labelText: 'password',
-              obscureText: false,
-              validatior: (value) {
-                bool passValid = RegExp(
-                        "^(?=.*[A-Z])(?=.*[0-9])(?=.*[a-z])(?=.*?[!@#\$&*~]).*")
-                    .hasMatch(value!);
-                if (value.isEmpty || !passValid) {
-                  return 'Please enter Valid Pasword*';
-                }
-                return null;
-              },
-            ),
-            //
             Padding(
-              padding: const EdgeInsets.only(top: 10, bottom: 15),
+              padding: const EdgeInsets.only(top: 20, bottom: 30),
               child: MainButton(
                 borderColor: Colors.transparent,
                 text: 'UPDATE PROFILE',
@@ -277,18 +254,19 @@ class _ProfileUpdateSheetState extends State<ProfileUpdateSheet> {
 
                     var res = await UserAPI().updateUserProfile(
                       _newEmail.text,
-                      _password.text,
                       widget.profile.id,
                       _profileimage!,
                       _newName.text,
                     );
                     if (res.statusCode == 200) {
+                      setState(() {});
                       successButtomSheet(
-                        context: context,
-                        buttonText: 'BACK TO MY PROFILE',
-                        title: 'Profile Updated\n  Successfully',
-                        onTap: () => Navigator.pop(context),
-                      );
+                          context: context,
+                          buttonText: 'BACK TO MY PROFILE',
+                          title: 'Profile Updated\n  Successfully',
+                          onTap: () => {
+                                Navigator.pop(context),
+                              });
                     }
                   }
                 },
