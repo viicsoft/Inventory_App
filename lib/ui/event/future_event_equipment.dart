@@ -219,7 +219,6 @@ class _FutureEventsEquipmentState extends State<FutureEventsEquipment> {
                                               BorderRadius.circular(8),
                                         ),
                                         elevation: 0,
-                                        shadowColor: AppColor.gradientSecond,
                                         child: Padding(
                                           padding: const EdgeInsets.all(12),
                                           child: Column(

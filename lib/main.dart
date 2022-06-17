@@ -47,7 +47,7 @@ class _MyAppState extends State<MyApp> {
 
   void initialization() async {
     await Future.delayed(const Duration(seconds: 1));
-    //FlutterNativeSplash.remove();
+    FlutterNativeSplash.remove();
   }
 
   @override
@@ -63,8 +63,7 @@ class _MyAppState extends State<MyApp> {
       title: 'Inventory App',
       initialRoute: widget.status! ? '/myButtomNavigationBar' : '/login',
       routes: {
-        '/': (context) => const //CheckOutEquipmentPage(),
-            SignupLogin(),
+        '/': (context) => const SignupLogin(),
         '/signup': (context) => const SignupPage(),
         '/login': (context) => const Login(),
         '/homePage': (context) => const HomePage(),

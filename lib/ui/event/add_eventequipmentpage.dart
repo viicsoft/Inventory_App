@@ -177,7 +177,6 @@ class _AddEventEquipmentPageState extends State<AddEventEquipmentPage> {
             borderRadius: BorderRadius.circular(8),
           ),
           elevation: 0,
-          shadowColor: AppColor.gradientSecond,
           child: Padding(
             padding:
                 const EdgeInsets.only(top: 3, left: 5, bottom: 3, right: 5),

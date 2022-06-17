@@ -37,11 +37,13 @@ flutter_icons:
   android: true
   ios: true
 
-flutter_native_splash: flutter pub run flutter_native_splash:create
-color: "#283547"
-image: assets/logos.png
-android: true
-ios: true
+flutter_native_splash:
+  #flutter pub run flutter_native_splash:create
+  #color: "#283547"
+  #image: assets/logos.png
+  background_image: assets/splash.png
+  android: true
+  ios: true
 
 flutter:
   # The following line ensures that the Material Icons font is

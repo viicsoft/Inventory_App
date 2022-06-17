@@ -166,7 +166,6 @@ class _EquipmentNotAvialablePageState extends State<EquipmentNotAvialablePage> {
             borderRadius: BorderRadius.circular(10),
           ),
           elevation: 0,
-          shadowColor: AppColor.gradientSecond,
           child: Padding(
             padding: const EdgeInsets.only(
               top: 3,

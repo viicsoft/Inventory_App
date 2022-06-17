@@ -170,8 +170,6 @@ class _StorePageState extends State<StorePage> {
                                                   BorderRadius.circular(8),
                                             ),
                                             elevation: 0,
-                                            shadowColor:
-                                                AppColor.gradientSecond,
                                             child: Padding(
                                               padding:
                                                   const EdgeInsets.all(10.0),

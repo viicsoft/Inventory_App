@@ -182,7 +182,6 @@ class _EventsEquipmentState extends State<EventsEquipment> {
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     elevation: 0,
-                                    shadowColor: AppColor.gradientSecond,
                                     child: Padding(
                                       padding: const EdgeInsets.all(12),
                                       child: Column(

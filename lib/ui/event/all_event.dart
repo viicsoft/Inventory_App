@@ -105,8 +105,6 @@ class _AllEventState extends State<AllEvent> {
                                                             8),
                                                   ),
                                                   elevation: 0,
-                                                  shadowColor:
-                                                      AppColor.gradientSecond,
                                                   child: Padding(
                                                     padding:
                                                         const EdgeInsets.all(

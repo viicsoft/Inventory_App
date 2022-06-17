@@ -56,7 +56,6 @@ class _FutureEventPageState extends State<FutureEventPage> {
                                               BorderRadius.circular(8),
                                         ),
                                         elevation: 0,
-                                        shadowColor: AppColor.gradientSecond,
                                         child: Padding(
                                           padding: const EdgeInsets.all(15.0),
                                           child: Column(

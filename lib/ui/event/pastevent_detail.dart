@@ -43,7 +43,7 @@ class _PastEventDetailPageState extends State<PastEventDetailPage> {
                   icon: Icon(
                     Icons.arrow_back_ios_new,
                     size: 25,
-                    color: AppColor.gradientSecond,
+                    color: AppColor.iconBlack,
                   ),
                 ),
                 Expanded(child: Container()),

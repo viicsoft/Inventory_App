@@ -160,8 +160,6 @@ class _EquipmentPageState extends State<EquipmentPage> {
                                                             8),
                                                   ),
                                                   elevation: 0,
-                                                  shadowColor:
-                                                      AppColor.gradientSecond,
                                                   child: Padding(
                                                     padding:
                                                         const EdgeInsets.all(7),
